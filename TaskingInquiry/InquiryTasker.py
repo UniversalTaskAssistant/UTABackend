@@ -1,7 +1,7 @@
 from ModelManagement import AssistantModel
 
 
-class GeneralInquiry:
+class InquiryTasker:
     def __init__(self):
         self.text_model = AssistantModel()
 
@@ -13,3 +13,6 @@ class GeneralInquiry:
             return {'answer': answer, 'history': history}
         except Exception as e:
             raise e
+
+    def execute_inquiry_task(self, task):
+        return action

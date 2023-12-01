@@ -1,11 +1,11 @@
-from ModelManagement import OpenAI
+from ModelManagement._OpenAI import _OpenAI
 import time
 import json
 import logging
 import openai
 
 
-class TextModel(OpenAI):
+class TextModel(_OpenAI):
     def __init__(self, **kwargs):
         # Initialize the TextModel with default settings, and override with any provided kwargs
         super().__init__(**kwargs)
