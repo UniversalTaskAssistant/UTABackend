@@ -3,8 +3,8 @@ class SystemConnector:
         self.server
         self.adb
 
-    def get_task(self):
+    def get_user_task(self):
         return task
 
-    def get_ui(self):
+    def get_current_ui(self):
         return ui
