@@ -1,11 +1,11 @@
-from ModelManagement import OpenAI
+from ModelManagement._OpenAI import _OpenAI
 import time
 import json
 import logging
 import openai
 
 
-class AssistantModel(OpenAI):
+class AssistantModel(_OpenAI):
     def __init__(self, **kwargs):
         # Initialize the AssistantModel with default settings, and override with any provided kwargs
         self.default_config = {

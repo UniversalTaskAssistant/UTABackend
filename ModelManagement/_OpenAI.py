@@ -2,7 +2,7 @@ import openai
 import tiktoken
 
 
-class OpenAI:
+class _OpenAI:
     def __init__(self, **kwargs):
         # Initialize the Model with default settings, and override with any provided kwargs
         openai.api_key = open('ModelManagement/openaikey.txt', 'r').readline()
