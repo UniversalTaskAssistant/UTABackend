@@ -3,5 +3,5 @@ class SystemTasker:
         pass
 
     def execute_system_task(self, task):
-        return status
+        return action
 
