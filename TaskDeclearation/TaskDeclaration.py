@@ -1,11 +1,9 @@
-class TaskDec:
+class TaskDeclarator:
     def __init__(self):
-
-    def __inter
-
-    def __decompo
-
-    def __cls
+        pass
 
     def declear_task(self, org_task):
         return [tasks]
+
+    def classify_task(self, task):
+        return task_type
