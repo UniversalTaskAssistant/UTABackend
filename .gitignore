@@ -1,5 +1,5 @@
 **/__pycache__
 **/.idea
 **/.ipynb_checkpoints
-/ModelManagement/openaikey.txt
+/ModelManagement/apikey.txt
 local_test.py
