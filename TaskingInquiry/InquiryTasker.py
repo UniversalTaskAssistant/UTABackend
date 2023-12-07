@@ -1,18 +1,16 @@
-from ModelManagement import _AssistantModel
+from ModelManagement import ModelManager
 
 
 class InquiryTasker:
-    def __init__(self):
-        self.text_model = _AssistantModel()
+    def __init__(self, **kwargs):
+        self.__model_manager = ModelManager()
+        self.__model_manager.initialize_text_model(**kwargs)
 
-    def fetch_answer(self, conversation):
+    def execute_inquiry_task(self, conversation):
         # Create a new conversation message and send it to the TextModel
         try:
-            answer = self.text_model.create_conversation(conversation)
-            history = self.text_model.get_conversations()
+            answer = self.__model_manager.create_text_conversation(conversation)
+            history = self.__model_manager.get_text_conversations()
             return {'answer': answer, 'history': history}
         except Exception as e:
             raise e
-
-    def execute_inquiry_task(self, task):
-        return action
