@@ -7,7 +7,8 @@ class _GoogleOCR:
         self.__url = 'https://vision.googleapis.com/v1/images:annotate'
         self.__api_key = open('ModelManagement/googleapikey.txt', 'r').readline()
 
-    def __make_image_data(self, ctxt):
+    @staticmethod
+    def __make_image_data(ctxt):
         """
         Prepares the image data for the API request.
         Args:
