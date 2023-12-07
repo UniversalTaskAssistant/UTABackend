@@ -1,9 +1,9 @@
-from ModelManagement import AssistantModel
+from ModelManagement import _AssistantModel
 
 
 class InquiryTasker:
     def __init__(self):
-        self.text_model = AssistantModel()
+        self.text_model = _AssistantModel()
 
     def fetch_answer(self, conversation):
         # Create a new conversation message and send it to the TextModel

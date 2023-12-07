@@ -2,4 +2,6 @@
 **/.idea
 **/.ipynb_checkpoints
 /ModelManagement/openaikey.txt
+/ModelManagement/googleapikey.txt
+/data/
 local_test.py
