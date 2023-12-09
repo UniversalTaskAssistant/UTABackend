@@ -10,7 +10,7 @@ class _TextModel(_OpenAI):
         # Initialize the TextModel with default settings, and override with any provided kwargs
         super().__init__(**kwargs)
 
-    def create_conversation(self, conversation, printlog=False, runtime=False, **kwargs):
+    def create_conversation(self, conversation, printlog=False, runtime=False, include_history=True, **kwargs):
         # Create a conversation with GPT-4 based on the input and configuration
         start = time.time()
 
@@ -23,7 +23,10 @@ class _TextModel(_OpenAI):
         self.conversations.append(conversation)
 
         # Prepare configuration for OpenAI API call
-        conversation_config = {**self._default_config, **{'messages': self.conversations}, **kwargs}
+        if include_history:
+            conversation_config = {**self._default_config, **{'messages': self.conversations}, **kwargs}
+        else:
+            conversation_config = {**self._default_config, **{'messages': conversation}, **kwargs}
 
         try:
             # Call the OpenAI API to get a response
