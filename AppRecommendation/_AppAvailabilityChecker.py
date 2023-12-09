@@ -11,6 +11,9 @@ class _AppAvailabilityChecker:
     def get_available_apps(self):
         return self.__system_connector.get_app_list_on_the_device()
 
+    def get_package_name(self):
+        return self.__system_connector.get_package_and_activity_name()['package_name']
+
     def check_related_apps(self, task, app_list=None, except_apps=None, printlog=False):
         if app_list is None:
             app_list = self.get_available_apps()

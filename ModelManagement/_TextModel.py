@@ -41,7 +41,7 @@ class _TextModel(_OpenAI):
                 msg['content'] = json.dumps(msg['content'])
 
             # Append the processed response to conversation history
-            self.conversations.append({'role':msg['role'], 'content':msg['content']})
+            self.conversations.append({'role': msg['role'], 'content': msg['content']})
             return msg
         except Exception as e:
             logging.error('Error in creating text conversation: %s', e)
