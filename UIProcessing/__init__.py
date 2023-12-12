@@ -1,1 +1,1 @@
-from UIProcessing.GUI import GUI
+from .GUI import GUI

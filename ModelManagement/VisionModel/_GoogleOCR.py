@@ -5,7 +5,7 @@ import json
 class _GoogleOCR:
     def __init__(self):
         self.__url = 'https://vision.googleapis.com/v1/images:annotate'
-        self.__api_key = open('ModelManagement/googleapikey.txt', 'r').readline()
+        self.__api_key = open('ModelManagement/VisionModel/googleapikey.txt', 'r').readline()
 
     @staticmethod
     def __make_image_data(ctxt):

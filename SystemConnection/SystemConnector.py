@@ -1,4 +1,4 @@
-from SystemConnection import _Device, _Local
+from . import _Device, _Local
 
 
 class SystemConnector:

@@ -1,4 +1,5 @@
-from ModelManagement import _TextModel, _AssistantModel, _VisionModel
+from .TextModel import _TextModel, _AssistantModel
+from .VisionModel import _VisionModel
 
 
 class ModelManager:
@@ -65,6 +66,12 @@ class ModelManager:
         Clear historical conversations in the Text Model.
         """
         self.__text_model.reset_conversations()
+
+    def set_text_conversations(self, messages):
+        """
+        Set historical conversations in the Text Model.
+        """
+        self.__text_model.set_conversations(messages)
 
     def count_token_size(self, string):
         """

@@ -1,3 +1,3 @@
-from SystemConnection._Local import _Local
-from SystemConnection._Device import _Device
-from SystemConnection.SystemConnector import SystemConnector
+from ._Local import _Local
+from ._Device import _Device
+from .SystemConnector import SystemConnector

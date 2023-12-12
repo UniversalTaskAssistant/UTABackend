@@ -3,16 +3,17 @@ import tiktoken
 
 
 class _OpenAI:
-    def __init__(self, **kwargs):
+    def __init__(self, system_prompt=None, **kwargs):
         # Initialize the Model with default settings, and override with any provided kwargs
-        openai.api_key = open('ModelManagement/openaikey.txt', 'r').readline()
+        openai.api_key = open('ModelManagement/TextModel/openaikey.txt', 'r').readline()
         self._default_config = {
             'model': 'gpt-4',
             'seed': 42,
             'temperature': 0.0
         }
         self._default_config.update(kwargs)
-        self.conversations = []
+        self._conversations = []
+        self._system_prompt = system_prompt
 
     def create_conversation(self, **kwargs):
         # Create a conversation with GPT-4 based on the input and configuration, need to be implemented by the inheritor
@@ -25,8 +26,15 @@ class _OpenAI:
 
     def reset_conversations(self, **kwargs):
         # Clear the historical conversations
-        self.conversations = []
+        if self._system_prompt is None:
+            self._conversations = []
+        else:
+            self._conversations = [{'role': 'system', 'content': self._system_prompt}]
 
     def get_conversations(self, **kwargs):
         # Get the historical conversations
-        return self.conversations
+        return self._conversations
+
+    def set_conversations(self, messages):
+        # Add messages to the historical conversations
+        self._conversations += messages

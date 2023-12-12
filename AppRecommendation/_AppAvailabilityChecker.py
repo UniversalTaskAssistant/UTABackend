@@ -4,25 +4,27 @@ import json
 
 
 class _AppAvailabilityChecker:
-    def __init__(self):
+    def __init__(self, system_prompt=None, **kwargs):
         """
         Initializes the AppAvailabilityChecker.
         Creates instances of SystemConnector and ModelManager.
         Sets up a base prompt template for checking app relevance.
         """
         self.__system_connector = SystemConnector()
+
         self.__model_manager = ModelManager()
+        self.__model_manager.initialize_text_model(system_prompt=system_prompt, **kwargs)
 
         # Initialize the base prompt template
-        self.__base_prompt = 'Which app is the related one to complete the task "{task}"? ' \
-                             '@List of app package names (separated by ";"): [{app_list}]' \
-                             'Answer the question in JSON format to give (1) App package name ' \
-                             'selected from the given app list, if no related found, answer "None"; ' \
-                             '(2) Reason in one sentence. ' \
-                             'Format: {{"App":, "Reason":}}. Example: {{"App": "Package Name", "Reason":}} or ' \
-                             '{{"App": "None", "Reason":}}. \n' \
-                             'These packages cannot be launched or have been launched already, ' \
-                             'except them in your selection: [{exp_apps}]. \n'
+        self.__base_prompt = 'Identify the app related to the task "{task}". Consider the following apps: ' \
+                             '[{app_list}]. \n' \
+                             'Note: Exclude apps that cannot be launched or have been launched already: ' \
+                             '[{exp_apps}]. \n' \
+                             'Respond in JSON format with (1) the app package name if related, or "None" ' \
+                             'if unrelated, and (2) a brief reason. \n' \
+                             'Format: {{"App": "<app_package_or_None>", "Reason": "<explanation>"}}. \n' \
+                             'Example: {{"App": "com.example.app", "Reason": "Directly performs the task"}} or ' \
+                             '{{"App": "None", "Reason": "No app is related"}}.'
 
     def get_available_apps(self):
         """
@@ -52,6 +54,8 @@ class _AppAvailabilityChecker:
             JSON data with related app information.
         """
         try:
+            self.__model_manager.reset_text_conversations()
+
             if app_list is None:
                 app_list = self.get_available_apps()
 

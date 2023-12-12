@@ -1,4 +1,4 @@
-from ModelManagement._OpenAI import _OpenAI
+from ._OpenAI import _OpenAI
 import time
 import json
 import logging
@@ -19,11 +19,11 @@ class _AssistantModel(_OpenAI):
         self._default_config.update(kwargs)
 
         # Create an assistant with the specified configuration
-        self.assistant = openai.beta.assistants.create(**self._default_config)
+        self.__assistant = openai.beta.assistants.create(**self._default_config)
 
         # Dictionaries to manage task-to-thread mapping and conversations by thread
-        self.task_to_thread = dict()
-        self.conversations_by_thread = dict()
+        self.__task_to_thread = dict()
+        self.__conversations_by_thread = dict()
 
     def create_conversation(self, task_id, conversation, printlog=False, runtime=False):
         # Create a conversation with GPT-4 based on the input and configuration
@@ -34,7 +34,7 @@ class _AssistantModel(_OpenAI):
             logging.info('Asking: %s', conversation)
 
         # Add the new conversation message to the history
-        self.conversations_by_thread[thread.id].append({'role': 'user', 'content': conversation})
+        self.__conversations_by_thread[thread.id].append({'role': 'user', 'content': conversation})
 
         try:
             # Call the OpenAI API to get a response
@@ -49,7 +49,7 @@ class _AssistantModel(_OpenAI):
                 msg['content'] = json.dumps(msg['content'])
 
             # Append the processed response to conversation history
-            self.conversations_by_thread[thread.id].append({'role': "assistant", 'content': msg['content']})
+            self.__conversations_by_thread[thread.id].append({'role': "assistant", 'content': msg['content']})
             return msg
         except Exception as e:
             logging.error('Error in creating assistant conversation: %s', e)
@@ -70,7 +70,7 @@ class _AssistantModel(_OpenAI):
             # Start the GPT-4 model run
             run = openai.beta.threads.runs.create(
                 thread_id=thread.id,
-                assistant_id=self.assistant.id,
+                assistant_id=self.__assistant.id,
             )
 
             status = ""
@@ -104,13 +104,13 @@ class _AssistantModel(_OpenAI):
         """
         try:
             # Create a new thread if it does not exist for the task
-            if self.task_to_thread.get(task_id) is None:
+            if self.__task_to_thread.get(task_id) is None:
                 thread = openai.beta.threads.create()
-                self.task_to_thread[task_id] = thread
-                self.conversations_by_thread[thread.id] = []
+                self.__task_to_thread[task_id] = thread
+                self.__conversations_by_thread[thread.id] = []
                 return thread
             else:
-                return self.task_to_thread[task_id]
+                return self.__task_to_thread[task_id]
         except Exception as e:
             raise e
 
@@ -118,19 +118,19 @@ class _AssistantModel(_OpenAI):
         """
         Get the thread ID for a given task ID, raising an error if the task has not been created.
         """
-        if not self.task_to_thread.get(task_id) is None:
-            return self.task_to_thread[task_id].id
+        if not self.__task_to_thread.get(task_id) is None:
+            return self.__task_to_thread[task_id].id
         else:
             raise ValueError(f"Task with ID {task_id} has not been created.")
 
     def get_conversations(self, task_id):
-        if not self.task_to_thread.get(task_id) is None:
-            return self.conversations_by_thread[self.task_to_thread[task_id].id]
+        if not self.__task_to_thread.get(task_id) is None:
+            return self.__conversations_by_thread[self.__task_to_thread[task_id].id]
         else:
             raise ValueError(f"Task with ID {task_id} has not been created.")
 
     def reset_conversations(self, task_id):
-        if not self.task_to_thread.get(task_id) is None:
-            self.conversations_by_thread[self.task_to_thread[task_id].id] = []
+        if not self.__task_to_thread.get(task_id) is None:
+            self.__conversations_by_thread[self.__task_to_thread[task_id].id] = []
         else:
             raise ValueError(f"Task with ID {task_id} has not been created.")

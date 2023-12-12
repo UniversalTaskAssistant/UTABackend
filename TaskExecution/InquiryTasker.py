@@ -2,9 +2,9 @@ from ModelManagement import ModelManager
 
 
 class InquiryTasker:
-    def __init__(self, **kwargs):
+    def __init__(self, system_prompt=None, **kwargs):
         self.__model_manager = ModelManager()
-        self.__model_manager.initialize_text_model(**kwargs)
+        self.__model_manager.initialize_text_model(system_prompt=system_prompt, **kwargs)
 
     def execute_inquiry_task(self, conversation):
         # Create a new conversation message and send it to the TextModel

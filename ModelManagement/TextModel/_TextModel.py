@@ -1,4 +1,4 @@
-from ModelManagement._OpenAI import _OpenAI
+from ._OpenAI import _OpenAI
 import time
 import json
 import logging
@@ -6,9 +6,9 @@ import openai
 
 
 class _TextModel(_OpenAI):
-    def __init__(self, **kwargs):
+    def __init__(self, system_prompt=None, **kwargs):
         # Initialize the TextModel with default settings, and override with any provided kwargs
-        super().__init__(**kwargs)
+        super().__init__(system_prompt, **kwargs)
 
     def create_conversation(self, conversation, printlog=False, runtime=False, include_history=True, **kwargs):
         # Create a conversation with GPT-4 based on the input and configuration
@@ -20,11 +20,11 @@ class _TextModel(_OpenAI):
             logging.info('Asking: %s', conversation)
 
         # Add the new conversation message to the history
-        self.conversations.append(conversation)
+        self._conversations.append(conversation)
 
         # Prepare configuration for OpenAI API call
         if include_history:
-            conversation_config = {**self._default_config, **{'messages': self.conversations}, **kwargs}
+            conversation_config = {**self._default_config, **{'messages': self._conversations}, **kwargs}
         else:
             conversation_config = {**self._default_config, **{'messages': conversation}, **kwargs}
 
@@ -41,7 +41,7 @@ class _TextModel(_OpenAI):
                 msg['content'] = json.dumps(msg['content'])
 
             # Append the processed response to conversation history
-            self.conversations.append({'role': msg['role'], 'content': msg['content']})
+            self._conversations.append({'role': msg['role'], 'content': msg['content']})
             return msg
         except Exception as e:
             logging.error('Error in creating text conversation: %s', e)
