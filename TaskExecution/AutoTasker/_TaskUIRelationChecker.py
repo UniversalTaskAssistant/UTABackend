@@ -1,4 +1,5 @@
 from ModelManagement import ModelManager
+import json
 
 
 class _TaskUIRelationChecker:
@@ -39,25 +40,29 @@ class _TaskUIRelationChecker:
         Returns:
             Relation information between the GUI and the task.
         """
-        print('--- Check UI and Task Relation ---')
-        if reset_history:
-            self.__model_manager.reset_text_conversations()
+        try:
+            print('--- Check UI and Task Relation ---')
+            if reset_history:
+                self.__model_manager.reset_text_conversations()
 
-        # Format the prompt
-        except_elements_str = ','.join(except_elements) if except_elements else ''
-        action_history_str = str(self.__model_manager.get_text_conversations())
-        conversation = self.__base_prompt.format(task=task, except_elements=except_elements_str,
-                                                 action_history=action_history_str)
+            # Format the prompt
+            except_elements_str = ','.join(except_elements) if except_elements else ''
+            action_history_str = str(self.__model_manager.get_text_conversations())
+            conversation = self.__base_prompt.format(task=task, except_elements=except_elements_str,
+                                                     action_history=action_history_str)
 
-        if gui:
-            messages = [
-                {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and '
-                                            'elements.'},
-                {'role': 'user', 'content': str(gui.element_tree)}
-            ]
-            self.__model_manager.set_text_conversations(messages)
+            if gui:
+                messages = [
+                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and '
+                                                'elements.'},
+                    {'role': 'user', 'content': str(gui.element_tree)}
+                ]
+                self.__model_manager.set_text_conversations(messages)
 
-        gui_task_relation = self.__model_manager.create_text_conversation(conversation, printlog=printlog)['content']
+            gui_task_relation = self.__model_manager.create_text_conversation(conversation, printlog=printlog)['content']
+            gui_task_relation = json.loads(gui_task_relation)
 
-        print(gui_task_relation)
-        return gui_task_relation
+            print(gui_task_relation)
+            return gui_task_relation
+        except Exception as e:
+            raise e
