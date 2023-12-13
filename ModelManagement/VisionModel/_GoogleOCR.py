@@ -1,5 +1,6 @@
 import requests
 import json
+from base64 import b64encode
 
 
 class _GoogleOCR:
@@ -8,37 +9,39 @@ class _GoogleOCR:
         self.__api_key = open('ModelManagement/VisionModel/googleapikey.txt', 'r').readline()
 
     @staticmethod
-    def __make_image_data(ctxt):
+    def __make_image_data(img_path):
         """
         Prepares the image data for the API request.
         Args:
-            ctxt (str): The base64 encoded string of the image.
+            img_path (str): Image file path.
         Returns:
             Encoded JSON data to be sent in the API request.
         """
-        # Setting up the request parameters for the OCR
-        img_req = {
-            'image': {
-                'content': ctxt
-            },
-            'features': [{
-                'type': 'DOCUMENT_TEXT_DETECTION',
-                # 'type': 'TEXT_DETECTION',
-                'maxResults': 1
-            }]
-        }
+        with open(img_path, 'rb') as f:
+            ctxt = b64encode(f.read()).decode()
+            # Setting up the request parameters for the OCR
+            img_req = {
+                'image': {
+                    'content': ctxt
+                },
+                'features': [{
+                    'type': 'DOCUMENT_TEXT_DETECTION',
+                    # 'type': 'TEXT_DETECTION',
+                    'maxResults': 1
+                }]
+            }
         return json.dumps({"requests": img_req}).encode()
 
-    def detect_ocr(self, ctxt):
+    def detect_ocr(self, img_path):
         """
         Sends an OCR request to the Google Cloud Vision API.
         Args:
-            ctxt (str): The base64 encoded string of the image.
+            img_path (str): Image file path.
         Returns:
             The detected text annotations or None if no text is found.
         """
         try:
-            img_data = self.__make_image_data(ctxt)  # Prepare the image data
+            img_data = self.__make_image_data(img_path)  # Prepare the image data
 
             # Post request to the Google Cloud Vision API
             response = requests.post(self.__url,

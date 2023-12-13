@@ -10,25 +10,25 @@ class ModelManager:
 
     # Vision model relevant functions below
 
-    def detect_ocr(self, ctxt):
+    def detect_ocr(self, img_path):
         """
         Sends an OCR request to the Google Cloud Vision API.
         Args:
-            ctxt (str): The base64 encoded string of the image.
+            img_path (str): Image file path.
         Returns:
             The detected text annotations or None if no text is found.
         """
-        return self.__vision_model.detect_ocr(ctxt)
+        return self.__vision_model.detect_ocr(img_path)
 
-    def predict_images(self, imgs):
+    def classify_icons(self, imgs):
         """
-        Predict the class of the given images.
+        Predict the class of the given icons images.
         Args:
             imgs (list): List of images in numpy array format.
         Returns:
             List of predictions with class names and probabilities.
         """
-        return self.__vision_model.predict_images(imgs)
+        return self.__vision_model.classify_icons(imgs)
 
     # Text model relevant functions below
 

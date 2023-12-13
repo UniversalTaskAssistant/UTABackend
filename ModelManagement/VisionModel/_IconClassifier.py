@@ -26,9 +26,9 @@ class _IconClassifier:
         self.__class_names = json.load(open(class_path, "r"))
         print("Load Classifier Model: %.3fs" % (time.time() - s))
 
-    def predict_images(self, imgs):
+    def classify_icons(self, imgs):
         """
-        Predict the class of the given images.
+        Predict the class of the given icons images.
         Args:
             imgs (list): List of images in numpy array format.
         Returns:
