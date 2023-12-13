@@ -29,6 +29,17 @@ class UIProcessor:
         self.ui_data = _UIData(screenshot_file, xml_file, ui_resize, output_dir)
 
     def process_ui(self, ui_data=None):
+        '''
+        Process a UI, including
+            1. Convert vh to tidy and formatted json
+            2. Extract basic UI info (elements) and store as dicts
+            3. Analyze UI element to attach description
+            4. Build element tree based on the prev to represent the UI
+        Args:
+            ui_data (UIData): UI data before processing
+        Returns:
+             ui_data (UIData): UI data after processing
+        '''
         if not ui_data:
             ui_data = self.ui_data
         else:
