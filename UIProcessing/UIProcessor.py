@@ -15,6 +15,26 @@ class UIProcessor:
         self.ui_preprocessor = _UIPreProcessor()
         self.ui_analyser = _UIAnalyser()
 
-    def process_ui(self, ui_data):
+    def load_ui_data(self, screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/app1'):
+        '''
+        Load UI to UIData
+        Args:
+            screenshot_file (path): Path to screenshot image
+            xml_file (path): Path to xml file if any
+            ui_resize (tuple): Specify the size/resolution of the UI
+            output_dir (path): Directory to store all processing result for the UI
+        Returns:
+            self.ui_data (UIData)
+        '''
+        self.ui_data = _UIData(screenshot_file, xml_file, ui_resize, output_dir)
 
-        return ui_info
+    def process_ui(self, ui_data=None):
+        if not ui_data:
+            ui_data = self.ui_data
+        else:
+            self.ui_data = ui_data
+        self.ui_preprocessor.ui_vh_xml_cvt_to_json(ui_data)
+        self.ui_preprocessor.ui_info_extraction(ui_data)
+        self.ui_analyser.ui_analysis_elements_description(ui_data)
+        self.ui_analyser.ui_build_element_tree(ui_data)
+        ui_data.show_all_elements()

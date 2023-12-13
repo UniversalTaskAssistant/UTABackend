@@ -15,8 +15,7 @@ class _UIData:
 
         # UI info
         self.ui_screenshot = cv2.resize(cv2.imread(screenshot_file), ui_resize)   # ui screenshot
-        self.ui_xml_vh = xmltodict.parse(open(xml_file, 'r', encoding='utf-8').read())   # ui vh xml
-        self.ui_json_vh = None  # ui vh json, after processing
+        self.ui_vh_json = None      # ui vh json, after processing
 
         # UI elements
         self.elements = []          # list of element in dictionary {'id':, 'class':...}

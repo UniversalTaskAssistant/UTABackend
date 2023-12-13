@@ -7,34 +7,22 @@ class _UIPreProcessor:
     def __init__(self):
         self.__element_no = 0       # for the record of element number
 
-        self.ui_vh_json = None      # ui view hierarchy in json format
-        self.elements = []          # list of element in dictionary {'id':, 'class':...}
-        self.elements_leaves = []   # leaf nodes that does not have children
-
     '''
     ******************************************
     *** Convert the VH to Rico format JSON ***
     ******************************************
     '''
-    def ui_vh_xml_cvt_to_json(self, ui_xml_file):
+    def ui_vh_xml_cvt_to_json(self, ui_data):
         '''
         Convert xml vh to json format for easier processing
         Args:
-            ui_xml_file: path of xml file
+            ui_data (UIData): ui data for processing
         Returns:
-             VH in json format
+             ui_data.ui_vh_json (dict): VH in a tidy json format
         '''
-        self.ui_vh_json = xmltodict.parse(open(ui_xml_file, 'r', encoding='utf-8').read())
-        self.__reformat_vh_json()
-        return self.ui_vh_json
-
-    def __reformat_vh_json(self):
-        '''
-        Tidy up and reformat the json vh into Rico format
-        '''
-        self.ui_vh_json = {'activity': {'root': self.__cvt_node_to_rico_format(self.ui_vh_json['hierarchy']['node'])}}
-        # json.dump(self.vh, open(self.output_file_path_json, 'w', encoding='utf-8'), indent=4)
-        # print('Save view hierarchy to', self.output_file_path_json)
+        ui_data.ui_vh_json = xmltodict.parse(open(ui_data.xml_file, 'r', encoding='utf-8').read())
+        # Tidy up and reformat the json vh into Rico format
+        ui_data.ui_vh_json = {'activity': {'root': self.__cvt_node_to_rico_format(ui_data.ui_vh_json['hierarchy']['node'])}}
 
     def __cvt_node_to_rico_format(self, node):
         '''
