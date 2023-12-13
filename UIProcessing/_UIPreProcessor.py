@@ -3,7 +3,7 @@ import json
 import xmltodict
 
 
-class UIPreProcessor:
+class _UIPreProcessor:
     def __init__(self):
         self.__element_no = 0       # for the record of element number
 
@@ -16,7 +16,7 @@ class UIPreProcessor:
     *** Convert the VH to Rico format JSON ***
     ******************************************
     '''
-    def cvt_ui_vh_xml_to_json(self, ui_xml_file):
+    def ui_vh_xml_cvt_to_json(self, ui_xml_file):
         '''
         Convert xml vh to json format for easier processing
         Args:
@@ -194,6 +194,9 @@ class UIPreProcessor:
         return children_depth
 
     def __gather_leaf_elements(self):
+        '''
+        Gather all leaf elements that have no children together
+        '''
         i = 0
         for ele in self.elements:
             if 'children-id' not in ele:
