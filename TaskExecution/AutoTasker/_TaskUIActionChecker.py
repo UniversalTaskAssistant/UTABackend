@@ -79,23 +79,19 @@ class _TaskUIActionChecker:
         except Exception as e:
             raise e
 
-    def check_action(self, gui, task, except_elements=None, reset_history=False, printlog=False):
+    def check_action(self, gui, task, except_elements=None, printlog=False):
         """
         Determines the appropriate action and target element in the UI for a given task.
         Args:
             gui: The current GUI object.
             task (str): The task to be completed using the UI.
             except_elements (list, optional): Elements to be excluded from consideration.
-            reset_history (bool): If True, resets the conversation history in the model manager.
             printlog (bool): If True, enables logging of outputs.
         Returns:
             JSON response with the determined action and target element.
         """
         try:
             print('--- Check UI Action and Target Element ---')
-            if reset_history:
-                self.__model_manager.reset_text_conversations()
-
             # Format the prompt
             except_elements_str = ','.join(except_elements) if except_elements else ''
             action_history_str = str(self.__model_manager.get_text_conversations())
@@ -118,3 +114,9 @@ class _TaskUIActionChecker:
             return gui_task_action
         except Exception as e:
             raise e
+
+    def reset_ui_action_checker(self):
+        """
+        Clear model conversation history records.
+        """
+        self.__model_manager.reset_text_conversations()

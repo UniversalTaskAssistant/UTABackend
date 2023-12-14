@@ -35,6 +35,8 @@ class _AppAnalyser:
             Functionality of given app.
         """
         try:
+            self.__model_manager.reset_text_conversations()
+
             conversation = self.__base_prompt.format(title=tar_app['title'], description=tar_app['description'],
                                                      printlog=printlog)
 

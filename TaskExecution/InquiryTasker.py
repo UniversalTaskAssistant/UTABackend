@@ -14,3 +14,7 @@ class InquiryTasker:
             return {'answer': answer, 'history': history}
         except Exception as e:
             raise e
+
+    def reset_inquiry_tasker(self):
+        # reset conversation history
+        self.__model_manager.reset_text_conversations()

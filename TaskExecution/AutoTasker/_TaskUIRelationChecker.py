@@ -28,23 +28,19 @@ class _TaskUIRelationChecker:
                              'Previous actions: {action_history}\n' \
                              'Excluded elements: {except_elements}'
 
-    def check_relation(self, gui, task, except_elements=None, reset_history=False, printlog=False):
+    def check_relation(self, gui, task, except_elements=None, printlog=False):
         """
         Checks the relation between a given GUI and a task.
         Args:
             gui: GUI object to be analyzed.
             task (str): The task for which the relation is to be checked.
             except_elements (list, optional): List of elements to exclude from consideration.
-            reset_history (bool): Whether to reset the conversation history records.
             printlog (bool): If True, enables logging of outputs.
         Returns:
             Relation information between the GUI and the task.
         """
         try:
             print('--- Check UI and Task Relation ---')
-            if reset_history:
-                self.__model_manager.reset_text_conversations()
-
             # Format the prompt
             except_elements_str = ','.join(except_elements) if except_elements else ''
             action_history_str = str(self.__model_manager.get_text_conversations())
@@ -66,3 +62,9 @@ class _TaskUIRelationChecker:
             return gui_task_relation
         except Exception as e:
             raise e
+
+    def reset_ui_relation_checker(self):
+        """
+        Clear model conversation history records.
+        """
+        self.__model_manager.reset_text_conversations()
