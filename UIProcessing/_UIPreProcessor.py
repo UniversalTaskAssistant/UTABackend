@@ -5,7 +5,9 @@ import xmltodict
 
 class _UIPreProcessor:
     def __init__(self):
-        self.__element_no = 0       # for the record of element number
+        self.__element_no = 0           # for the record of element number
+        self.__elements = []            # for the record of processed elements
+        self.__elements_leaves = []     # for the record of processed elements without children
 
     '''
     ******************************************
@@ -71,15 +73,16 @@ class _UIPreProcessor:
     *** UI Info Extraction ***
     **************************
     '''
-    def ui_info_extraction(self, json_vh):
+    def ui_info_extraction(self, ui_data):
         '''
         Extract elements from raw view hierarchy Json file and store them as dictionaries
         Args:
-            json_vh (dict): UI vh in json format
+            ui_data (UIData): ui data for processing
         Returns:
-            self.elements; self.elements_leaves
+            ui_data.elements; ui_data.elements_leaves (list of dicts)
         '''
         # print('--- Extract elements from VH ---')
+        json_vh = ui_data.ui_vh_json
         json_cp = copy.deepcopy(json_vh)
         element_root = json_cp['activity']['root']
         element_root['class'] = 'root'
@@ -91,7 +94,8 @@ class _UIPreProcessor:
         self.__gather_leaf_elements()
         # json.dump(self.elements, open(self.output_file_path_elements, 'w', encoding='utf-8'), indent=4)
         # print('Save elements to', self.output_file_path_elements)
-        return self.elements, self.elements_leaves
+        ui_data.elements = self.__elements
+        ui_data.elements_leaves = self.__elements_leaves
 
     def __prone_invalid_children(self, element):
         '''
@@ -166,7 +170,7 @@ class _UIPreProcessor:
         '''
         element['id'] = self.__element_no
         element['layer'] = layer
-        self.elements.append(element)
+        self.__elements.append(element)
         children_depth = layer  # record the depth of the children
         if 'children' in element and len(element['children']) > 0:
             element['children-id'] = []
@@ -186,10 +190,10 @@ class _UIPreProcessor:
         Gather all leaf elements that have no children together
         '''
         i = 0
-        for ele in self.elements:
+        for ele in self.__elements:
             if 'children-id' not in ele:
                 ele['leaf-id'] = i
-                self.elements_leaves.append(ele)
+                self.__elements_leaves.append(ele)
                 i += 1
             else:
                 ele['class'] += '(container)'

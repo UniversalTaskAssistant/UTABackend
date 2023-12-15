@@ -22,7 +22,7 @@ class _UIAnalyser:
             ocr (bool): True to turn on ocr for the whole UI image
             cls (bool): True to turn on UI element classification
         Returns:
-            element['description']: 'description' attribute in element
+            ui_data.element['description']: 'description' attribute in element
         '''
         # print('--- Analyze UI elements ---')
         # use ocr to detect text
