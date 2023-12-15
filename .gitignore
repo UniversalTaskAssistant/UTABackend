@@ -1,7 +1,7 @@
 **/__pycache__
 **/.idea
 **/.ipynb_checkpoints
-/ModelManagement/TextModel/openaikey.txt
+/ModelManagement/LLMModel/openaikey.txt
 /ModelManagement/VisionModel/googleapikey.txt
 /data/
 local_test.py

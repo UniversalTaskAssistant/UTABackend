@@ -5,7 +5,7 @@ import logging
 import openai
 
 
-class _TextModel(_OpenAI):
+class _LLMModel(_OpenAI):
     def __init__(self, system_prompt=None, **kwargs):
         # Initialize the TextModel with default settings, and override with any provided kwargs
         super().__init__(system_prompt, **kwargs)
