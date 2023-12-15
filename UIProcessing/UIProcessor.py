@@ -1,10 +1,4 @@
-import os
-import cv2
-import json
-import xmltodict
-from os.path import join as pjoin
-
-from ._UIData import _UIData
+from DataStructures._UIData import _UIData
 from ._UIPreProcessor import _UIPreProcessor
 from ._UIAnalyser import _UIAnalyser
 
