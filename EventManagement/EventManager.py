@@ -15,6 +15,8 @@ class EventManager:
             event_name (str): The name of the event to listen to.
             listener (callable): The callback function to be invoked when the event is triggered.
         """
+        if not callable(listener):
+            raise TypeError("Listener must be callable")
         if event_name not in self.listeners:
             self.listeners[event_name] = []
         self.listeners[event_name].append(listener)
@@ -31,3 +33,5 @@ class EventManager:
         if event_name in self.listeners:
             for listener in self.listeners[event_name]:
                 return listener(**kwargs)
+        else:
+            raise KeyError(f"No {event_name} event is available, available events:{self.listeners.keys()}")

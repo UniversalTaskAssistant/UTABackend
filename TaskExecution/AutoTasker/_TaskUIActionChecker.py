@@ -1,5 +1,6 @@
 from ModelManagement import ModelManager
 import json
+from ._Action import _Action
 
 
 class _TaskUIActionChecker:
@@ -44,16 +45,17 @@ class _TaskUIActionChecker:
                              '"Description": "Click on the \'Back\' button"}} or {{"Can": "No", "Element": "None", ' \
                              '"Reason": "No back button present", "Description": "None"}}.'
 
-    def check_go_back_availability(self, gui, task, reset_history=False, printlog=False):
+    def check_go_back_availability(self, step_id, gui, task, reset_history=False, printlog=False):
         """
         Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
         Args:
+           step_id: id of the step.
            gui: The current GUI object.
            task (str): The task for which back navigation is being checked.
            reset_history (bool): If True, resets the conversation history in the model manager.
            printlog (bool): If True, enables logging of outputs.
         Returns:
-           JSON response indicating back navigation availability.
+           _Action indicating back navigation availability.
         """
         try:
             print('--- Check Any Action to Go Back to Related UI ---')
@@ -73,22 +75,28 @@ class _TaskUIActionChecker:
             go_back_availability = self.__model_manager.create_text_conversation(conversation,
                                                                                  printlog=printlog)['content']
             go_back_availability = json.loads(go_back_availability)
-
             print(go_back_availability)
-            return go_back_availability
+
+            if go_back_availability['Can'].lower() == 'yes':
+                return _Action(step_id, "Click", go_back_availability["Element"],
+                                 go_back_availability["Description"], "None", go_back_availability["Reason"])
+            else:
+                return _Action(step_id, "Find Relevant Apps", go_back_availability["Element"],
+                                 go_back_availability["Description"], "None", go_back_availability["Reason"])
         except Exception as e:
             raise e
 
-    def check_action(self, gui, task, except_elements=None, printlog=False):
+    def check_action(self, step_id, gui, task, except_elements=None, printlog=False):
         """
         Determines the appropriate action and target element in the UI for a given task.
         Args:
+            step_id: id of the step.
             gui: The current GUI object.
             task (str): The task to be completed using the UI.
             except_elements (list, optional): Elements to be excluded from consideration.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            JSON response with the determined action and target element.
+            _Action with the determined action and target element.
         """
         try:
             print('--- Check UI Action and Target Element ---')
@@ -110,8 +118,15 @@ class _TaskUIActionChecker:
             gui_task_action = json.loads(gui_task_action)
             gui_task_action['Element'] = int(gui_task_action['Element'])
 
-            print(gui_task_action)
-            return gui_task_action
+            if gui_task_action.get("Input Text") is None:
+                action = _Action(step_id, gui_task_action["Action"], gui_task_action["Element"],
+                                 gui_task_action["Description"], "None", gui_task_action["Reason"])
+            else:
+                action = _Action(step_id, gui_task_action["Action"], gui_task_action["Element"],
+                                 gui_task_action["Description"], gui_task_action["Input Text"],
+                                 gui_task_action["Reason"])
+            print(action)
+            return action
         except Exception as e:
             raise e
 

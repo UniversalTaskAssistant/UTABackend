@@ -52,7 +52,7 @@ class SystemConnector:
         Returns:
             True if the keyboard is visible, False otherwise.
         """
-        return self.__adb_device.check_keyboard_active
+        return self.__adb_device.check_keyboard_active()
 
     def get_app_list_on_the_device(self):
         """

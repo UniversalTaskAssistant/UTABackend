@@ -1,5 +1,6 @@
 from ModelManagement import ModelManager
 import json
+from ._Relation import _Relation
 
 
 class _TaskUIRelationChecker:
@@ -28,16 +29,17 @@ class _TaskUIRelationChecker:
                              'Previous actions: {action_history}\n' \
                              'Excluded elements: {except_elements}'
 
-    def check_relation(self, gui, task, except_elements=None, printlog=False):
+    def check_relation(self, step_id, gui, task, except_elements=None, printlog=False):
         """
         Checks the relation between a given GUI and a task.
         Args:
+            step_id: id of step.
             gui: GUI object to be analyzed.
             task (str): The task for which the relation is to be checked.
             except_elements (list, optional): List of elements to exclude from consideration.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            Relation information between the GUI and the task.
+            _Relation between the GUI and the task.
         """
         try:
             print('--- Check UI and Task Relation ---')
@@ -58,8 +60,9 @@ class _TaskUIRelationChecker:
             gui_task_relation = self.__model_manager.create_text_conversation(conversation, printlog=printlog)['content']
             gui_task_relation = json.loads(gui_task_relation)
 
-            print(gui_task_relation)
-            return gui_task_relation
+            relation = _Relation(step_id, gui_task_relation['Relation'], gui_task_relation['Reason'])
+            print(relation)
+            return relation
         except Exception as e:
             raise e
 

@@ -87,14 +87,14 @@ class _Device:
         """
         Captures a screenshot of the current device screen.
         Args:
-            recur_time (int): A counter for recursion, to retry capturing the screenshot.
+            recur_time (int): A counter for recursion, to retry capturing the screenshot, must be in [0, 3).
         Returns:
             Binary data of the captured screenshot.
         """
-        assert recur_time < 3
+        assert 0 <= recur_time < 3
         screen = self.__adb_device.screencap()
         if recur_time and screen is None:
-            self.cap_screenshot(recur_time+1)
+            screen = self.cap_screenshot(recur_time-1)
         return screen
 
     def cap_current_ui_hierarchy(self):

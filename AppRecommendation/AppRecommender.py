@@ -79,14 +79,17 @@ class AppRecommender:
         Returns:
             A list of dictionaries with app titles and their summarized functionalities.
         """
-        if fuzzy:
-            app_list = self.search_apps_fuzzy(search_tar)[:max_return]
-            app_functions = [self.conclude_app_functionality(one_app) for one_app in app_list]
-            return [{'title': app_list[idx]['title'], 'function': one_func} for idx, one_func in app_functions]
-        else:
-            tar_app = self.search_app_by_name(search_tar)
-            app_function = self.conclude_app_functionality(tar_app)
-            return [{'title': tar_app['title'], 'function': app_function}]
+        try:
+            if fuzzy:
+                app_list = self.search_apps_fuzzy(search_tar)[:max_return]
+                app_functions = [self.conclude_app_functionality(one_app) for one_app in app_list]
+                return [{'title': app_list[idx]['title'], 'function': one_func} for idx, one_func in app_functions]
+            else:
+                tar_app = self.search_app_by_name(search_tar)
+                app_function = self.conclude_app_functionality(tar_app)
+                return [{'title': tar_app['title'], 'function': app_function}]
+        except Exception as e:
+            raise e
 
     def download_app(self, app_link):
         # need further discussion
