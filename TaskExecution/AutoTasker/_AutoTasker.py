@@ -1,6 +1,6 @@
 from . import _TaskUIActionChecker, _TaskUIRelationChecker
 from SystemConnection import SystemConnector
-from AppRecommendation import AppRecommender
+from ThirdPartyAppMangaement import ThirdPartyAppManager
 from UIProcessing import UIProcessor
 import time
 from ._Step import _AutoModeStep
@@ -14,7 +14,7 @@ class _AutoTasker:
         self.relation_checker = _TaskUIRelationChecker()
         self.action_checker = _TaskUIActionChecker()
         self.system_connector = SystemConnector()
-        self.app_recommender = AppRecommender()
+        self.app_recommender = ThirdPartyAppManager()
         self.ui_processor = UIProcessor()
 
     def reset_model_agents(self):

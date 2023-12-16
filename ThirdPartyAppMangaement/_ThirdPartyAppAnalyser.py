@@ -1,7 +1,7 @@
 from ModelManagement import ModelManager
 
 
-class _AppAnalyser:
+class _ThirdPartyAppAnalyser:
     def __init__(self, system_prompt=None, **kwargs):
         """
         Initializes the AppAnalyser.

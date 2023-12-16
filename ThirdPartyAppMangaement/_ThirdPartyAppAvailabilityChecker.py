@@ -3,7 +3,7 @@ from ModelManagement import ModelManager
 import json
 
 
-class _AppAvailabilityChecker:
+class _ThirdPartyAppAvailabilityChecker:
     def __init__(self, system_prompt=None, **kwargs):
         """
         Initializes the AppAvailabilityChecker.

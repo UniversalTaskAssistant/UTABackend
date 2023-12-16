@@ -1,11 +1,11 @@
-from . import _AppAnalyser, _AppAvailabilityChecker, _AppSearcher
+from . import _ThirdPartyAppAnalyser, _ThirdPartyAppAvailabilityChecker, _ThirdPartyAppSearcher
 
 
-class AppRecommender:
+class ThirdPartyAppManager:
     def __init__(self):
-        self.analyser = _AppAnalyser()
-        self.app_checker = _AppAvailabilityChecker()
-        self.searcher = _AppSearcher()
+        self.analyser = _ThirdPartyAppAnalyser()
+        self.app_checker = _ThirdPartyAppAvailabilityChecker()
+        self.searcher = _ThirdPartyAppSearcher()
 
     def search_app_by_name(self, app_name):
         """

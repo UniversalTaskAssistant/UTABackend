@@ -1,7 +1,7 @@
 from . import _GooglePlay
 
 
-class _AppSearcher:
+class _ThirdPartyAppSearcher:
     def __init__(self):
         self.__googleplay = _GooglePlay()
 
