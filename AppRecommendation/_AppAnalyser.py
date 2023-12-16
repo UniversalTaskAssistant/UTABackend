@@ -10,7 +10,7 @@ class _AppAnalyser:
             **kwargs: Additional keyword arguments for text model initialization.
         """
         self.__model_manager = ModelManager()
-        self.__model_manager.initialize_text_model(system_prompt=system_prompt, **kwargs)
+        self.__model_manager.initialize_llm_model("app_analyser_model", system_prompt=system_prompt, **kwargs)
 
         # Initialize the base prompt template
         self.__base_prompt = 'Summarize the main tasks that the app {title} can perform for senior users ' \
@@ -35,12 +35,13 @@ class _AppAnalyser:
             Functionality of given app.
         """
         try:
-            self.__model_manager.reset_text_conversations()
+            self.__model_manager.reset_llm_conversations("app_analyser_model")
 
             conversation = self.__base_prompt.format(title=tar_app['title'], description=tar_app['description'],
                                                      printlog=printlog)
 
-            task_list = self.__model_manager.create_text_conversation(conversation, printlog=printlog)['content']
+            task_list = self.__model_manager.create_llm_conversation("app_analyser_model", conversation,
+                                                                     printlog=printlog)['content']
             task_list = task_list.replace('\n', '').split(';')
             task_list = task_list[:-1] if len(task_list[-1]) == 0 else task_list
             task_list = [t.replace('\n', '').replace(' -', '-') for t in task_list]

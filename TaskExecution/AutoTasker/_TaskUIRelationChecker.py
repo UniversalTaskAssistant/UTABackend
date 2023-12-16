@@ -12,7 +12,7 @@ class _TaskUIRelationChecker:
             **kwargs: Additional keyword arguments for text model initialization.
         """
         self.__model_manager = ModelManager()
-        self.__model_manager.initialize_text_model(system_prompt=system_prompt, **kwargs)
+        self.__model_manager.initialize_llm_model("task_ui_relation_checker", system_prompt=system_prompt, **kwargs)
 
         # Initialize the base prompt template
         self.__base_prompt = 'Given the task "{task}", analyze this UI hierarchy. Exclude elements with ' \
@@ -45,7 +45,7 @@ class _TaskUIRelationChecker:
             print('--- Check UI and Task Relation ---')
             # Format the prompt
             except_elements_str = ','.join(except_elements) if except_elements else ''
-            action_history_str = str(self.__model_manager.get_text_conversations())
+            action_history_str = str(self.__model_manager.get_llm_conversations("task_ui_relation_checker"))
             conversation = self.__base_prompt.format(task=task, except_elements=except_elements_str,
                                                      action_history=action_history_str)
 
@@ -55,9 +55,10 @@ class _TaskUIRelationChecker:
                                                 'elements.'},
                     {'role': 'user', 'content': str(gui.element_tree)}
                 ]
-                self.__model_manager.set_text_conversations(messages)
+                self.__model_manager.set_llm_conversations("task_ui_relation_checker", messages)
 
-            gui_task_relation = self.__model_manager.create_text_conversation(conversation, printlog=printlog)['content']
+            gui_task_relation = self.__model_manager.create_llm_conversation("task_ui_relation_checker", conversation,
+                                                                             printlog=printlog)['content']
             gui_task_relation = json.loads(gui_task_relation)
 
             relation = _Relation(step_id, gui_task_relation['Relation'], gui_task_relation['Reason'])
@@ -70,4 +71,4 @@ class _TaskUIRelationChecker:
         """
         Clear model conversation history records.
         """
-        self.__model_manager.reset_text_conversations()
+        self.__model_manager.reset_llm_conversations("task_ui_relation_checker")

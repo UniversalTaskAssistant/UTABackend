@@ -13,7 +13,8 @@ class _AppAvailabilityChecker:
         self.__system_connector = SystemConnector()
 
         self.__model_manager = ModelManager()
-        self.__model_manager.initialize_text_model(system_prompt=system_prompt, **kwargs)
+        self.__model_manager.initialize_llm_model("app_availability_checker_model", system_prompt=system_prompt,
+                                                  **kwargs)
 
         # Initialize the base prompt template
         self.__base_prompt = 'Identify the app related to the task "{task}". Consider the following apps: ' \
@@ -54,7 +55,7 @@ class _AppAvailabilityChecker:
             JSON data with related app information.
         """
         try:
-            self.__model_manager.reset_text_conversations()
+            self.__model_manager.reset_llm_conversations("app_availability_checker_model")
 
             if app_list is None:
                 app_list = self.get_available_apps()
@@ -67,7 +68,8 @@ class _AppAvailabilityChecker:
             conversation = self.__base_prompt.format(task=task, app_list='; '.join(app_list),
                                                      exp_apps=except_apps_str)
 
-            related_apps = self.__model_manager.create_text_conversation(conversation, printlog=printlog)['content']
+            related_apps = self.__model_manager.create_llm_conversation("app_availability_checker_model", conversation,
+                                                                        printlog=printlog)['content']
             related_apps = json.loads(related_apps)
             print(related_apps)
             return related_apps

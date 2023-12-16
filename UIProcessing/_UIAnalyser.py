@@ -8,6 +8,7 @@ from ModelManagement.ModelManager import ModelManager
 class _UIAnalyser:
     def __init__(self):
         self.__model = ModelManager()
+        self.__model.initialize_vision_model()
 
     '''
     *******************

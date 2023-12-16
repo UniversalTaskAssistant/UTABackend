@@ -12,7 +12,7 @@ class _TaskUIActionChecker:
             **kwargs: Additional keyword arguments for text model initialization.
         """
         self.__model_manager = ModelManager()
-        self.__model_manager.initialize_text_model(system_prompt=system_prompt, **kwargs)
+        self.__model_manager.initialize_llm_model("task_ui_action_checker", system_prompt=system_prompt, **kwargs)
 
         # Initialize the base prompt template
         self.__action_prompt = 'Determine the appropriate action for completing the task "{task}" ' \
@@ -60,7 +60,7 @@ class _TaskUIActionChecker:
         try:
             print('--- Check Any Action to Go Back to Related UI ---')
             if reset_history:
-                self.__model_manager.reset_text_conversations()
+                self.__model_manager.reset_llm_conversations("task_ui_action_checker")
 
             conversation = self.__back_prompt.format(task=task)
 
@@ -70,9 +70,9 @@ class _TaskUIActionChecker:
                                                 'elements.'},
                     {'role': 'user', 'content': str(gui.element_tree)}
                 ]
-                self.__model_manager.set_text_conversations(messages)
+                self.__model_manager.set_llm_conversations("task_ui_action_checker", messages)
 
-            go_back_availability = self.__model_manager.create_text_conversation(conversation,
+            go_back_availability = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation,
                                                                                  printlog=printlog)['content']
             go_back_availability = json.loads(go_back_availability)
             print(go_back_availability)
@@ -102,7 +102,7 @@ class _TaskUIActionChecker:
             print('--- Check UI Action and Target Element ---')
             # Format the prompt
             except_elements_str = ','.join(except_elements) if except_elements else ''
-            action_history_str = str(self.__model_manager.get_text_conversations())
+            action_history_str = str(self.__model_manager.get_llm_conversations("task_ui_action_checker"))
             conversation = self.__action_prompt.format(task=task, except_elements=except_elements_str,
                                                      action_history=action_history_str)
 
@@ -112,9 +112,10 @@ class _TaskUIActionChecker:
                                                 'elements.'},
                     {'role': 'user', 'content': str(gui.element_tree)}
                 ]
-                self.__model_manager.set_text_conversations(messages)
+                self.__model_manager.set_llm_conversations("task_ui_action_checker", messages)
 
-            gui_task_action = self.__model_manager.create_text_conversation(conversation, printlog=printlog)['content']
+            gui_task_action = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation,
+                                                                           printlog=printlog)['content']
             gui_task_action = json.loads(gui_task_action)
             gui_task_action['Element'] = int(gui_task_action['Element'])
 
@@ -134,4 +135,4 @@ class _TaskUIActionChecker:
         """
         Clear model conversation history records.
         """
-        self.__model_manager.reset_text_conversations()
+        self.__model_manager.reset_llm_conversations("task_ui_action_checker")
