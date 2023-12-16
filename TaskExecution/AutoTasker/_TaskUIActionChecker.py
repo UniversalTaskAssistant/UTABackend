@@ -45,12 +45,12 @@ class _TaskUIActionChecker:
                              '"Description": "Click on the \'Back\' button"}} or {{"Can": "No", "Element": "None", ' \
                              '"Reason": "No back button present", "Description": "None"}}.'
 
-    def check_go_back_availability(self, step_id, gui, task, reset_history=False, printlog=False):
+    def check_go_back_availability(self, step_id, ui, task, reset_history=False, printlog=False):
         """
         Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
         Args:
            step_id: id of the step.
-           gui: The current GUI object.
+           ui: The current ui object.
            task (str): The task for which back navigation is being checked.
            reset_history (bool): If True, resets the conversation history in the model manager.
            printlog (bool): If True, enables logging of outputs.
@@ -64,11 +64,11 @@ class _TaskUIActionChecker:
 
             conversation = self.__back_prompt.format(task=task)
 
-            if gui:
+            if ui:
                 messages = [
                     {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and '
                                                 'elements.'},
-                    {'role': 'user', 'content': str(gui.element_tree)}
+                    {'role': 'user', 'content': str(ui.element_tree)}
                 ]
                 self.__model_manager.set_llm_conversations("task_ui_action_checker", messages)
 
@@ -86,12 +86,12 @@ class _TaskUIActionChecker:
         except Exception as e:
             raise e
 
-    def check_action(self, step_id, gui, task, except_elements=None, printlog=False):
+    def check_action(self, step_id, ui, task, except_elements=None, printlog=False):
         """
         Determines the appropriate action and target element in the UI for a given task.
         Args:
             step_id: id of the step.
-            gui: The current GUI object.
+            ui: The current ui object.
             task (str): The task to be completed using the UI.
             except_elements (list, optional): Elements to be excluded from consideration.
             printlog (bool): If True, enables logging of outputs.
@@ -106,26 +106,26 @@ class _TaskUIActionChecker:
             conversation = self.__action_prompt.format(task=task, except_elements=except_elements_str,
                                                      action_history=action_history_str)
 
-            if gui:
+            if ui:
                 messages = [
                     {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and '
                                                 'elements.'},
-                    {'role': 'user', 'content': str(gui.element_tree)}
+                    {'role': 'user', 'content': str(ui.element_tree)}
                 ]
                 self.__model_manager.set_llm_conversations("task_ui_action_checker", messages)
 
-            gui_task_action = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation,
+            ui_task_action = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation,
                                                                            printlog=printlog)['content']
-            gui_task_action = json.loads(gui_task_action)
-            gui_task_action['Element'] = int(gui_task_action['Element'])
+            ui_task_action = json.loads(ui_task_action)
+            ui_task_action['Element'] = int(ui_task_action['Element'])
 
-            if gui_task_action.get("Input Text") is None:
-                action = _Action(step_id, gui_task_action["Action"], gui_task_action["Element"],
-                                 gui_task_action["Description"], "None", gui_task_action["Reason"])
+            if ui_task_action.get("Input Text") is None:
+                action = _Action(step_id, ui_task_action["Action"], ui_task_action["Element"],
+                                 ui_task_action["Description"], "None", ui_task_action["Reason"])
             else:
-                action = _Action(step_id, gui_task_action["Action"], gui_task_action["Element"],
-                                 gui_task_action["Description"], gui_task_action["Input Text"],
-                                 gui_task_action["Reason"])
+                action = _Action(step_id, ui_task_action["Action"], ui_task_action["Element"],
+                                 ui_task_action["Description"], ui_task_action["Input Text"],
+                                 ui_task_action["Reason"])
             print(action)
             return action
         except Exception as e:

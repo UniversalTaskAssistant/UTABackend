@@ -112,65 +112,65 @@ class SystemConnector:
         """
         return self.__adb_device.get_current_package_and_activity_name()
 
-    def click_screen(self, gui, element, show=False):
+    def click_screen(self, ui, element, show=False):
         """
-        Simulates a tap on a specified element of the GUI.
+        Simulates a tap on a specified element of the UI.
         Args:
-            gui: GUI object containing elements.
-            element: The key for the element in the GUI to tap.
+            ui: UI object containing elements.
+            element: The key for the element in the UI to tap.
             show (bool): If True, displays the tap visually.
         """
-        self.__adb_device.click_screen(gui, element, show)
+        self.__adb_device.click_screen(ui, element, show)
 
-    def long_press_screen(self, gui, element, show=False):
+    def long_press_screen(self, ui, element, show=False):
         """
-        Simulates a long press on a specified element of the GUI.
+        Simulates a long press on a specified element of the UI.
         Args:
-            gui: GUI object containing elements.
-            element: The key for the element in the GUI to long press.
+            ui: UI object containing elements.
+            element: The key for the element in the UI to long press.
             show (bool): If True, displays the long press visually.
         """
-        self.__adb_device.long_press_screen(gui, element, show)
+        self.__adb_device.long_press_screen(ui, element, show)
 
-    def up_scroll_screen(self, gui, element, show=False):
+    def up_scroll_screen(self, ui, element, show=False):
         """
-        Simulates an upward scroll on a specified element of the GUI.
+        Simulates an upward scroll on a specified element of the UI.
         Args:
-            gui: GUI object containing elements.
-            element: The key for the element in the GUI to scroll up.
+            ui: UI object containing elements.
+            element: The key for the element in the UI to scroll up.
             show (bool): If True, displays the scroll action visually.
         """
-        self.__adb_device.up_scroll_screen(gui, element, show)
+        self.__adb_device.up_scroll_screen(ui, element, show)
 
-    def down_scroll_screen(self, gui, element, show=False):
+    def down_scroll_screen(self, ui, element, show=False):
         """
-        Simulates a downward scroll on a specified element of the GUI.
+        Simulates a downward scroll on a specified element of the UI.
         Args:
-            gui: GUI object containing elements.
-            element: The key for the element in the GUI to scroll down.
+            ui: UI object containing elements.
+            element: The key for the element in the UI to scroll down.
             show (bool): If True, displays the scroll action visually.
         """
-        self.__adb_device.down_scroll_screen(gui, element, show)
+        self.__adb_device.down_scroll_screen(ui, element, show)
 
-    def right_swipe_screen(self, gui, element, show=False):
+    def right_swipe_screen(self, ui, element, show=False):
         """
-        Simulates a right swipe on a specified element of the GUI.
+        Simulates a right swipe on a specified element of the UI.
         Args:
-            gui: GUI object containing elements.
-            element: The key for the element in the GUI to swipe right.
+            ui: UI object containing elements.
+            element: The key for the element in the UI to swipe right.
             show (bool): If True, displays the swipe action visually.
         """
-        self.__adb_device.right_swipe_screen(gui, element, show)
+        self.__adb_device.right_swipe_screen(ui, element, show)
 
-    def left_swipe_screen(self, gui, element, show=False):
+    def left_swipe_screen(self, ui, element, show=False):
         """
-        Simulates a left swipe on a specified element of the GUI.
+        Simulates a left swipe on a specified element of the UI.
         Args:
-            gui: GUI object containing elements.
-            element: The key for the element in the GUI to swipe left.
+            ui: UI object containing elements.
+            element: The key for the element in the UI to swipe left.
             show (bool): If True, displays the swipe action visually.
         """
-        self.__adb_device.left_swipe_screen(gui, element, show)
+        self.__adb_device.left_swipe_screen(ui, element, show)
 
     def input_text(self, text):
         """
