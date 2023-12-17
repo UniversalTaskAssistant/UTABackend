@@ -7,9 +7,15 @@ from ._Step import _AutoModeStep
 
 
 class _AutoTasker:
-    def __init__(self):
+    def __init__(self, img_path, xml_path, ui_resize, output_dir, **kwargs):
         """
-        Initializes the AutoTasker.
+        Initializes the AutoTasker which automates UI interactions based on task requirements.
+        Args:
+            img_path (str): Path to save the captured screenshot.
+            xml_path (str): Path to save the UI hierarchy XML.
+            ui_resize (tuple): Dimensions to resize UI images.
+            output_dir (str): Directory for output data.
+            **kwargs: Additional keyword arguments.
         """
         self.relation_checker = _TaskUIRelationChecker()
         self.action_checker = _TaskUIActionChecker()
@@ -17,34 +23,62 @@ class _AutoTasker:
         self.app_recommender = ThirdPartyAppManager()
         self.ui_processor = UIProcessor()
 
+        self.system_connector.connect_device()
+
+        self.img_path = img_path
+        self.xml_path = xml_path
+        self.ui_resize = ui_resize
+        self.output_dir = output_dir
+
     def reset_model_agents(self):
+        """
+        Resets the internal state of model agents used for UI relation and action checking.
+        """
         self.relation_checker.reset_ui_relation_checker()
         self.action_checker.reset_ui_action_checker()
 
     def automate_task(self, step_id, task, except_apps=None, printlog=False, show_operation=False, related_app_max_try=3):
-        step = _AutoModeStep(step_id)
+        """
+        Automates a task based on the current UI and task description.
+        Args:
+            step_id (int): Identifier for the current step.
+            task (str): Description of the task to be automated.
+            except_apps (list, optional): Apps to be excluded.
+            printlog (bool): Enables logging if True.
+            show_operation (bool): Shows UI operation if True.
+            related_app_max_try (int): Max attempts to launch related apps.
+        Returns:
+            Tuple: Step information and status message.
+        """
+        step = _AutoModeStep(step_id)  # Create a new step with the given step_id
 
-        ui = self.ui_processor.process_ui()
-        step.set_attributes(ui_data=ui)
+        ui = self.__capture_and_analyse_ui()  # Capture the current UI and analyze it for further processing
+        step.set_attributes(ui_data=ui)  # Assign UI data to the step
 
-        relation = self.relation_checker.check_relation(step_id, ui, task, except_apps, printlog)
+        relation = self.relation_checker.check_relation(step_id, ui, task, except_apps, printlog)  # Check the
+        # relationship of the current UI with the task
         step.set_attributes(relation=relation)
 
         if relation['Relation'] == 'Completed':
+            # If task is already completed
             print('[- Task is Completed -]')
             return step, "Task is completed"
         elif relation['Relation'] == 'Unrelated':
+            # Check for a back navigation possibility if current UI is unrelated to the task
             back_availability_action = self.action_checker.check_go_back_availability(step_id, ui, task,
                                                                                 reset_history=True, printlog=printlog)
             if back_availability_action.action.lower() == 'click':
+                # Execute the recommended back navigation action
                 self.execute_ui_operation(back_availability_action, ui, show_operation)
                 step.set_attributes(recommend_action=back_availability_action, is_go_back=True)
                 return step, "Enter next turn"
             else:
+                # If back navigation is not possible, look for related apps
                 step.set_attributes(recommend_action=back_availability_action)
                 excepted_related_apps = [self.app_recommender.get_package_name()]
                 device_app_list = self.system_connector.get_app_list_on_the_device()
 
+                # Try to find and launch a related app
                 for i in range(related_app_max_try):
                     rel_app = self.app_recommender.check_related_apps(task, app_list=device_app_list,
                                                                   except_apps=excepted_related_apps, printlog=printlog)
@@ -59,12 +93,40 @@ class _AutoTasker:
                             excepted_related_apps.append(rel_app)
                 return step, "Failed to launch related apps within max attempts"
         else:
+            # If the relation is neither completed nor unrelated
+            # Check for an action to perform in the current UI
             action = self.action_checker.check_action(step_id, ui, task, printlog=printlog)
             self.execute_ui_operation(action, ui, show_operation)
             step.set_attributes(recommend_action=action)
             return step, "Enter next turn"
 
+    def __capture_and_analyse_ui(self):
+        """
+        Captures the current UI and processes it for automation.
+        Returns:
+            Processed UI data.
+        """
+        screenshot = self.system_connector.cap_screenshot()
+        vh = self.system_connector.cap_current_ui_hierarchy()
+
+        self.system_connector.save_xml(vh, self.xml_path)
+        self.system_connector.save_img(screenshot, self.img_path)
+
+        ui_data = self.ui_processor.load_ui_data(self.img_path, self.xml_path, self.ui_resize, self.output_dir)
+        ui = self.ui_processor.process_ui(ui_data)
+        return ui
+
     def execute_ui_operation(self, action, ui, show=False, waiting_time=2):
+        """
+        Executes a UI operation based on the recommended action.
+        Args:
+            action (dict): Action to be performed.
+            ui: The UI object on which the action is to be performed.
+            show (bool): Shows the operation if True.
+            waiting_time (int): Time to wait after performing the action.
+        Raises:
+            ValueError: If an unexpected action is encountered.
+        """
         element = ui.elements[action['Element']]
         if action['Action'].lower() == 'click':
             self.system_connector.click_screen(ui, element, show)

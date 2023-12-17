@@ -1,2 +1,3 @@
 from ._TaskUIRelationChecker import _TaskUIRelationChecker
 from ._TaskUIActionChecker import _TaskUIActionChecker
+from ._AutoTasker import _AutoTasker

@@ -1,6 +1,7 @@
 from ppadb.client import Client as AdbClient
 import time
 import cv2
+import xmltodict
 
 
 class _Device:
@@ -108,6 +109,7 @@ class _Device:
 
         # Read the content of the dumped XML file directly from the device
         xml_content = self.__adb_device.shell('cat /sdcard/window_dump.xml')
+        xml_content = xmltodict.parse(xml_content)
         return xml_content
 
     def get_device(self):
