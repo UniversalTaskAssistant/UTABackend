@@ -15,6 +15,14 @@ class _TaskClassifier:
                              'Example: {"Task Type": "1. General Inquiry", "Explanation": "The task is an inquiry that has nothing to do with the system or app functions and can be answered through searching on the Internet"}'
 
     def classify_task(self, task, printlog=False):
+        '''
+        Clarify task to be clear to complete
+        Args:
+            task (string): The user's task
+            printlog (bool): True to print the intermediate log
+        Returns:
+            LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
+        '''
         try:
             self.__model_manager.reset_llm_conversations("task_classifier")
             message = self.__base_prompt.format(task=task)

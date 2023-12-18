@@ -12,6 +12,15 @@ class _TaskClarifier:
                              'Example: {"Clear": "True", "Question": "None"} or {"Clear": "False", "Question": "Do you want to search for answers on the browser or through certain app?"}'
 
     def clarify_task(self, task, user_message=None, printlog=False):
+        '''
+        Clarify task to be clear to complete
+        Args:
+            task (string): The user's task
+            user_message (string): The user's feedback
+            printlog (bool): True to print the intermediate log
+        Returns:
+            LLM answer (dict): {"Clear": "True", "Question": "None"}
+        '''
         try:
             if not user_message:
                 self.__model_manager.reset_llm_conversations("task_interpreter")

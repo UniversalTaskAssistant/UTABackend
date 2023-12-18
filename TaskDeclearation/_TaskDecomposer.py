@@ -13,6 +13,14 @@ class _TaskDecomposer:
                              'Example: {"Decompose": "True", "Sub-tasks":["Login to Facebook", "Send message to my dad on Facebook"], "Explanation": "This given task contains two independent subtasks that should be completed one by one."}'
 
     def decompose_task(self, task, printlog=False):
+        '''
+        Clarify task to be clear to complete
+        Args:
+            task (string): The user's task
+            printlog (bool): True to print the intermediate log
+        Returns:
+            LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
+        '''
         try:
             self.__model_manager.reset_llm_conversations("task_decomposer")
             message = self.__base_prompt.format(task=task)
