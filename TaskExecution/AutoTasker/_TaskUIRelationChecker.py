@@ -29,11 +29,10 @@ class _TaskUIRelationChecker:
                              'Previous actions: {action_history}\n' \
                              'Excluded elements: {except_elements}'
 
-    def check_relation(self, step_id, ui, task, except_elements=None, printlog=False):
+    def check_relation(self, ui, task, except_elements=None, printlog=False):
         """
         Checks the relation between a given ui and a task.
         Args:
-            step_id: id of step.
             ui: ui object to be analyzed.
             task (str): The task for which the relation is to be checked.
             except_elements (list, optional): List of elements to exclude from consideration.
@@ -57,11 +56,10 @@ class _TaskUIRelationChecker:
                 ]
                 self.__model_manager.set_llm_conversations("task_ui_relation_checker", messages)
 
-            ui_task_relation = self.__model_manager.create_llm_conversation("task_ui_relation_checker", conversation,
-                                                                             printlog=printlog)['content']
+            ui_task_relation = self.__model_manager.create_llm_conversation("task_ui_relation_checker", conversation, printlog=printlog)['content']
             ui_task_relation = json.loads(ui_task_relation)
 
-            relation = _Relation(step_id, ui_task_relation['Relation'], ui_task_relation['Reason'])
+            relation = _Relation(ui_task_relation['Relation'], ui_task_relation['Reason'])
             print(relation)
             return relation
         except Exception as e:

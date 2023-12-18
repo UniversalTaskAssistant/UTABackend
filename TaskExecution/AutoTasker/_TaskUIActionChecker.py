@@ -45,11 +45,10 @@ class _TaskUIActionChecker:
                              '"Description": "Click on the \'Back\' button"}} or {{"Can": "No", "Element": "None", ' \
                              '"Reason": "No back button present", "Description": "None"}}.'
 
-    def check_go_back_availability(self, step_id, ui, task, reset_history=False, printlog=False):
+    def check_go_back_availability(self, ui, task, reset_history=False, printlog=False):
         """
         Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
         Args:
-           step_id: id of the step.
            ui: The current ui object.
            task (str): The task for which back navigation is being checked.
            reset_history (bool): If True, resets the conversation history in the model manager.
@@ -66,31 +65,26 @@ class _TaskUIActionChecker:
 
             if ui:
                 messages = [
-                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and '
-                                                'elements.'},
+                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
                     {'role': 'user', 'content': str(ui.element_tree)}
                 ]
                 self.__model_manager.set_llm_conversations("task_ui_action_checker", messages)
 
-            go_back_availability = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation,
-                                                                                 printlog=printlog)['content']
+            go_back_availability = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation, printlog=printlog)['content']
             go_back_availability = json.loads(go_back_availability)
             print(go_back_availability)
 
             if go_back_availability['Can'].lower() == 'yes':
-                return _Action(step_id, "Click", go_back_availability["Element"],
-                                 go_back_availability["Description"], "None", go_back_availability["Reason"])
+                return _Action("Click", go_back_availability["Element"], go_back_availability["Description"], "None", go_back_availability["Reason"])
             else:
-                return _Action(step_id, "Find Relevant Apps", go_back_availability["Element"],
-                                 go_back_availability["Description"], "None", go_back_availability["Reason"])
+                return _Action("Find Relevant Apps", go_back_availability["Element"], go_back_availability["Description"], "None", go_back_availability["Reason"])
         except Exception as e:
             raise e
 
-    def check_action(self, step_id, ui, task, except_elements=None, printlog=False):
+    def check_action(self, ui, task, except_elements=None, printlog=False):
         """
         Determines the appropriate action and target element in the UI for a given task.
         Args:
-            step_id: id of the step.
             ui: The current ui object.
             task (str): The task to be completed using the UI.
             except_elements (list, optional): Elements to be excluded from consideration.
@@ -103,27 +97,24 @@ class _TaskUIActionChecker:
             # Format the prompt
             except_elements_str = ','.join(except_elements) if except_elements else ''
             action_history_str = str(self.__model_manager.get_llm_conversations("task_ui_action_checker"))
-            conversation = self.__action_prompt.format(task=task, except_elements=except_elements_str,
-                                                     action_history=action_history_str)
+            conversation = self.__action_prompt.format(task=task, except_elements=except_elements_str, action_history=action_history_str)
 
             if ui:
                 messages = [
-                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and '
-                                                'elements.'},
+                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
                     {'role': 'user', 'content': str(ui.element_tree)}
                 ]
                 self.__model_manager.set_llm_conversations("task_ui_action_checker", messages)
 
-            ui_task_action = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation,
-                                                                           printlog=printlog)['content']
+            ui_task_action = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation, printlog=printlog)['content']
             ui_task_action = json.loads(ui_task_action)
             ui_task_action['Element'] = int(ui_task_action['Element'])
 
             if ui_task_action.get("Input Text") is None:
-                action = _Action(step_id, ui_task_action["Action"], ui_task_action["Element"],
+                action = _Action(ui_task_action["Action"], ui_task_action["Element"],
                                  ui_task_action["Description"], "None", ui_task_action["Reason"])
             else:
-                action = _Action(step_id, ui_task_action["Action"], ui_task_action["Element"],
+                action = _Action(ui_task_action["Action"], ui_task_action["Element"],
                                  ui_task_action["Description"], ui_task_action["Input Text"],
                                  ui_task_action["Reason"])
             print(action)
