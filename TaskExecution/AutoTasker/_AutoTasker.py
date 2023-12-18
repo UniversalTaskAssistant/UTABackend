@@ -48,21 +48,21 @@ class _AutoTasker:
             show_operation (bool): Shows UI operation if True.
             related_app_max_try (int): Max attempts to launch related apps.
         Returns:
-            Tuple: Step information and status message.
+            _Step: Step information.
         """
-        step = _AutoModeStep(step_id)  # Create a new step with the given step_id
+        step_record = _AutoModeStep(step_id)  # Create a new step with the given step_id
 
         ui = self.__capture_and_analyse_ui()  # Capture the current UI and analyze it for further processing
-        step.set_attributes(ui_data=ui)  # Assign UI data to the step
+        step_record.set_attributes(ui_data=ui)  # Assign UI data to the step
 
         relation = self.relation_checker.check_relation(step_id, ui, task, except_apps, printlog)  # Check the
         # relationship of the current UI with the task
-        step.set_attributes(relation=relation)
+        step_record.set_attributes(relation=relation)
 
         if relation['Relation'] == 'Completed':
             # If task is already completed
-            print('[- Task is Completed -]')
-            return step, "Task is completed"
+            step_record.set_attributes(execution_result="Task is completed.")
+            return step_record
         elif relation['Relation'] == 'Unrelated':
             # Check for a back navigation possibility if current UI is unrelated to the task
             back_availability_action = self.action_checker.check_go_back_availability(step_id, ui, task,
@@ -70,11 +70,12 @@ class _AutoTasker:
             if back_availability_action.action.lower() == 'click':
                 # Execute the recommended back navigation action
                 self.execute_ui_operation(back_availability_action, ui, show_operation)
-                step.set_attributes(recommend_action=back_availability_action, is_go_back=True)
-                return step, "Enter next turn"
+                step_record.set_attributes(recommend_action=back_availability_action, is_go_back=True,
+                                           execution_result="Enter next turn.")
+                return step_record
             else:
                 # If back navigation is not possible, look for related apps
-                step.set_attributes(recommend_action=back_availability_action)
+                step_record.set_attributes(recommend_action=back_availability_action)
                 excepted_related_apps = [self.app_recommender.get_package_name()]
                 device_app_list = self.system_connector.get_app_list_on_the_device()
 
@@ -83,22 +84,25 @@ class _AutoTasker:
                     rel_app = self.app_recommender.check_related_apps(task, app_list=device_app_list,
                                                                   except_apps=excepted_related_apps, printlog=printlog)
                     if rel_app == 'None':
-                        return step, "No related app can be found"
+                        step_record.set_attributes(execution_result="No related app can be found.")
+                        return step_record
                     else:
                         self.system_connector.launch_app(rel_app)
                         cur_app, cur_activity = self.system_connector.get_current_package_and_activity_name().values()
                         if cur_app in rel_app:
-                            return step, "Enter next turn"
+                            step_record.set_attributes(execution_result="Enter next turn.")
+                            return step_record
                         else:
                             excepted_related_apps.append(rel_app)
-                return step, "Failed to launch related apps within max attempts"
+                step_record.set_attributes(execution_result="Failed to launch related apps within max attempts.")
+                return step_record
         else:
             # If the relation is neither completed nor unrelated
             # Check for an action to perform in the current UI
             action = self.action_checker.check_action(step_id, ui, task, printlog=printlog)
             self.execute_ui_operation(action, ui, show_operation)
-            step.set_attributes(recommend_action=action)
-            return step, "Enter next turn"
+            step_record.set_attributes(recommend_action=action, execution_result="Enter next turn.")
+            return step_record
 
     def __capture_and_analyse_ui(self):
         """

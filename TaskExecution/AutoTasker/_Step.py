@@ -17,6 +17,7 @@ class _AutoModeStep:
         self.recommend_action = kwargs["recommend_action"] if kwargs.get("recommend_action") else "None"
         self.relation = kwargs["relation"] if kwargs.get("relation") else "None"
         self.ui_data = kwargs["ui_data"] if kwargs.get("ui_data") else "None"
+        self.execution_result: str = "None"
 
     def __dict__(self):
         return {
@@ -25,11 +26,13 @@ class _AutoModeStep:
             'recommend_action': self.recommend_action,
             'relation': self.relation,
             'ui_data': self.ui_data,
+            'execution_result': self.execution_result,
         }
 
     def __str__(self):
         return f"_Action(step_id={self.step_id}, is_go_back={self.is_go_back}, " \
-            f"recommend_action={self.recommend_action}, relation={self.relation}, ui_data={self.ui_data})"
+            f"recommend_action={self.recommend_action}, relation={self.relation}, ui_data={self.ui_data}" \
+            f"execution_result={self.execution_result})"
 
     def set_attributes(self, **kwargs):
         """

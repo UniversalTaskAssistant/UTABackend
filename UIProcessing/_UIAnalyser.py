@@ -2,7 +2,7 @@ import time
 import json
 import copy
 
-from ModelManagement.ModelManager import ModelManager
+from ModelManagement import ModelManager
 
 
 class _UIAnalyser:

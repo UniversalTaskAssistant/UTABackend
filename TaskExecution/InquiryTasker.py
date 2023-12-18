@@ -17,7 +17,8 @@ class InquiryTasker:
             history = self.__model_manager.get_llm_conversations("inquiry_tasker_model")
             return {'answer': answer, 'history': history}
         except Exception as e:
-            raise e
+            print('error:', e)
+            return False
 
         # answer = self.event_manager.trigger_event("create_llm_conversation", identifier='inquiry_tasker_model',
         #         #                                     conversation=conversation)
