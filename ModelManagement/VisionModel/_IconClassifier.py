@@ -9,8 +9,8 @@ from PIL import Image
 
 
 class _IconClassifier:
-    def __init__(self, model_path='ModelManagement/VisionModel/icon_classifier_model_results/best-0.93.pt', class_path=
-    'ModelManagement/VisionModel/icon_classifier_model_results/iconModel_labels.json'):
+    def __init__(self, model_path='C:/Mulong/Code/UTABackend/ModelManagement/VisionModel/icon_classifier_model_results/best-0.93.pt',
+                 class_path='C:/Mulong/Code/UTABackend/ModelManagement/VisionModel/icon_classifier_model_results/iconModel_labels.json'):
         # Setting the device to GPU if available, else CPU
         self.__device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
