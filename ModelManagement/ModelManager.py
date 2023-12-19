@@ -16,7 +16,7 @@ class ModelManager:
         """
         self.__vision_model = _VisionModel()
 
-    def detect_ocr(self, img_path):
+    def detect_text_ocr(self, img_path):
         """
         Sends an OCR request to the Google Cloud Vision API.
         Args:
@@ -25,7 +25,7 @@ class ModelManager:
             The detected text annotations or None if no text is found.
         """
         assert self.__vision_model is not None
-        return self.__vision_model.detect_ocr(img_path)
+        return self.__vision_model.detect_text_ocr(img_path)
 
     def classify_icons(self, imgs):
         """

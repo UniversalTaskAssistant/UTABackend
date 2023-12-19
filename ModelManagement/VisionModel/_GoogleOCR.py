@@ -220,7 +220,7 @@ class _GoogleOCR:
         except Exception as e:
             raise e
 
-    def detect_text_oct(self, img_path, output_dir='data/output', show=False, save=False, shrink_size=False):
+    def detect_text_ocr(self, img_path, output_dir='data/output', show=False, save=False, shrink_size=False):
         '''
         Detect texts on the image using google ocr
         Args:
@@ -258,5 +258,5 @@ class _GoogleOCR:
 
 if __name__ == '__main__':
     google = _GoogleOCR()
-    google.detect_text_oct(img_path='C:/Mulong/Code/UTABackend/data/0.png', output_dir='C:/Mulong/Code/UTABackend/data/ocr',
+    google.detect_text_ocr(img_path='C:/Mulong/Code/UTABackend/data/0.png', output_dir='C:/Mulong/Code/UTABackend/data/ocr',
                            shrink_size=True, save=True, show=True)

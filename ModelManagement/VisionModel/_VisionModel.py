@@ -7,7 +7,7 @@ class _VisionModel:
         self.__google_ocr = _GoogleOCR()
         self.__icon_classifier = _IconClassifier()
 
-    def detect_ocr(self, img_path):
+    def detect_text_ocr(self, img_path):
         """
         Sends an OCR request to the Google Cloud Vision API.
         Args:
@@ -15,7 +15,7 @@ class _VisionModel:
         Returns:
             The detected text annotations or None if no text is found.
         """
-        return self.__google_ocr.detect_ocr(img_path)
+        return self.__google_ocr.detect_text_ocr(img_path)
 
     def classify_icons(self, imgs):
         """
