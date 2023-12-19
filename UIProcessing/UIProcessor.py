@@ -1,13 +1,13 @@
 from DataStructures import _UIData
-from ._UIPreProcessor import _UIPreProcessor
-from ._UIAnalyser import _UIAnalyser
+from _UIPreProcessor import _UIPreProcessor
+from _UIAnalyser import _UIAnalyser
 
 
 class UIProcessor:
-    def __init__(self):
+    def __init__(self, model_manager):
         self.ui_data = None
         self.ui_preprocessor = _UIPreProcessor()
-        self.ui_analyser = _UIAnalyser()
+        self.ui_analyser = _UIAnalyser(model_manager)
 
     def load_ui_data(self, screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/app1'):
         '''
@@ -21,6 +21,7 @@ class UIProcessor:
             self.ui_data (UIData)
         '''
         self.ui_data = _UIData(screenshot_file, xml_file, ui_resize, output_dir)
+        return self.ui_data
 
     def ui_vh_xml_cvt_to_json(self, ui_data):
         '''
@@ -85,3 +86,13 @@ class UIProcessor:
         self.ui_analysis_elements_description(ui_data)
         self.ui_build_element_tree(ui_data)
         ui_data.show_all_elements()
+
+
+if __name__ == '__main__':
+    from ModelManagement import ModelManager
+    model_mg = ModelManager()
+    model_mg.initialize_vision_model()
+
+    ui = UIProcessor(model_manager=model_mg)
+    ui_data = ui.load_ui_data(screenshot_file='C:/Mulong/Code/UTABackend/data/0.png', xml_file='C:/Mulong/Code/UTABackend/data/0.xml', ui_resize=(1080, 1920))
+    ui.process_ui()

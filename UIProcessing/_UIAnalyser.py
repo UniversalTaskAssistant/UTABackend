@@ -6,9 +6,8 @@ from ModelManagement import ModelManager
 
 
 class _UIAnalyser:
-    def __init__(self):
-        self.__model = ModelManager()
-        self.__model.initialize_vision_model()
+    def __init__(self, model_manager):
+        self.__model_manager = model_manager
 
     '''
     *******************
@@ -78,7 +77,7 @@ class _UIAnalyser:
                     ele['text'] += text['content']
 
         # google ocr detection for the GUI image
-        ui_data.ocr_text = self.__model.detect_ocr(img_path=ui_data.screenshot_file)
+        ui_data.ocr_text = self.__model_manager.detect_text_ocr(img_path=ui_data.screenshot_file)
         # merge text to elements according to position
         for element in ui_data.elements_leaves:
             if element['text'] == '':
@@ -98,7 +97,7 @@ class _UIAnalyser:
         for ele in elements:
             bound = ele['bounds']
             clips.append(ui_data.ui_screenshot[bound[1]: bound[3], bound[0]:bound[2]])
-        classes = self.__model.classify_icons(clips)
+        classes = self.__model_manager.classify_icons(clips)
         for i, ele in enumerate(elements):
             if classes[i][1] > 0.95:
                 ele['icon-cls'] = classes[i][0]
