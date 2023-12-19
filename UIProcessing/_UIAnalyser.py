@@ -2,8 +2,6 @@ import time
 import json
 import copy
 
-from ModelManagement import ModelManager
-
 
 class _UIAnalyser:
     def __init__(self, model_manager):

@@ -2,9 +2,9 @@ import json
 
 
 class _TaskClarifier:
-    def __init__(self, model_manager, system_prompt=None, **kwargs):
+    def __init__(self, model_identifier, model_manager):
+        self.__model_identifier = model_identifier
         self.__model_manager = model_manager
-        self.__model_manager.initialize_llm_model("task_clarify", system_prompt=system_prompt, **kwargs)
 
         self.__base_prompt = 'Do you think this user task "{task}" is clear enough to be completed on the smartphone?' \
                              'If the task is not clear enough, ask further question to gather more info and make the task clearly executable.' \
@@ -23,11 +23,11 @@ class _TaskClarifier:
         '''
         try:
             if not user_message:
-                self.__model_manager.reset_llm_conversations("task_interpreter")
+                self.__model_manager.reset_llm_conversations(self.__model_identifier)
                 message = self.__base_prompt.format(task=task)
             else:
                 message = user_message
-            clear = self.__model_manager.create_llm_conversation("task_interpreter", message, printlog=printlog)['content']
+            clear = self.__model_manager.create_llm_conversation(self.__model_identifier, message, printlog=printlog)['content']
             clear = json.loads(clear)
             print(clear)
         except Exception as e:

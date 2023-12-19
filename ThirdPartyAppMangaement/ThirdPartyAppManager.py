@@ -7,26 +7,26 @@ class ThirdPartyAppManager:
         self.__app_checker_dict = dict()
         self.__app_searcher = None
 
-    def initialize_app_analyser(self, model_identifier, model_manager):
+    def initialize_app_analyser(self, analyser_identifier, model_manager):
         """
         Initialize the app analyser with provided llm Model.
         Args:
-            model_identifier: name of the new initialized app analyser.
+            analyser_identifier: name of the new initialized app analyser.
             model_manager: ModelManager.
         """
-        assert model_identifier not in self.__app_analyser_dict
-        self.__app_analyser_dict[model_identifier] = _ThirdPartyAppAnalyser(model_identifier, model_manager)
+        assert analyser_identifier not in self.__app_analyser_dict
+        self.__app_analyser_dict[analyser_identifier] = _ThirdPartyAppAnalyser(analyser_identifier, model_manager)
 
-    def initialize_app_checker(self, model_identifier, model_manager, system_connector):
+    def initialize_app_checker(self, checker_identifier, model_manager, system_connector):
         """
         Initialize the app checker with provided llm Model and SystemConnector.
         Args:
-            model_identifier: name of the new initialized app checker.
+            checker_identifier: name of the new initialized app checker.
             model_manager: ModelManager.
             system_connector: SystemConnector.
         """
-        assert model_identifier not in self.__app_checker_dict
-        self.__app_checker_dict[model_identifier] = _ThirdPartyAppAvailabilityChecker(model_identifier, model_manager,
+        assert checker_identifier not in self.__app_checker_dict
+        self.__app_checker_dict[checker_identifier] = _ThirdPartyAppAvailabilityChecker(checker_identifier, model_manager,
                                                                                       system_connector)
 
     def initialize_app_searcher(self):

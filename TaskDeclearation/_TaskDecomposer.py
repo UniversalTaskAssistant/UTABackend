@@ -2,9 +2,9 @@ import json
 
 
 class _TaskDecomposer:
-    def __init__(self, model_manager, system_prompt=None, **kwargs):
+    def __init__(self, model_identifier, model_manager):
+        self.__model_identifier = model_identifier
         self.__model_manager = model_manager
-        self.__model_manager.initialize_llm_model("task_decomposer", system_prompt=system_prompt, **kwargs)
 
         self.__base_prompt = 'Some user tasks may actually contain multiple sub-tasks and cannot be completed straightforward.' \
                              'For example, "Login Facebook and send message to my dad." is actually composed of two independent tasks and should be decomposed to "Login to Facebook" and "Send message to my dad on Facebook".' \
@@ -22,9 +22,9 @@ class _TaskDecomposer:
             LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
         '''
         try:
-            self.__model_manager.reset_llm_conversations("task_decomposer")
+            self.__model_manager.reset_llm_conversations(self.__model_identifier)
             message = self.__base_prompt.format(task=task)
-            decomposition = self.__model_manager.create_llm_conversation("task_decomposer", message, printlog=printlog)['content']
+            decomposition = self.__model_manager.create_llm_conversation(self.__model_identifier, message, printlog=printlog)['content']
             decomposition = json.loads(decomposition)
             print(decomposition)
         except Exception as e:
