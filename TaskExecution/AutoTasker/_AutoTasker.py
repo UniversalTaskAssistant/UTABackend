@@ -37,7 +37,8 @@ class _AutoTasker:
         self.relation_checker.reset_ui_relation_checker()
         self.action_checker.reset_ui_action_checker()
 
-    def automate_task(self, step_id, task, except_apps=None, printlog=False, show_operation=False, related_app_max_try=3):
+    def automate_task(self, step_id, task, except_apps=None, printlog=False, show_operation=False,
+                      debug=False, related_app_max_try=3):
         """
         Automates a task based on the current UI and task description.
         Args:
@@ -70,12 +71,14 @@ class _AutoTasker:
             if back_availability_action.action.lower() == 'click':
                 # Execute the recommended back navigation action
                 self.execute_ui_operation(back_availability_action, ui, show_operation)
-                step_record.set_attributes(recommend_action=back_availability_action, is_go_back=True,
+                step_record.set_attributes(recommended_action=back_availability_action, is_go_back=True,
                                            execution_result="Enter next turn.")
+                if debug:
+                    step_record.annotate_ui_openation()
                 return step_record
             else:
                 # If back navigation is not possible, look for related apps
-                step_record.set_attributes(recommend_action=back_availability_action)
+                step_record.set_attributes(recommended_action=back_availability_action)
                 excepted_related_apps = [self.app_recommender.get_package_name()]
                 device_app_list = self.system_connector.get_app_list_on_the_device()
 
@@ -101,7 +104,9 @@ class _AutoTasker:
             # Check for an action to perform in the current UI
             action = self.action_checker.check_action(step_id, ui, task, printlog=printlog)
             self.execute_ui_operation(action, ui, show_operation)
-            step_record.set_attributes(recommend_action=action, execution_result="Enter next turn.")
+            step_record.set_attributes(recommended_action=action, execution_result="Enter next turn.")
+            if debug:
+                step_record.annotate_ui_openation()
             return step_record
 
     def __capture_and_analyse_ui(self):
