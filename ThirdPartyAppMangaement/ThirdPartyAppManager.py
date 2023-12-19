@@ -3,9 +3,37 @@ from . import _ThirdPartyAppAnalyser, _ThirdPartyAppAvailabilityChecker, _ThirdP
 
 class ThirdPartyAppManager:
     def __init__(self):
-        self.analyser = _ThirdPartyAppAnalyser()
-        self.app_checker = _ThirdPartyAppAvailabilityChecker()
-        self.searcher = _ThirdPartyAppSearcher()
+        self.__app_analyser_dict = dict()
+        self.__app_checker_dict = dict()
+        self.__app_searcher = None
+
+    def initialize_app_analyser(self, model_identifier, model_manager):
+        """
+        Initialize the app analyser with provided llm Model.
+        Args:
+            model_identifier: name of the new initialized app analyser.
+            model_manager: ModelManager.
+        """
+        assert model_identifier not in self.__app_analyser_dict
+        self.__app_analyser_dict[model_identifier] = _ThirdPartyAppAnalyser(model_identifier, model_manager)
+
+    def initialize_app_checker(self, model_identifier, model_manager, system_connector):
+        """
+        Initialize the app checker with provided llm Model and SystemConnector.
+        Args:
+            model_identifier: name of the new initialized app checker.
+            model_manager: ModelManager.
+            system_connector: SystemConnector.
+        """
+        assert model_identifier not in self.__app_checker_dict
+        self.__app_checker_dict[model_identifier] = _ThirdPartyAppAvailabilityChecker(model_identifier, model_manager,
+                                                                                      system_connector)
+
+    def initialize_app_searcher(self):
+        """
+        Initialize app searcher.
+        """
+        self.__app_searcher = _ThirdPartyAppSearcher()
 
     def search_app_by_name(self, app_name):
         """
@@ -15,7 +43,8 @@ class ThirdPartyAppManager:
         Returns:
             The most relevant app's information if found, otherwise None.
         """
-        return self.searcher.search_app_by_name(app_name)
+        assert self.__app_searcher is not None
+        return self.__app_searcher.search_app_by_name(app_name)
 
     def search_apps_fuzzy(self, disp):
         """
@@ -25,28 +54,32 @@ class ThirdPartyAppManager:
         Returns:
             A list of apps that are related to the search term.
         """
-        return self.searcher.search_apps_fuzzy(disp)
+        assert self.__app_searcher is not None
+        return self.__app_searcher.search_apps_fuzzy(disp)
 
-    def get_available_apps(self):
+    def get_available_apps(self, checker_identifier):
         """
         Retrieves a list of available applications on the device.
         Returns:
             List of app package names.
         """
-        return self.app_checker.get_available_apps()
+        assert checker_identifier in self.__app_checker_dict
+        return self.__app_checker_dict[checker_identifier].get_available_apps()
 
-    def get_package_name(self):
+    def get_package_name(self, checker_identifier):
         """
         Retrieves the package name of the currently active app on the device.
         Returns:
             Package name of the current app.
         """
-        return self.app_checker.get_package_name()
+        assert checker_identifier in self.__app_checker_dict
+        return self.__app_checker_dict[checker_identifier].get_package_name()
 
-    def check_related_apps(self, task, app_list=None, except_apps=None, printlog=False):
+    def check_related_apps(self, checker_identifier, task, app_list=None, except_apps=None, printlog=False):
         """
         Checks for apps related to a given task.
         Args:
+            checker_identifier: identifier of initialized checker
             task (str): The task for which related apps are to be found.
             app_list (list, optional): A list of apps to consider. If None, fetches from the device.
             except_apps (list, optional): Apps to exclude from consideration.
@@ -54,24 +87,28 @@ class ThirdPartyAppManager:
         Returns:
             JSON data with related app information.
         """
-        return self.app_checker.check_related_apps(task, app_list, except_apps, printlog)
+        assert checker_identifier in self.__app_checker_dict
+        return self.__app_checker_dict[checker_identifier].check_related_apps(task, app_list, except_apps, printlog)
 
-    def conclude_app_functionality(self, tar_app, printlog=False):
+    def conclude_app_functionality(self, analyser_identifier, tar_app, printlog=False):
         """
         Conclude the functionality of given app.
         Args:
+            analyser_identifier: identifier of initialized analyser
             tar_app: target app to be analyzed.
             printlog (bool): If True, enables logging of outputs.
         Returns:
             Functionality of given app.
         """
-        return self.analyser.conclude_app_functionality(tar_app, printlog)
+        assert analyser_identifier in self.__app_analyser_dict
+        return self.__app_analyser_dict[analyser_identifier].conclude_app_functionality(tar_app, printlog)
 
-    def recommend_apps(self, search_tar, fuzzy=False, max_return=5):
+    def recommend_apps(self, analyser_identifier, search_tar, fuzzy=False, max_return=5):
         """
         Recommends apps based on a search term and summarizes their functionalities.
 
         Args:
+            analyser_identifier: identifier of initialized analyser
             search_tar (str): The search term or target app name.
             fuzzy (bool): If True, performs a fuzzy search, returning multiple related apps.
             max_return (int): The maximum number of apps to return in a fuzzy search.
@@ -79,14 +116,17 @@ class ThirdPartyAppManager:
         Returns:
             A list of dictionaries with app titles and their summarized functionalities.
         """
+        assert analyser_identifier in self.__app_analyser_dict
+        assert self.__app_searcher is not None
+        
         try:
             if fuzzy:
                 app_list = self.search_apps_fuzzy(search_tar)[:max_return]
-                app_functions = [self.conclude_app_functionality(one_app) for one_app in app_list]
+                app_functions = [self.conclude_app_functionality(analyser_identifier, one_app) for one_app in app_list]
                 return [{'title': app_list[idx]['title'], 'function': one_func} for idx, one_func in app_functions]
             else:
                 tar_app = self.search_app_by_name(search_tar)
-                app_function = self.conclude_app_functionality(tar_app)
+                app_function = self.conclude_app_functionality(analyser_identifier, tar_app)
                 return [{'title': tar_app['title'], 'function': app_function}]
         except Exception as e:
             raise e

@@ -1,16 +1,15 @@
-from ModelManagement import ModelManager
 
 
 class _ThirdPartyAppAnalyser:
-    def __init__(self, system_prompt=None, **kwargs):
+    def __init__(self, model_identifier, model_manager):
         """
         Initializes the AppAnalyser.
         Args:
-            system_prompt (str, optional): Custom system prompt for the text model.
-            **kwargs: Additional keyword arguments for text model initialization.
+            model_identifier: Name of the text model.
+            model_manager: Initialised ModelManager used by this class.
         """
-        self.__model_manager = ModelManager()
-        self.__model_manager.initialize_llm_model("app_analyser_model", system_prompt=system_prompt, **kwargs)
+        self.__model_identifier = model_identifier
+        self.__model_manager = model_manager
 
         # Initialize the base prompt template
         self.__base_prompt = 'Summarize the main tasks that the app {title} can perform for senior users ' \
@@ -35,12 +34,12 @@ class _ThirdPartyAppAnalyser:
             Functionality of given app.
         """
         try:
-            self.__model_manager.reset_llm_conversations("app_analyser_model")
+            self.__model_manager.reset_llm_conversations(self.__model_identifier)
 
             conversation = self.__base_prompt.format(title=tar_app['title'], description=tar_app['description'],
                                                      printlog=printlog)
 
-            task_list = self.__model_manager.create_llm_conversation("app_analyser_model", conversation,
+            task_list = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation,
                                                                      printlog=printlog)['content']
             task_list = task_list.replace('\n', '').split(';')
             task_list = task_list[:-1] if len(task_list[-1]) == 0 else task_list

@@ -1,20 +1,15 @@
-from SystemConnection import SystemConnector
-from ModelManagement import ModelManager
 import json
 
 
 class _ThirdPartyAppAvailabilityChecker:
-    def __init__(self, system_prompt=None, **kwargs):
+    def __init__(self, model_identifier, model_manager, system_connector):
         """
         Initializes the AppAvailabilityChecker.
-        Creates instances of SystemConnector and ModelManager.
-        Sets up a base prompt template for checking app relevance.
+        Needs instances of SystemConnector and Initialised ModelManager.
         """
-        self.__system_connector = SystemConnector()
-
-        self.__model_manager = ModelManager()
-        self.__model_manager.initialize_llm_model("app_availability_checker_model", system_prompt=system_prompt,
-                                                  **kwargs)
+        self.__model_identifier = model_identifier
+        self.__system_connector = system_connector
+        self.__model_manager = model_manager
 
         # Initialize the base prompt template
         self.__base_prompt = 'Identify the app related to the task "{task}". Consider the following apps: ' \
@@ -55,7 +50,7 @@ class _ThirdPartyAppAvailabilityChecker:
             JSON data with related app information.
         """
         try:
-            self.__model_manager.reset_llm_conversations("app_availability_checker_model")
+            self.__model_manager.reset_llm_conversations(self.__model_identifier)
 
             if app_list is None:
                 app_list = self.get_available_apps()
@@ -68,7 +63,7 @@ class _ThirdPartyAppAvailabilityChecker:
             conversation = self.__base_prompt.format(task=task, app_list='; '.join(app_list),
                                                      exp_apps=except_apps_str)
 
-            related_apps = self.__model_manager.create_llm_conversation("app_availability_checker_model", conversation,
+            related_apps = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation,
                                                                         printlog=printlog)['content']
             related_apps = json.loads(related_apps)
             print(related_apps)
