@@ -3,7 +3,7 @@ from SystemConnection import SystemConnector
 from ThirdPartyAppMangaement import ThirdPartyAppManager
 from UIProcessing import UIProcessor
 import time
-from ._Step import _AutoModeStep
+from DataStructures import _AutoModeStep
 
 
 class _AutoTasker:

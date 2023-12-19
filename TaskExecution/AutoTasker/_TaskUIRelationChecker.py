@@ -1,6 +1,6 @@
 from ModelManagement import ModelManager
 import json
-from ._Relation import _Relation
+from DataStructures import _Relation
 
 
 class _TaskUIRelationChecker:

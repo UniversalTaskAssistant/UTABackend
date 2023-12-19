@@ -1,7 +1,5 @@
 import os
 import cv2
-import json
-import xmltodict
 from os.path import join as pjoin
 from difflib import SequenceMatcher
 

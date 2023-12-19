@@ -22,7 +22,7 @@ class _Task:
         }
 
     def __str__(self):
-        return f"_Action(task_id={self.task_id}, task={self.task}, " \
+        return f"_Task(task_id={self.task_id}, task={self.task}, " \
             f"steps={self.steps}, execution_result={self.execution_result})"
 
     def set_attributes(self, **kwargs):

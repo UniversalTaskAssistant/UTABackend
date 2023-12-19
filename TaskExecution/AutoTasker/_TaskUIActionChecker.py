@@ -1,6 +1,6 @@
 from ModelManagement import ModelManager
 import json
-from ._Action import _Action
+from DataStructures import _Action
 
 
 class _TaskUIActionChecker:

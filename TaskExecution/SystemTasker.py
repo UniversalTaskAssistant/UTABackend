@@ -1,5 +1,5 @@
 from .AutoTasker import _AutoTasker
-from ._Task import _Task
+from DataStructures import _Task
 
 
 class SystemTasker:
