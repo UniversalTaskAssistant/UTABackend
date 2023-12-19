@@ -1,4 +1,5 @@
 from DataStructures import _UIData
+from DataStructures.config import *
 from ._UIPreProcessor import _UIPreProcessor
 from ._UIAnalyser import _UIAnalyser
 
@@ -94,5 +95,5 @@ if __name__ == '__main__':
     model_mg.initialize_vision_model()
 
     ui = UIProcessor(model_manager=model_mg)
-    ui_data = ui.load_ui_data(screenshot_file='C:/Mulong/Code/UTABackend/data/0.png', xml_file='C:/Mulong/Code/UTABackend/data/0.xml', ui_resize=(1080, 1920))
+    ui_data = ui.load_ui_data(screenshot_file=WORK_PATH + 'data/0.png', xml_file=WORK_PATH + 'data/0.xml', ui_resize=(1080, 1920))
     ui.process_ui()

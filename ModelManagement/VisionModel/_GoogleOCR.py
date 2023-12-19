@@ -7,12 +7,13 @@ import os
 from os.path import join as pjoin
 
 from DataStructures._Text import _Text
+from DataStructures.config import *
 
 
 class _GoogleOCR:
     def __init__(self):
         self.__url = 'https://vision.googleapis.com/v1/images:annotate'
-        self.__api_key = open('C:/Mulong/Code/UTABackend/ModelManagement/VisionModel/googleapikey.txt', 'r').readline()
+        self.__api_key = open(WORK_PATH + 'ModelManagement/VisionModel/googleapikey.txt', 'r').readline()
 
         self.org_img = None     # cv2.img, original image
         self.ocr_result = None  # original results from google ocr
@@ -258,5 +259,5 @@ class _GoogleOCR:
 
 if __name__ == '__main__':
     google = _GoogleOCR()
-    google.detect_text_ocr(img_path='C:/Mulong/Code/UTABackend/data/0.png', output_dir='C:/Mulong/Code/UTABackend/data/ocr',
+    google.detect_text_ocr(img_path=WORK_PATH + '/data/0.png', output_dir=WORK_PATH + '/data/ocr',
                            shrink_size=True, save=True, show=True)
