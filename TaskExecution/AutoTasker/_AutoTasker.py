@@ -1,6 +1,6 @@
 from . import _TaskUIActionChecker, _TaskUIRelationChecker
 import time
-from DataStructures import _AutoModeStep
+from DataStructures import AutoModeStep
 
 
 class _AutoTasker:
@@ -48,7 +48,7 @@ class _AutoTasker:
         Returns:
             _Step: Step information.
         """
-        step_record = _AutoModeStep(step_id)  # Create a new step with the given step_id
+        step_record = AutoModeStep(step_id)  # Create a new step with the given step_id
 
         ui = self.__capture_and_analyse_ui()  # Capture the current UI and analyze it for further processing
         step_record.set_attributes(ui_data=ui)  # Assign UI data to the step

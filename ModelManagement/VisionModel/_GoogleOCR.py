@@ -6,7 +6,7 @@ import cv2
 import os
 from os.path import join as pjoin
 
-from DataStructures._Text import _Text
+from DataStructures.Text import Text
 from DataStructures.config import *
 
 
@@ -67,7 +67,7 @@ class _GoogleOCR:
                 if error: continue
                 location = {'left': min(x_coordinates), 'top': min(y_coordinates),
                             'right': max(x_coordinates), 'bottom': max(y_coordinates)}
-                self.texts.append(_Text(i, content, location))
+                self.texts.append(Text(i, content, location))
 
     def __merge_intersected_texts(self):
         '''

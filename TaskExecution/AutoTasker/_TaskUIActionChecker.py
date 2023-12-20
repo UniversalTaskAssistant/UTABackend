@@ -1,5 +1,5 @@
 import json
-from DataStructures import _Action
+from DataStructures import Action
 
 
 class _TaskUIActionChecker:
@@ -53,7 +53,7 @@ class _TaskUIActionChecker:
            reset_history (bool): If True, resets the conversation history in the model manager.
            printlog (bool): If True, enables logging of outputs.
         Returns:
-           _Action indicating back navigation availability.
+           Action indicating back navigation availability.
         """
         try:
             print('--- Check Any Action to Go Back to Related UI ---')
@@ -74,9 +74,9 @@ class _TaskUIActionChecker:
             print(go_back_availability)
 
             if go_back_availability['Can'].lower() == 'yes':
-                return _Action("Click", go_back_availability["Element"], go_back_availability["Description"], "None", go_back_availability["Reason"])
+                return Action("Click", go_back_availability["Element"], go_back_availability["Description"], "None", go_back_availability["Reason"])
             else:
-                return _Action("Find Relevant Apps", go_back_availability["Element"], go_back_availability["Description"], "None", go_back_availability["Reason"])
+                return Action("Find Relevant Apps", go_back_availability["Element"], go_back_availability["Description"], "None", go_back_availability["Reason"])
         except Exception as e:
             raise e
 
@@ -89,7 +89,7 @@ class _TaskUIActionChecker:
             except_elements (list, optional): Elements to be excluded from consideration.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            _Action with the determined action and target element.
+            Action with the determined action and target element.
         """
         try:
             print('--- Check UI Action and Target Element ---')
@@ -110,12 +110,12 @@ class _TaskUIActionChecker:
             ui_task_action['Element'] = int(ui_task_action['Element'])
 
             if ui_task_action.get("Input Text") is None:
-                action = _Action(ui_task_action["Action"], ui_task_action["Element"],
-                                 ui_task_action["Description"], "None", ui_task_action["Reason"])
+                action = Action(ui_task_action["Action"], ui_task_action["Element"],
+                                ui_task_action["Description"], "None", ui_task_action["Reason"])
             else:
-                action = _Action(ui_task_action["Action"], ui_task_action["Element"],
-                                 ui_task_action["Description"], ui_task_action["Input Text"],
-                                 ui_task_action["Reason"])
+                action = Action(ui_task_action["Action"], ui_task_action["Element"],
+                                ui_task_action["Description"], ui_task_action["Input Text"],
+                                ui_task_action["Reason"])
             print(action)
             return action
         except Exception as e:

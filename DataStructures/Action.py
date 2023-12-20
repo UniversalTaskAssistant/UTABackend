@@ -1,6 +1,6 @@
 
 
-class _Action:
+class Action:
     def __init__(self, action: str, element_id: int, description: str,
                  input_text: str, reason: str):
         self.action: str = action
@@ -19,5 +19,5 @@ class _Action:
         }
 
     def __str__(self):
-        return f"_Action(action={self.action}, element_id={self.element_id}, " \
+        return f"Action(action={self.action}, element_id={self.element_id}, " \
             f"description={self.description}, input_text={self.input_text}, reason={self.reason})"

@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-class _Text:
+class Text:
     def __init__(self, id, content, location):
         self.id = id
         self.content = content

@@ -1,7 +1,7 @@
-from DataStructures import _UIData
+from DataStructures import UIData
 from DataStructures.config import *
-from ._UIPreProcessor import _UIPreProcessor
-from ._UIAnalyser import _UIAnalyser
+from _UIPreProcessor import _UIPreProcessor
+from _UIAnalyser import _UIAnalyser
 
 
 class UIProcessor:
@@ -21,7 +21,7 @@ class UIProcessor:
         Returns:
             self.ui_data (UIData)
         '''
-        self.ui_data = _UIData(screenshot_file, xml_file, ui_resize, output_dir)
+        self.ui_data = UIData(screenshot_file, xml_file, ui_resize, output_dir)
         return self.ui_data
 
     def ui_vh_xml_cvt_to_json(self, ui_data):

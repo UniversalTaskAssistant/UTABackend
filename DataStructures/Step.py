@@ -1,6 +1,6 @@
 
 
-class _AutoModeStep:
+class AutoModeStep:
     def __init__(self, step_id: int, **kwargs):
         """
         Initializes an AutoModeStep instance.
@@ -30,7 +30,7 @@ class _AutoModeStep:
         }
 
     def __str__(self):
-        return f"_AutoModeStep(step_id={self.step_id}, is_go_back={self.is_go_back}, " \
+        return f"AutoModeStep(step_id={self.step_id}, is_go_back={self.is_go_back}, " \
             f"recommended_action={self.recommended_action}, relation={self.relation}, ui_data={self.ui_data}" \
             f"execution_result={self.execution_result})"
 

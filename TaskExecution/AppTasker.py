@@ -22,7 +22,7 @@ class AppTasker:
             except_elements (list, optional): List of elements to exclude from consideration.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            _Relation between the ui and the task.
+            Relation between the ui and the task.
         """
         return self.relation_checker.check_relation(ui=ui_data, task=task, except_elements=except_elements, printlog=printlog)
 
@@ -35,7 +35,7 @@ class AppTasker:
             except_elements (list, optional): Elements to be excluded from consideration.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            _Action with the determined action and target element.
+            Action with the determined action and target element.
         """
         return self.action_checker.check_action(ui=ui_data, task=task, except_elements=except_elements, printlog=printlog)
 
@@ -49,7 +49,7 @@ class AppTasker:
             printlog (bool): If True, enables logging of outputs.
         Returns:
             Status (int, 0, 1, 2): 0 - unrelated; 1 - complete; 2 - related
-            Action (_Action): If related, UI action on the current UI
+            Action (Action): If related, UI action on the current UI
         '''
         # 1. check the relation between the UI and the task
         relation = self.check_task_ui_relation(ui_data=ui_data, task=task, except_elements=except_elements, printlog=printlog)

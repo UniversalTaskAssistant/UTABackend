@@ -1,6 +1,6 @@
 
 
-class _Task:
+class Task:
     def __init__(self, task_id: int, task: str):
         """
         Initializes a Task instance.
@@ -22,7 +22,7 @@ class _Task:
         }
 
     def __str__(self):
-        return f"_Task(task_id={self.task_id}, task={self.task}, " \
+        return f"Task(task_id={self.task_id}, task={self.task}, " \
             f"steps={self.steps}, execution_result={self.execution_result})"
 
     def set_attributes(self, **kwargs):

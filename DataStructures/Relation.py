@@ -1,6 +1,6 @@
 
 
-class _Relation:
+class Relation:
     def __init__(self, relation: str, reason: str):
         self.relation: str = relation
         self.reason: str = reason
@@ -12,4 +12,4 @@ class _Relation:
         }
 
     def __str__(self):
-        return f"_Relation(relation={self.relation}, reason={self.reason})"
+        return f"Relation(relation={self.relation}, reason={self.reason})"

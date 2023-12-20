@@ -4,7 +4,7 @@ from os.path import join as pjoin
 from difflib import SequenceMatcher
 
 
-class _UIData:
+class UIData:
     def __init__(self, screenshot_file, xml_file=None,
                  ui_resize=(1080, 2280), output_dir='data/app1'):
         self.screenshot_file = screenshot_file
@@ -148,7 +148,7 @@ class _UIData:
         cv2.waitKey()
         cv2.destroyWindow('screen')
 
-    def annotate_ui_openation(self, recommended_action):
+    def annotate_ui_operation(self, recommended_action):
         '''
         Store annotated UI for debugging
         '''

@@ -1,5 +1,5 @@
 import json
-from DataStructures import _Relation
+from DataStructures import Relation
 
 
 class _TaskUIRelationChecker:
@@ -37,7 +37,7 @@ class _TaskUIRelationChecker:
             except_elements (list, optional): List of elements to exclude from consideration.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            _Relation between the ui and the task.
+            Relation between the ui and the task.
         """
         try:
             print('--- Check UI and Task Relation ---')
@@ -58,7 +58,7 @@ class _TaskUIRelationChecker:
             ui_task_relation = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation, printlog=printlog)['content']
             ui_task_relation = json.loads(ui_task_relation)
 
-            relation = _Relation(ui_task_relation['Relation'], ui_task_relation['Reason'])
+            relation = Relation(ui_task_relation['Relation'], ui_task_relation['Reason'])
             print(relation)
             return relation
         except Exception as e:
