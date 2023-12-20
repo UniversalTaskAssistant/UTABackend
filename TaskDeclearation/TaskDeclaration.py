@@ -4,32 +4,31 @@ from ._TaskDecomposer import _TaskDecomposer
 
 
 class TaskDeclarator:
-    def __init__(self):
+    def __init__(self, model_manager):
+        self.__model_manager = model_manager
         self.task_clarifier_dict = dict()
         self.task_classifier_dict = dict()
         self.task_decomposer_dict = dict()
 
-    def initialize_task_clarifier(self, clarifier_identifier, model_manager):
+    def initialize_task_clarifier(self, clarifier_identifier):
         """
         Initialize the task clarifier with provided llm Model.
         Args:
             clarifier_identifier: name of the new initialized task clarifier.
-            model_manager: ModelManager.
         """
         assert clarifier_identifier not in self.task_clarifier_dict
-        self.task_clarifier_dict[clarifier_identifier] = _TaskClarifier(clarifier_identifier, model_manager)
+        self.task_clarifier_dict[clarifier_identifier] = _TaskClarifier(clarifier_identifier, self.__model_manager)
 
-    def initialize_task_classifier(self, classifier_identifier, model_manager):
+    def initialize_task_classifier(self, classifier_identifier):
         """
         Initialize the task classifier with provided llm Model.
         Args:
             classifier_identifier: name of the new initialized task classifier.
-            model_manager: ModelManager.
         """
         assert classifier_identifier not in self.task_classifier_dict
-        self.task_classifier_dict[classifier_identifier] = _TaskClassifier(classifier_identifier, model_manager)
+        self.task_classifier_dict[classifier_identifier] = _TaskClassifier(classifier_identifier, self.__model_manager)
 
-    def initialize_task_decomposer(self, decomposer_identifier, model_manager):
+    def initialize_task_decomposer(self, decomposer_identifier):
         """
         Initialize the task decomposer with provided llm Model.
         Args:
@@ -37,7 +36,7 @@ class TaskDeclarator:
             model_manager: ModelManager.
         """
         assert decomposer_identifier not in self.task_decomposer_dict
-        self.task_decomposer_dict[decomposer_identifier] = _TaskDecomposer(decomposer_identifier, model_manager)
+        self.task_decomposer_dict[decomposer_identifier] = _TaskDecomposer(decomposer_identifier, self.__model_manager)
 
     def clarify_task(self, clarifier_identifier, org_task, user_message=None, printlog=False):
         '''
