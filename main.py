@@ -28,9 +28,9 @@ if test_section == 1:
 
 elif test_section == 2:
     '''
-    ***********************************
-    *** Section 2 - Task Processing ***
-    ***********************************
+    ************************************
+    *** Section 2 - Task Declaration ***
+    ************************************
     '''
     from ModelManagement import ModelManager
     model_mg = ModelManager()

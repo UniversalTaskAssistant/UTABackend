@@ -87,7 +87,6 @@ if __name__ == '__main__':
     model_mg.initialize_llm_model(identifier='task_decomposer')
 
     task_declarator = TaskDeclarator(model_manager=model_mg)
-
     task_declarator.initialize_task_clarifier('task_clarifier1')
     task_declarator.clarify_task(clarifier_identifier='task_clarifier1', org_task=task)
     task_declarator.initialize_task_decomposer('task_dec1')
