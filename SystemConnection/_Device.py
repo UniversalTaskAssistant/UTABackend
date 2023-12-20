@@ -4,6 +4,7 @@ import cv2
 import xmltodict
 from os.path import join as pjoin
 import os
+from DataStructures.config import *
 
 
 class _Device:
@@ -312,3 +313,10 @@ class _Device:
         self.__adb_device.shell('input keyevent KEYCODE_BACK')
         # wait a few second to be refreshed
         time.sleep(waiting_time)
+
+
+if __name__ == '__main__':
+    device = _Device()
+    device.connect()
+    device.get_app_list_on_the_device()
+    device.cap_and_save_ui_screenshot_and_xml(1, WORK_PATH + 'data/device')
