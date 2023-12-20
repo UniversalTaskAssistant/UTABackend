@@ -2,6 +2,8 @@ from ppadb.client import Client as AdbClient
 import time
 import cv2
 import xmltodict
+from os.path import join as pjoin
+import os
 
 
 class _Device:
@@ -31,16 +33,58 @@ class _Device:
         if self.__adb_device is not None:
             self.__adb_device = None
 
-    def go_back(self, waiting_time=2):
-        """
-        Simulates the 'Back' button press on the device.
+    '''
+    ***********************
+    *** Collect UI Data ***
+    ***********************
+    '''
+    def cap_and_save_ui_screenshot_and_xml(self, ui_id, output_dir):
+        '''
+        Capture and save ui screenshot and xml to target directory
         Args:
-            waiting_time (int): Time to wait after the action, in seconds.
-        """
-        self.__adb_device.shell('input keyevent KEYCODE_BACK')
-        # wait a few second to be refreshed
-        time.sleep(waiting_time)
+            ui_id (int or string): The id of the current ui, used to name the saved files
+            output_dir (path): Directory to save img and xml
+        '''
+        os.makedirs(output_dir, exist_ok=True)
+        screen = self.cap_screenshot()
+        with open(pjoin(output_dir, str(ui_id) + '.png'), 'wb') as fp:
+            fp.write(screen)
+        xml = self.cap_current_ui_hierarchy_xml()
+        with open(pjoin(output_dir, str(ui_id) + '.xml'), 'w') as fp:
+            fp.write(xml)
 
+    def cap_screenshot(self, recur_time=0):
+        """
+        Captures a screenshot of the current device screen.
+        Args:
+            recur_time (int): A counter for recursion, to retry capturing the screenshot, must be in [0, 3).
+        Returns:
+            Binary data of the captured screenshot.
+        """
+        assert 0 <= recur_time < 3
+        screen = self.__adb_device.screencap()
+        if recur_time and screen is None:
+            screen = self.cap_screenshot(recur_time-1)
+        return screen
+
+    def cap_current_ui_hierarchy_xml(self):
+        """
+        Captures the current UI hierarchy of the device screen.
+        Returns:
+            XML content representing the UI hierarchy.
+        """
+        # Send the command to dump the UI hierarchy to an XML file on the device
+        self.__adb_device.shell('uiautomator dump')
+
+        # Read the content of the dumped XML file directly from the device
+        xml_content = self.__adb_device.shell('cat /sdcard/window_dump.xml')
+        return xml_content
+
+    '''
+    ***********
+    *** App ***
+    ***********
+    '''
     def launch_app(self, package_name, waiting_time=2):
         """
         Launches an app on the device by its package name.
@@ -63,17 +107,6 @@ class _Device:
         self.__adb_device.shell(f'am force-stop {package_name}')
         time.sleep(waiting_time)
 
-    def check_keyboard_active(self):
-        """
-        Checks if the keyboard is active (visible) on the device.
-        Returns:
-            True if the keyboard is visible, False otherwise.
-        """
-        dumpsys_output = self.__adb_device.shell('dumpsys input_method | grep mInputShown')
-        if 'mInputShown=true' in dumpsys_output:
-            return True
-        return False
-
     def get_app_list_on_the_device(self):
         """
         Retrieves a list of all installed applications on the device.
@@ -84,33 +117,32 @@ class _Device:
         package_list = packages.split('\n')
         return [p.replace('package:', '') for p in package_list]
 
-    def cap_screenshot(self, recur_time=0):
+    def get_current_package_and_activity_name(self):
         """
-        Captures a screenshot of the current device screen.
-        Args:
-            recur_time (int): A counter for recursion, to retry capturing the screenshot, must be in [0, 3).
+        Retrieves the current foreground package and activity name.
         Returns:
-            Binary data of the captured screenshot.
+            A dictionary with 'package_name' and 'activity_name'.
         """
-        assert 0 <= recur_time < 3
-        screen = self.__adb_device.screencap()
-        if recur_time and screen is None:
-            screen = self.cap_screenshot(recur_time-1)
-        return screen
+        dumpsys_output = self.__adb_device.shell('dumpsys window displays | grep mCurrentFocus')
+        package_and_activity = dumpsys_output.split('u0 ')[1].split('}')[0]
+        package_name, activity_name = package_and_activity.split('/')
+        return {'package_name': package_name, 'activity_name': activity_name}
 
-    def cap_current_ui_hierarchy(self):
+    '''
+    ***********************
+    *** Get Device Info ***
+    ***********************
+    '''
+    def check_keyboard_active(self):
         """
-        Captures the current UI hierarchy of the device screen.
+        Checks if the keyboard is active (visible) on the device.
         Returns:
-            XML content representing the UI hierarchy.
+            True if the keyboard is visible, False otherwise.
         """
-        # Send the command to dump the UI hierarchy to an XML file on the device
-        self.__adb_device.shell('uiautomator dump')
-
-        # Read the content of the dumped XML file directly from the device
-        xml_content = self.__adb_device.shell('cat /sdcard/window_dump.xml')
-        xml_content = xmltodict.parse(xml_content)
-        return xml_content
+        dumpsys_output = self.__adb_device.shell('dumpsys input_method | grep mInputShown')
+        if 'mInputShown=true' in dumpsys_output:
+            return True
+        return False
 
     def get_device(self):
         """
@@ -136,17 +168,11 @@ class _Device:
         """
         return self.__adb_device.wm_size()
 
-    def get_current_package_and_activity_name(self):
-        """
-        Retrieves the current foreground package and activity name.
-        Returns:
-            A dictionary with 'package_name' and 'activity_name'.
-        """
-        dumpsys_output = self.__adb_device.shell('dumpsys window displays | grep mCurrentFocus')
-        package_and_activity = dumpsys_output.split('u0 ')[1].split('}')[0]
-        package_name, activity_name = package_and_activity.split('/')
-        return {'package_name': package_name, 'activity_name': activity_name}
-
+    '''
+    ***************
+    *** Actions ***
+    ***************
+    '''
     def click_screen(self, ui, element, show=False):
         """
         Simulates a tap on a specified element of the UI.
@@ -276,3 +302,13 @@ class _Device:
             text (str): The text to input.
         """
         self.__adb_device.input_text(text)
+
+    def go_back(self, waiting_time=2):
+        """
+        Simulates the 'Back' button press on the device.
+        Args:
+            waiting_time (int): Time to wait after the action, in seconds.
+        """
+        self.__adb_device.shell('input keyevent KEYCODE_BACK')
+        # wait a few second to be refreshed
+        time.sleep(waiting_time)
