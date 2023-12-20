@@ -1,11 +1,12 @@
 import openai
 import tiktoken
+from DataStructures.config import *
 
 
 class _OpenAI:
     def __init__(self, system_prompt=None, **kwargs):
         # Initialize the Model with default settings, and override with any provided kwargs
-        openai.api_key = open('ModelManagement/LLMModel/openaikey.txt', 'r').readline()
+        openai.api_key = open(WORK_PATH + 'ModelManagement/LLMModel/openaikey.txt', 'r').readline()
         self._default_config = {
             'model': 'gpt-4',
             'seed': 42,

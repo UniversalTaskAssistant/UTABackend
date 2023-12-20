@@ -12,7 +12,7 @@ class _TaskClassifier:
                              '3. App Related Task: Tasks that need to be done through certain apps, such as "Take an uber to my home", "Watch movie on Youtube".' \
                              'What is the type of the given task "{task}"?' \
                              'Output you answer in JSON format with two factors: 1. Task Type; 2. Short explanation.' \
-                             'Example: {"Task Type": "1. General Inquiry", "Explanation": "The task is an inquiry that has nothing to do with the system or app functions and can be answered through searching on the Internet"}'
+                             'Example: {{"Task Type": "1. General Inquiry", "Explanation": "The task is an inquiry that has nothing to do with the system or app functions and can be answered through searching on the Internet"}}'
 
     def classify_task(self, task, printlog=False):
         '''
@@ -31,3 +31,13 @@ class _TaskClassifier:
             print(cls)
         except Exception as e:
             raise e
+
+
+if __name__ == '__main__':
+    from ModelManagement import ModelManager
+    model_mg = ModelManager()
+    model_mg.initialize_llm_model(identifier='task_decomposer')
+
+    task = 'Open wechat and send my mom a message'
+    task_decompo = _TaskClassifier('task_decomposer', model_manager=model_mg)
+    task_decompo.classify_task(task=task, printlog=True)
