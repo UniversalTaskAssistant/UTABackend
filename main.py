@@ -4,7 +4,7 @@ from DataStructures.config import *
 from SystemConnection import SystemConnector
 sys_connector = SystemConnector()
 sys_connector.connect_adb_device()
-screen_path, xml_path = sys_connector.cap_and_save_ui_screenshot_and_xml(1, WORK_PATH + 'data/device')
+screen_path, xml_path = sys_connector.cap_and_save_ui_screenshot_and_xml(ui_id=1, output_dir=WORK_PATH + 'data/device')
 
 # initiate model manager
 from ModelManagement import ModelManager
