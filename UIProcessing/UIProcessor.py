@@ -1,7 +1,7 @@
 from DataStructures import UIData
 from DataStructures.config import *
-from _UIPreProcessor import _UIPreProcessor
-from _UIAnalyser import _UIAnalyser
+from UIProcessing._UIPreProcessor import _UIPreProcessor
+from UIProcessing._UIAnalyser import _UIAnalyser
 
 
 class UIProcessor:
