@@ -63,5 +63,14 @@ class TaskDeclarator:
         '''
         self.task_classifier_dict[classifier_identifier].classify_task(task=task, printlog=printlog)
 
-    def decompose_task(self, decomposer_identifier, task):
-        self.task_decomposer_dict[decomposer_identifier].decompose_task(task=task)
+    def decompose_task(self, decomposer_identifier, task, printlog=False):
+        '''
+        Clarify task to be clear to complete
+        Args:
+            decomposer_identifier: identifier of initialized decomposer
+            task (string): The user's task
+            printlog (bool): True to print the intermediate log
+        Returns:
+            LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
+        '''
+        self.task_decomposer_dict[decomposer_identifier].decompose_task(task=task, printlog=printlog)
