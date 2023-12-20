@@ -66,7 +66,7 @@ class UIProcessor:
         '''
         self.ui_analyser.ui_build_element_tree(ui_data)
 
-    def process_ui(self, ui_data=None):
+    def process_ui(self, ui_data=None, show=False):
         '''
         Process a UI, including
             1. Convert vh to tidy and formatted json
@@ -75,6 +75,7 @@ class UIProcessor:
             4. Build element tree based on the prev to represent the UI
         Args:
             ui_data (UIData): UI data before processing
+            show (bool): True to show processing result on window
         Returns:
              ui_data (UIData): UI data after processing
         '''
@@ -86,7 +87,8 @@ class UIProcessor:
         self.ui_info_extraction(ui_data)
         self.ui_analysis_elements_description(ui_data)
         self.ui_build_element_tree(ui_data)
-        ui_data.show_all_elements()
+        if show:
+            ui_data.show_all_elements()
 
 
 if __name__ == '__main__':

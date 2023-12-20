@@ -45,14 +45,19 @@ class _Device:
         Args:
             ui_id (int or string): The id of the current ui, used to name the saved files
             output_dir (path): Directory to save img and xml
+        Returns:
+            screen_path, xml_path
         '''
         os.makedirs(output_dir, exist_ok=True)
+        screen_path = pjoin(output_dir, str(ui_id) + '.png')
+        xml_path = pjoin(output_dir, str(ui_id) + '.xml')
         screen = self.cap_screenshot()
-        with open(pjoin(output_dir, str(ui_id) + '.png'), 'wb') as fp:
+        with open(screen_path, 'wb') as fp:
             fp.write(screen)
         xml = self.cap_current_ui_hierarchy_xml()
-        with open(pjoin(output_dir, str(ui_id) + '.xml'), 'w') as fp:
+        with open(xml_path, 'w') as fp:
             fp.write(xml)
+        return screen_path, xml_path
 
     def cap_screenshot(self, recur_time=0):
         """
