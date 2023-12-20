@@ -1,4 +1,6 @@
-from . import _Device, _Local
+from SystemConnection._Device import _Device
+from SystemConnection._Local import _Local
+from DataStructures.config import *
 
 
 class SystemConnector:
@@ -6,7 +8,7 @@ class SystemConnector:
         self.__adb_device = _Device()
         self.__local = _Local()
 
-    def connect_device(self, printlog=False):
+    def connect_adb_device(self, printlog=False):
         """
         Connects to the first device found on the ADB server.
         Args:
@@ -62,6 +64,17 @@ class SystemConnector:
         """
         return self.__adb_device.get_app_list_on_the_device()
 
+    def cap_and_save_ui_screenshot_and_xml(self, ui_id, output_dir):
+        '''
+        Capture and save ui screenshot and xml to target directory
+        Args:
+            ui_id (int or string): The id of the current ui, used to name the saved files
+            output_dir (path): Directory to save img and xml
+        Returns:
+            screen_path, xml_path
+        '''
+        return self.__adb_device.cap_and_save_ui_screenshot_and_xml(ui_id, output_dir)
+
     def cap_screenshot(self, recur_time=0):
         """
         Captures a screenshot of the current device screen.
@@ -78,7 +91,7 @@ class SystemConnector:
         Returns:
             XML content representing the UI hierarchy.
         """
-        return self.__adb_device.cap_current_ui_hierarchy()
+        return self.__adb_device.cap_current_ui_hierarchy_xml()
 
     def get_device(self):
         """
@@ -240,3 +253,9 @@ class SystemConnector:
             encoding (str, optional): File encoding. Defaults to 'utf-8'.
         """
         self.__local.save_json(file, file_path, encoding)
+
+
+if __name__ == '__main__':
+    sys_connector = SystemConnector()
+    sys_connector.connect_adb_device()
+    screen_path, xml_path = sys_connector.adb_cap_and_save_ui_screenshot_and_xml(1, WORK_PATH + 'data/device')
