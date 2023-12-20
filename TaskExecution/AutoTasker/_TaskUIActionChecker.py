@@ -1,18 +1,17 @@
-from ModelManagement import ModelManager
 import json
 from DataStructures import _Action
 
 
 class _TaskUIActionChecker:
-    def __init__(self, system_prompt=None, **kwargs):
+    def __init__(self, model_identifier, model_manager):
         """
         Initializes the TaskUIActionChecker.
         Args:
-            system_prompt (str, optional): Custom system prompt for the text model.
-            **kwargs: Additional keyword arguments for text model initialization.
+            model_identifier Name of the text model.
+            model_manager: Initialised ModelManager used by this class.
         """
-        self.__model_manager = ModelManager()
-        self.__model_manager.initialize_llm_model("task_ui_action_checker", system_prompt=system_prompt, **kwargs)
+        self.__model_identifier = model_identifier
+        self.__model_manager = model_manager
 
         # Initialize the base prompt template
         self.__action_prompt = 'Determine the appropriate action for completing the task "{task}" ' \
@@ -59,7 +58,7 @@ class _TaskUIActionChecker:
         try:
             print('--- Check Any Action to Go Back to Related UI ---')
             if reset_history:
-                self.__model_manager.reset_llm_conversations("task_ui_action_checker")
+                self.__model_manager.reset_llm_conversations(self.__model_identifier)
 
             conversation = self.__back_prompt.format(task=task)
 
@@ -68,9 +67,9 @@ class _TaskUIActionChecker:
                     {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
                     {'role': 'user', 'content': str(ui.element_tree)}
                 ]
-                self.__model_manager.set_llm_conversations("task_ui_action_checker", messages)
+                self.__model_manager.set_llm_conversations(self.__model_identifier, messages)
 
-            go_back_availability = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation, printlog=printlog)['content']
+            go_back_availability = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation, printlog=printlog)['content']
             go_back_availability = json.loads(go_back_availability)
             print(go_back_availability)
 
@@ -96,7 +95,7 @@ class _TaskUIActionChecker:
             print('--- Check UI Action and Target Element ---')
             # Format the prompt
             except_elements_str = ','.join(except_elements) if except_elements else ''
-            action_history_str = str(self.__model_manager.get_llm_conversations("task_ui_action_checker"))
+            action_history_str = str(self.__model_manager.get_llm_conversations(self.__model_identifier))
             conversation = self.__action_prompt.format(task=task, except_elements=except_elements_str, action_history=action_history_str)
 
             if ui:
@@ -104,9 +103,9 @@ class _TaskUIActionChecker:
                     {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
                     {'role': 'user', 'content': str(ui.element_tree)}
                 ]
-                self.__model_manager.set_llm_conversations("task_ui_action_checker", messages)
+                self.__model_manager.set_llm_conversations(self.__model_identifier, messages)
 
-            ui_task_action = self.__model_manager.create_llm_conversation("task_ui_action_checker", conversation, printlog=printlog)['content']
+            ui_task_action = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation, printlog=printlog)['content']
             ui_task_action = json.loads(ui_task_action)
             ui_task_action['Element'] = int(ui_task_action['Element'])
 
@@ -126,4 +125,4 @@ class _TaskUIActionChecker:
         """
         Clear model conversation history records.
         """
-        self.__model_manager.reset_llm_conversations("task_ui_action_checker")
+        self.__model_manager.reset_llm_conversations(self.__model_identifier)

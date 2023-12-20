@@ -1,20 +1,19 @@
-from ModelManagement import ModelManager
 
 
 class InquiryTasker:
-    def __init__(self, system_prompt=None, **kwargs):
+    def __init__(self, model_identifier, model_manager):
         # self.event_manager = event_manager
         # self.event_manager.trigger_event("initialize_llm_model", identifier='inquiry_tasker_model',
         #                            system_prompt=system_prompt, **kwargs)
         #
-        self.__model_manager = ModelManager()
-        self.__model_manager.initialize_llm_model("inquiry_tasker_model", system_prompt=system_prompt, **kwargs)
+        self.__model_identifier = model_identifier
+        self.__model_manager = model_manager
 
     def execute_inquiry_task(self, conversation):
         # Create a new conversation message and send it to the llmModel
         try:
-            answer = self.__model_manager.create_llm_conversation("inquiry_tasker_model", conversation)
-            history = self.__model_manager.get_llm_conversations("inquiry_tasker_model")
+            answer = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation)
+            history = self.__model_manager.get_llm_conversations(self.__model_identifier)
             return {'answer': answer, 'history': history}
         except Exception as e:
             print('error:', e)
@@ -27,6 +26,6 @@ class InquiryTasker:
 
     def reset_inquiry_tasker(self):
         # reset conversation history
-        self.__model_manager.reset_llm_conversations("inquiry_tasker_model")
+        self.__model_manager.reset_llm_conversations(self.__model_identifier)
         # self.event_manager.trigger_event("reset_llm_conversations", identifier='inquiry_tasker_model')
 

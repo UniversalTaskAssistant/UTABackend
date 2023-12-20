@@ -1,7 +1,4 @@
 from . import _TaskUIActionChecker, _TaskUIRelationChecker
-from SystemConnection import SystemConnector
-from ThirdPartyAppMangaement import ThirdPartyAppManager
-from UIProcessing import UIProcessor
 import time
 from DataStructures import _AutoModeStep
 
@@ -17,11 +14,11 @@ class _AutoTasker:
             output_dir (str): Directory for output data.
             **kwargs: Additional keyword arguments.
         """
-        self.relation_checker = _TaskUIRelationChecker()
-        self.action_checker = _TaskUIActionChecker()
-        self.system_connector = SystemConnector()
-        self.app_recommender = ThirdPartyAppManager()
-        self.ui_processor = UIProcessor()
+        self.relation_checker = _TaskUIRelationChecker(kwargs['relation_checker_model'], kwargs['model_manager'])
+        self.action_checker = _TaskUIActionChecker(kwargs['action_checker_model'], kwargs['model_manager'])
+        self.system_connector = kwargs['system_connector']
+        self.app_recommender = kwargs['third_party_app_manager']
+        self.ui_processor = kwargs['ui_processor']
 
         self.system_connector.connect_device()
 
@@ -56,7 +53,7 @@ class _AutoTasker:
         ui = self.__capture_and_analyse_ui()  # Capture the current UI and analyze it for further processing
         step_record.set_attributes(ui_data=ui)  # Assign UI data to the step
 
-        relation = self.relation_checker.check_relation(step_id, ui, task, except_apps, printlog)  # Check the
+        relation = self.relation_checker.check_relation(ui, task, except_apps, printlog)  # Check the
         # relationship of the current UI with the task
         step_record.set_attributes(relation=relation)
 
@@ -66,7 +63,7 @@ class _AutoTasker:
             return step_record
         elif relation['Relation'] == 'Unrelated':
             # Check for a back navigation possibility if current UI is unrelated to the task
-            back_availability_action = self.action_checker.check_go_back_availability(step_id, ui, task,
+            back_availability_action = self.action_checker.check_go_back_availability(ui, task,
                                                                                 reset_history=True, printlog=printlog)
             if back_availability_action.action.lower() == 'click':
                 # Execute the recommended back navigation action
