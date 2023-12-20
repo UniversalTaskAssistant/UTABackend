@@ -4,11 +4,11 @@ from .AutoTasker import _TaskUIActionChecker, _TaskUIRelationChecker
 class AppTasker:
     def __init__(self, **kwargs):
         """
-                Initializes the AppTasker with required paths and settings.
-                Args:
-                    **kwargs: Keyword arguments containing paths and settings for task automation.
-                              Required keys are 'ui_relation_checker', 'ui_action_checker', and 'model_manager'.
-                """
+        Initializes the AppTasker with required paths and settings.
+        Args:
+            **kwargs: Keyword arguments containing paths and settings for task automation.
+                      Required keys are 'ui_relation_checker', 'ui_action_checker', and 'model_manager'.
+        """
         assert 'ui_relation_checker' in kwargs and 'ui_action_checker' in kwargs and 'model_manager' in kwargs
         self.relation_checker = _TaskUIRelationChecker(kwargs['ui_relation_checker'], kwargs['model_manager'])
         self.action_checker = _TaskUIActionChecker(kwargs['ui_action_checker'], kwargs['model_manager'])
