@@ -1,0 +1,179 @@
+{
+    "img_shape": [
+        1920,
+        1080,
+        3
+    ],
+    "texts": [
+        {
+            "id": 0,
+            "content": "3:56",
+            "column_min": 25,
+            "row_min": 21,
+            "column_max": 104,
+            "row_max": 51,
+            "width": 59,
+            "height": 22
+        },
+        {
+            "id": 1,
+            "content": "More",
+            "column_min": 48,
+            "row_min": 148,
+            "column_max": 161,
+            "row_max": 180,
+            "width": 85,
+            "height": 24
+        },
+        {
+            "id": 2,
+            "content": "POPULAR LINKS",
+            "column_min": 99,
+            "row_min": 337,
+            "column_max": 423,
+            "row_max": 367,
+            "width": 243,
+            "height": 22
+        },
+        {
+            "id": 3,
+            "content": "Calculate postage & delivery",
+            "column_min": 192,
+            "row_min": 487,
+            "column_max": 768,
+            "row_max": 529,
+            "width": 432,
+            "height": 32
+        },
+        {
+            "id": 4,
+            "content": "times",
+            "column_min": 192,
+            "row_min": 543,
+            "column_max": 304,
+            "row_max": 575,
+            "width": 84,
+            "height": 24
+        },
+        {
+            "id": 5,
+            "content": "Track",
+            "column_min": 85,
+            "row_min": 1772,
+            "column_max": 181,
+            "row_max": 1800,
+            "width": 72,
+            "height": 21
+        },
+        {
+            "id": 6,
+            "content": "Redirect or hold mail",
+            "column_min": 192,
+            "row_min": 712,
+            "column_max": 604,
+            "row_max": 753,
+            "width": 309,
+            "height": 31
+        },
+        {
+            "id": 7,
+            "content": "PO Boxes",
+            "column_min": 193,
+            "row_min": 892,
+            "column_max": 381,
+            "row_max": 920,
+            "width": 141,
+            "height": 21
+        },
+        {
+            "id": 8,
+            "content": "Verify document Police check",
+            "column_min": 191,
+            "row_min": 1060,
+            "column_max": 796,
+            "row_max": 1097,
+            "width": 454,
+            "height": 28
+        },
+        {
+            "id": 9,
+            "content": "AUSTRALIA POST WEBSITES & APPS",
+            "column_min": 96,
+            "row_min": 1265,
+            "column_max": 828,
+            "row_max": 1293,
+            "width": 549,
+            "height": 21
+        },
+        {
+            "id": 10,
+            "content": "Personal",
+            "column_min": 189,
+            "row_min": 1415,
+            "column_max": 373,
+            "row_max": 1452,
+            "width": 138,
+            "height": 28
+        },
+        {
+            "id": 11,
+            "content": "Rucinoce",
+            "column_min": 193,
+            "row_min": 1589,
+            "column_max": 367,
+            "row_max": 1609,
+            "width": 130,
+            "height": 15
+        },
+        {
+            "id": 12,
+            "content": "Find us",
+            "column_min": 344,
+            "row_min": 1769,
+            "column_max": 467,
+            "row_max": 1803,
+            "width": 92,
+            "height": 25
+        },
+        {
+            "id": 13,
+            "content": "Account",
+            "column_min": 601,
+            "row_min": 1772,
+            "column_max": 743,
+            "row_max": 1799,
+            "width": 106,
+            "height": 20
+        },
+        {
+            "id": 14,
+            "content": "FA",
+            "column_min": 941,
+            "row_min": 1577,
+            "column_max": 1001,
+            "row_max": 1607,
+            "width": 45,
+            "height": 22
+        },
+        {
+            "id": 15,
+            "content": "...",
+            "column_min": 916,
+            "row_min": 1688,
+            "column_max": 972,
+            "row_max": 1696,
+            "width": 42,
+            "height": 6
+        },
+        {
+            "id": 16,
+            "content": "More",
+            "column_min": 900,
+            "row_min": 1772,
+            "column_max": 987,
+            "row_max": 1799,
+            "width": 65,
+            "height": 20
+        }
+    ]
+}

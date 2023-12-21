@@ -3,7 +3,6 @@
 **/.ipynb_checkpoints
 /ModelManagement/LLMModel/openaikey.txt
 /ModelManagement/VisionModel/googleapikey.txt
-/data/
 local_test.py
 .DS_Store
 /UIProcessing/GUI.py

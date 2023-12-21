@@ -2,32 +2,32 @@ from . import _ThirdPartyAppAnalyser, _ThirdPartyAppAvailabilityChecker, _ThirdP
 
 
 class ThirdPartyAppManager:
-    def __init__(self):
+    def __init__(self, model_manager):
+        self.__model_manager = model_manager
         self.__app_analyser_dict = dict()
         self.__app_checker_dict = dict()
         self.__app_searcher = None
 
-    def initialize_app_analyser(self, analyser_identifier, model_manager):
+    def initialize_app_analyser(self, analyser_identifier):
         """
         Initialize the app analyser with provided llm Model.
         Args:
             analyser_identifier: name of the new initialized app analyser.
-            model_manager: ModelManager.
         """
         assert analyser_identifier not in self.__app_analyser_dict
-        self.__app_analyser_dict[analyser_identifier] = _ThirdPartyAppAnalyser(analyser_identifier, model_manager)
+        self.__model_manager.initialize_llm_model(identifier=analyser_identifier)
+        self.__app_analyser_dict[analyser_identifier] = _ThirdPartyAppAnalyser(analyser_identifier, self.__model_manager)
 
-    def initialize_app_checker(self, checker_identifier, model_manager, system_connector):
+    def initialize_app_checker(self, checker_identifier, system_connector):
         """
         Initialize the app checker with provided llm Model and SystemConnector.
         Args:
             checker_identifier: name of the new initialized app checker.
-            model_manager: ModelManager.
             system_connector: SystemConnector.
         """
         assert checker_identifier not in self.__app_checker_dict
-        self.__app_checker_dict[checker_identifier] = _ThirdPartyAppAvailabilityChecker(checker_identifier, model_manager,
-                                                                                      system_connector)
+        self.__model_manager.initialize_llm_model(identifier=checker_identifier)
+        self.__app_checker_dict[checker_identifier] = _ThirdPartyAppAvailabilityChecker(checker_identifier, self.__model_manager, system_connector)
 
     def initialize_app_searcher(self):
         """
@@ -43,7 +43,8 @@ class ThirdPartyAppManager:
         Returns:
             The most relevant app's information if found, otherwise None.
         """
-        assert self.__app_searcher is not None
+        if not self.__app_searcher:
+            self.initialize_app_searcher()
         return self.__app_searcher.search_app_by_name(app_name)
 
     def search_apps_fuzzy(self, disp):
@@ -54,7 +55,8 @@ class ThirdPartyAppManager:
         Returns:
             A list of apps that are related to the search term.
         """
-        assert self.__app_searcher is not None
+        if not self.__app_searcher:
+            self.initialize_app_searcher()
         return self.__app_searcher.search_apps_fuzzy(disp)
 
     def get_available_apps(self, checker_identifier):
@@ -134,3 +136,10 @@ class ThirdPartyAppManager:
     def download_app(self, app_link):
         # need further discussion
         pass
+
+
+if __name__ == '__main__':
+    from ModelManagement import ModelManager
+    model_mg = ModelManager()
+
+    app_mg = ThirdPartyAppManager(model_manager=model_mg)

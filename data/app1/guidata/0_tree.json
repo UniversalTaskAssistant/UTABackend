@@ -1,5 +1,5 @@
 {
-    "class": "root(container)",
+    "class": "root(container)(container)",
     "clickable": false,
     "scrollable": false,
     "id": 0,
@@ -11,13 +11,13 @@
             "description": "More"
         },
         {
-            "class": ".view.View(container)",
+            "class": ".view.View(container)(container)",
             "clickable": false,
             "scrollable": false,
             "id": 2,
             "children": [
                 {
-                    "class": ".widget.ScrollView(container)",
+                    "class": ".widget.ScrollView(container)(container)",
                     "clickable": false,
                     "scrollable": true,
                     "id": 3,
@@ -29,19 +29,19 @@
                             "description": "POPULAR LINKS"
                         },
                         {
-                            "class": ".view.View(container)",
+                            "class": ".view.View(container)(container)",
                             "clickable": false,
                             "scrollable": false,
                             "id": 5,
                             "children": [
                                 {
-                                    "class": ".view.View(container)",
+                                    "class": ".view.View(container)(container)",
                                     "clickable": true,
                                     "scrollable": false,
                                     "id": 6,
                                     "children": [
                                         {
-                                            "class": ".view.View(container)",
+                                            "class": ".view.View(container)(container)",
                                             "clickable": true,
                                             "scrollable": false,
                                             "id": 7,
@@ -68,13 +68,13 @@
                                     ]
                                 },
                                 {
-                                    "class": ".view.View(container)",
+                                    "class": ".view.View(container)(container)",
                                     "clickable": true,
                                     "scrollable": false,
                                     "id": 11,
                                     "children": [
                                         {
-                                            "class": ".view.View(container)",
+                                            "class": ".view.View(container)(container)",
                                             "clickable": true,
                                             "scrollable": false,
                                             "id": 12,
@@ -100,13 +100,13 @@
                                     ]
                                 },
                                 {
-                                    "class": ".view.View(container)",
+                                    "class": ".view.View(container)(container)",
                                     "clickable": true,
                                     "scrollable": false,
                                     "id": 16,
                                     "children": [
                                         {
-                                            "class": ".view.View(container)",
+                                            "class": ".view.View(container)(container)",
                                             "clickable": true,
                                             "scrollable": false,
                                             "id": 17,
@@ -132,13 +132,13 @@
                                     ]
                                 },
                                 {
-                                    "class": ".view.View(container)",
+                                    "class": ".view.View(container)(container)",
                                     "clickable": true,
                                     "scrollable": false,
                                     "id": 21,
                                     "children": [
                                         {
-                                            "class": ".view.View(container)",
+                                            "class": ".view.View(container)(container)",
                                             "clickable": true,
                                             "scrollable": false,
                                             "id": 22,
@@ -173,19 +173,19 @@
                             "description": "AUSTRALIA POST WEBSITES & APPS"
                         },
                         {
-                            "class": ".view.View(container)",
+                            "class": ".view.View(container)(container)",
                             "clickable": false,
                             "scrollable": false,
                             "id": 27,
                             "children": [
                                 {
-                                    "class": ".view.View(container)",
+                                    "class": ".view.View(container)(container)",
                                     "clickable": true,
                                     "scrollable": false,
                                     "id": 28,
                                     "children": [
                                         {
-                                            "class": ".view.View(container)",
+                                            "class": ".view.View(container)(container)",
                                             "clickable": true,
                                             "scrollable": false,
                                             "id": 29,
@@ -212,13 +212,13 @@
                                     ]
                                 },
                                 {
-                                    "class": ".view.View(container)",
+                                    "class": ".view.View(container)(container)",
                                     "clickable": true,
                                     "scrollable": false,
                                     "id": 33,
                                     "children": [
                                         {
-                                            "class": ".view.View(container)",
+                                            "class": ".view.View(container)(container)",
                                             "clickable": true,
                                             "scrollable": false,
                                             "id": 34,
@@ -250,14 +250,14 @@
             ]
         },
         {
-            "class": ".view.ViewGroup(container)",
+            "class": ".view.ViewGroup(container)(container)",
             "clickable": false,
             "scrollable": false,
             "id": 38,
             "children": [
                 {
                     "resource-id": "au.auspost:id/action_track",
-                    "class": ".widget.FrameLayout(container)",
+                    "class": ".widget.FrameLayout(container)(container)",
                     "clickable": true,
                     "scrollable": false,
                     "id": 39,
@@ -280,7 +280,7 @@
                 },
                 {
                     "resource-id": "au.auspost:id/action_find_us",
-                    "class": ".widget.FrameLayout(container)",
+                    "class": ".widget.FrameLayout(container)(container)",
                     "clickable": true,
                     "scrollable": false,
                     "id": 42,
@@ -303,7 +303,7 @@
                 },
                 {
                     "resource-id": "au.auspost:id/action_account",
-                    "class": ".widget.FrameLayout(container)",
+                    "class": ".widget.FrameLayout(container)(container)",
                     "clickable": true,
                     "scrollable": false,
                     "id": 45,

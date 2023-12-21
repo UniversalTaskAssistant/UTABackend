@@ -1,0 +1,72 @@
+{
+    "class": "root(container)",
+    "clickable": false,
+    "scrollable": false,
+    "id": 0,
+    "children": [
+        {
+            "resource-id": ":id/decor_content_parent",
+            "class": ".view.ViewGroup(container)",
+            "clickable": false,
+            "scrollable": false,
+            "id": 1,
+            "children": [
+                {
+                    "resource-id": ".gallery3d:id/gl_root_view",
+                    "class": ".view.View",
+                    "clickable": false,
+                    "id": 2,
+                    "description": "AlbumsCameraimages videos available ."
+                },
+                {
+                    "class": ".widget.Button",
+                    "clickable": true,
+                    "id": 3,
+                    "description": "Camera"
+                },
+                {
+                    "resource-id": ":id/action_bar",
+                    "class": ".view.ViewGroup(container)",
+                    "clickable": false,
+                    "scrollable": false,
+                    "id": 4,
+                    "children": [
+                        {
+                            "resource-id": ":id/home",
+                            "class": ".widget.ImageView",
+                            "clickable": true,
+                            "id": 5
+                        },
+                        {
+                            "resource-id": ":id/text1",
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 6,
+                            "description": "Albums"
+                        },
+                        {
+                            "resource-id": ".gallery3d:id/action_camera",
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 7,
+                            "description": "Switch to Camera"
+                        },
+                        {
+                            "class": ".widget.ImageButton",
+                            "clickable": true,
+                            "id": 8,
+                            "description": "More options"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "resource-id": ":id/statusBarBackground",
+            "class": ".view.View",
+            "clickable": false,
+            "id": 9,
+            "description": "4:35"
+        }
+    ]
+}

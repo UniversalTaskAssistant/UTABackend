@@ -35,16 +35,11 @@ class _ThirdPartyAppAnalyser:
         """
         try:
             self.__model_manager.reset_llm_conversations(self.__model_identifier)
-
-            conversation = self.__base_prompt.format(title=tar_app['title'], description=tar_app['description'],
-                                                     printlog=printlog)
-
-            task_list = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation,
-                                                                     printlog=printlog)['content']
+            conversation = self.__base_prompt.format(title=tar_app['title'], description=tar_app['description'], printlog=printlog)
+            task_list = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation, printlog=printlog)['content']
             task_list = task_list.replace('\n', '').split(';')
             task_list = task_list[:-1] if len(task_list[-1]) == 0 else task_list
             task_list = [t.replace('\n', '').replace(' -', '-') for t in task_list]
-
             return task_list
         except Exception as e:
             raise e
