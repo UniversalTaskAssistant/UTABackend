@@ -28,7 +28,7 @@ class _ThirdPartyAppAnalyser:
         """
         Conclude the functionality of given app.
         Args:
-            tar_app: target app to be analyzed.
+            tar_app (dict): App including description, collected from google play
             printlog (bool): If True, enables logging of outputs.
         Returns:
             Functionality of given app.

@@ -34,7 +34,6 @@ elif test_section == 2:
     '''
     from ModelManagement import ModelManager
     model_mg = ModelManager()
-    model_mg.initialize_llm_model(identifier='task_decomposer')
 
     from TaskDeclearation.TaskDeclaration import TaskDeclarator
     task = 'Open wechat and send my mom a message'
@@ -75,3 +74,16 @@ elif test_section == 3:
     app_tasker.check_task_ui_relation(ui_data, task)
     app_tasker.check_ui_action(ui_data, task)
     app_tasker.analyze_app_task(ui_data, task)
+
+elif test_section == 4:
+    '''
+    ***********************************
+    *** Section 4 - Third Party App ***
+    ***********************************
+    '''
+    from ModelManagement import ModelManager
+    model_mg = ModelManager()
+
+    from ThirdPartyAppManagement import ThirdPartyAppManager
+    app_mg = ThirdPartyAppManager(model_manager=model_mg)
+    apps = app_mg.search_apps_fuzzy('chinese food')

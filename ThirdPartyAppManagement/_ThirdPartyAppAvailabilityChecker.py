@@ -2,13 +2,12 @@ import json
 
 
 class _ThirdPartyAppAvailabilityChecker:
-    def __init__(self, model_identifier, model_manager, system_connector):
+    def __init__(self, model_identifier, model_manager):
         """
         Initializes the AppAvailabilityChecker.
         Needs instances of SystemConnector and Initialised ModelManager.
         """
         self.__model_identifier = model_identifier
-        self.__system_connector = system_connector
         self.__model_manager = model_manager
 
         # Initialize the base prompt template
@@ -22,23 +21,7 @@ class _ThirdPartyAppAvailabilityChecker:
                              'Example: {{"App": "com.example.app", "Reason": "Directly performs the task"}} or ' \
                              '{{"App": "None", "Reason": "No app is related"}}.'
 
-    def get_available_apps(self):
-        """
-        Retrieves a list of available applications on the device.
-        Returns:
-            List of app package names.
-        """
-        return self.__system_connector.get_app_list_on_the_device()
-
-    def get_package_name(self):
-        """
-        Retrieves the package name of the currently active app on the device.
-        Returns:
-            Package name of the current app.
-        """
-        return self.__system_connector.get_current_package_and_activity_name()['package_name']
-
-    def check_related_apps(self, task, app_list=None, except_apps=None, printlog=False):
+    def check_related_apps(self, task, app_list, except_apps=None, printlog=False):
         """
         Checks for apps related to a given task.
         Args:
@@ -51,9 +34,6 @@ class _ThirdPartyAppAvailabilityChecker:
         """
         try:
             self.__model_manager.reset_llm_conversations(self.__model_identifier)
-
-            if app_list is None:
-                app_list = self.get_available_apps()
 
             # Provide a default empty list if except_apps is None
             except_apps_str = '; '.join(except_apps) if except_apps else ''
