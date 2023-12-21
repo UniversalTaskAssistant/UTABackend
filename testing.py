@@ -51,9 +51,9 @@ elif test_section == 2:
 
 elif test_section == 3:
     '''
-    ************************************
+    **********************************
     *** Section 3 - Task Execution ***
-    ************************************
+    **********************************
     '''
     # initiate model manager
     from ModelManagement import ModelManager
