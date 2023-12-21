@@ -1,6 +1,6 @@
 from DataStructures.config import *
 
-test_section = 2
+test_section = 3
 
 if test_section == 1:
     '''
@@ -24,6 +24,12 @@ if test_section == 1:
     ui = UIProcessor(model_manager=model_mg)
     ui_data = ui.load_ui_data(screenshot_file=screen_path, xml_file=xml_path, ui_resize=sys_connector.get_device_resolution())
     ui_data = ui.process_ui(ui_data=ui_data, show=True)
+
+    # save result to local
+    from SystemConnection import SystemConnector
+    system_connector = SystemConnector()
+    system_connector.save_json(ui_data.elements, ui_data.output_file_path_elements)
+    system_connector.save_json(ui_data.element_tree, ui_data.output_file_path_element_tree)
 
 elif test_section == 2:
     '''
@@ -62,9 +68,9 @@ elif test_section == 3:
     from SystemConnection import SystemConnector
     from DataStructures import UIData
     system_connector = SystemConnector()
-    ui_data = UIData('./data/test/guidata/0.png')
-    ui_data.elements = system_connector.load_json('./data/test/guidata/0_elements.json')
-    ui_data.element_tree = system_connector.load_json('./data/test/guidata/0_tree.json')
+    ui_data = UIData('./data/device/1.png')
+    ui_data.elements = system_connector.load_json('./data/ui/1_elements.json')
+    ui_data.element_tree = system_connector.load_json('./data/ui/1_tree.json')
 
     # check ui action
     from TaskExecution import AppTasker

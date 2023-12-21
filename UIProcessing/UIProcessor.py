@@ -9,7 +9,8 @@ class UIProcessor:
         self.ui_preprocessor = _UIPreProcessor()
         self.ui_analyser = _UIAnalyser(model_manager)
 
-    def load_ui_data(self, screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/app1'):
+    @staticmethod
+    def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/'):
         '''
         Load UI to UIData
         Args:

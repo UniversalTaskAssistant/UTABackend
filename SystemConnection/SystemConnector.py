@@ -1,3 +1,5 @@
+import os
+
 from SystemConnection._Device import _Device
 from SystemConnection._Local import _Local
 from DataStructures.config import *
@@ -8,6 +10,11 @@ class SystemConnector:
         self.__adb_device = _Device()
         self.__local = _Local()
 
+    '''
+    ******************
+    *** Adb Device ***
+    ******************
+    '''
     def connect_adb_device(self, printlog=False):
         """
         Connects to the first device found on the ADB server.
@@ -193,6 +200,11 @@ class SystemConnector:
         """
         self.__adb_device.input_text(text)
 
+    '''
+    ****************
+    *** Local IO ***
+    ****************
+    '''
     def load_xml(self, file_path, encoding='utf-8'):
         """
         Loads and parses an XML file.
@@ -233,6 +245,7 @@ class SystemConnector:
             file_path (str): Path where the XML file will be saved.
             encoding (str, optional): File encoding. Defaults to 'utf-8'.
         """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         self.__local.save_xml(file, file_path, encoding)
 
     def save_img(self, img, file_path):
@@ -242,6 +255,7 @@ class SystemConnector:
             img (bytes): Binary image data to save.
             file_path (str): Path where the image file will be saved.
         """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         self.__local.save_img(img, file_path)
 
     def save_json(self, file, file_path, encoding='utf-8'):
@@ -252,10 +266,11 @@ class SystemConnector:
             file_path (str): Path where the JSON file will be saved.
             encoding (str, optional): File encoding. Defaults to 'utf-8'.
         """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
         self.__local.save_json(file, file_path, encoding)
 
 
 if __name__ == '__main__':
     sys_connector = SystemConnector()
     sys_connector.connect_adb_device()
-    screen_path, xml_path = sys_connector.adb_cap_and_save_ui_screenshot_and_xml(1, WORK_PATH + 'data/device')
+    screen_path, xml_path = sys_connector.cap_and_save_ui_screenshot_and_xml(1, WORK_PATH + 'data/device')

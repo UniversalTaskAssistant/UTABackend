@@ -118,7 +118,8 @@ class _TaskUIActionChecker:
                                 ui_task_action["Reason"])
             print(action)
             return action
-        except Exception as e:
+        except TypeError as e:
+            print('No valid action on the UI for the task')
             raise e
 
     def reset_ui_action_checker(self):
