@@ -17,7 +17,7 @@ class _GoogleOCR:
 
         self.org_img = None     # cv2.img, original image
         self.ocr_result = None  # original results from google ocr
-        self.texts = []         # list of _Text for intermediate processing results
+        self.__texts = []         # list of _Text for intermediate processing results
 
     @staticmethod
     def __make_image_data(img_path):
@@ -49,7 +49,7 @@ class _GoogleOCR:
         Args:
             ocr_result: [{'description': '5:08', 'boundingPoly': {'vertices': [{'x': 58, 'y': 16}, {'x': 113, 'y': 15}, {'x': 113, 'y': 35}, {'x': 58, 'y': 36}]}}]
         Returns:
-            texts: [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
+            __texts: [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
         '''
         if ocr_result is not None:
             for i, result in enumerate(ocr_result):
@@ -67,17 +67,17 @@ class _GoogleOCR:
                 if error: continue
                 location = {'left': min(x_coordinates), 'top': min(y_coordinates),
                             'right': max(x_coordinates), 'bottom': max(y_coordinates)}
-                self.texts.append(Text(i, content, location))
+                self.__texts.append(Text(i, content, location))
 
     def __merge_intersected_texts(self):
         '''
-        Merge intersected texts (sentences or words)
+        Merge intersected __texts (sentences or words)
         '''
         changed = True
         while changed:
             changed = False
             temp_set = []
-            for text_a in self.texts:
+            for text_a in self.__texts:
                 merged = False
                 for text_b in temp_set:
                     if text_a.is_intersected(text_b, bias=2):
@@ -87,18 +87,18 @@ class _GoogleOCR:
                         break
                 if not merged:
                     temp_set.append(text_a)
-            self.texts = temp_set.copy()
+            self.__texts = temp_set.copy()
 
     def __text_filter_noise(self):
         '''
         Filter out some noise text that is abnormal single character
         '''
         valid_texts = []
-        for text in self.texts:
+        for text in self.__texts:
             if len(text.content) <= 1 and text.content.lower() not in ['a', ',', '.', '!', '?', '$', '%', ':', '&', '+']:
                 continue
             valid_texts.append(text)
-        self.texts = valid_texts
+        self.__texts = valid_texts
 
     def __text_sentences_recognition(self):
         '''
@@ -108,7 +108,7 @@ class _GoogleOCR:
         while changed:
             changed = False
             temp_set = []
-            for text_a in self.texts:
+            for text_a in self.__texts:
                 merged = False
                 for text_b in temp_set:
                     if text_a.is_on_same_line(text_b, 'h', bias_justify=0.2 * min(text_a.height, text_b.height),
@@ -119,8 +119,8 @@ class _GoogleOCR:
                         break
                 if not merged:
                     temp_set.append(text_a)
-            self.texts = temp_set.copy()
-        for i, text in enumerate(self.texts):
+            self.__texts = temp_set.copy()
+        for i, text in enumerate(self.__texts):
             text.id = i
 
     def __resize_label(self, shrink_rate):
@@ -129,7 +129,7 @@ class _GoogleOCR:
         Args:
             shrink_rate: rate to resize
         '''
-        for text in self.texts:
+        for text in self.__texts:
             for key in text.location:
                 text.location[key] = round(text.location[key] / shrink_rate)
 
@@ -137,12 +137,12 @@ class _GoogleOCR:
         '''
         Wrap up Text objects to list of dicts
         Args:
-            self.texts (list of _Text)
+            self.__texts (list of _Text)
         Returns:
             texts_dict (list of dict): [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
         '''
         texts_dict = []
-        for i, text in enumerate(self.texts):
+        for i, text in enumerate(self.__texts):
             loc = text.location
             t = {'id': i,
                  'bounds': [loc['left'], loc['top'], loc['right'], loc['bottom']],
@@ -152,7 +152,7 @@ class _GoogleOCR:
 
     def visualize_texts(self, shown_resize_height=800, show=False, write_path=None):
         '''
-        Visualize the texts
+        Visualize the __texts
         Args:
             shown_resize_height: The height of the shown image for better view
             show (bool): True to show on popup window
@@ -161,16 +161,16 @@ class _GoogleOCR:
 
         '''
         img = self.org_img.copy()
-        for text in self.texts:
+        for text in self.__texts:
             text.visualize_element(img, line=2)
         img_resize = img
         if shown_resize_height is not None:
             img_resize = cv2.resize(img, (int(shown_resize_height * (img.shape[1] / img.shape[0])), shown_resize_height))
 
         if show:
-            cv2.imshow('texts', img_resize)
+            cv2.imshow('__texts', img_resize)
             cv2.waitKey(0)
-            cv2.destroyWindow('texts')
+            cv2.destroyWindow('__texts')
         if write_path is not None:
             cv2.imwrite(write_path, img_resize)
         return img_resize
@@ -182,15 +182,15 @@ class _GoogleOCR:
             file_path: File to save
         '''
         f_out = open(file_path, 'w')
-        output = {'img_shape': self.org_img.shape, 'texts': []}
-        for text in self.texts:
+        output = {'img_shape': self.org_img.shape, '__texts': []}
+        for text in self.__texts:
             c = {'id': text.id, 'content': text.content}
             loc = text.location
             c['column_min'], c['row_min'], c['column_max'], c['row_max'] = loc['left'], loc['top'], loc['right'], loc[
                 'bottom']
             c['width'] = text.width
             c['height'] = text.height
-            output['texts'].append(c)
+            output['__texts'].append(c)
         json.dump(output, f_out, indent=4)
 
     def request_google_ocr(self, img_path):
@@ -221,17 +221,16 @@ class _GoogleOCR:
         except Exception as e:
             raise e
 
-    def detect_text_ocr(self, img_path, output_dir='data/output', show=False, save=False, shrink_size=False):
+    def detect_text_ocr(self, img_path, output_dir='data/output', show=False, shrink_size=False):
         '''
-        Detect texts on the image using google ocr
+        Detect __texts on the image using google ocr
         Args:
             img_path: The file path of the image
             output_dir: Directory to store the output
             show (bool): True to visualize the result
-            save (bool): True to save to the local
             shrink_size (bool): True to shrink the image before processing for faster speed
         Returns:
-            texts (list of dicts): [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
+            __texts (list of dicts): [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
         '''
         start = time.time()
         name = img_path.replace('\\', '/').split('/')[-1][:-4]
@@ -249,10 +248,8 @@ class _GoogleOCR:
         self.__text_sentences_recognition()
         if shrink_size:
             self.__resize_label(shrink_rate)
-        if save:
-            os.makedirs(output_dir, exist_ok=True)
-            self.visualize_texts(show=show, write_path=pjoin(output_dir, name + '.jpg'))
-            self.save_detection_json(pjoin(output_dir, name + '.json'))
+        if show:
+            self.visualize_texts(show=True)
             print("[Text Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, img_path, pjoin(output_dir, name + '.json')))
         return self.__wrap_up_texts()
 
@@ -260,4 +257,4 @@ class _GoogleOCR:
 if __name__ == '__main__':
     google = _GoogleOCR()
     google.detect_text_ocr(img_path=WORK_PATH + '/data/0.png', output_dir=WORK_PATH + '/data/ocr',
-                           shrink_size=True, save=True, show=True)
+                           shrink_size=True, show=True)

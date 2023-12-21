@@ -50,7 +50,7 @@ class _UIAnalyser:
                     description = None
             ele['description'] = description
         # save the elements with 'description' attribute
-        json.dump(ui_data.elements, open(ui_data.output_file_path_elements, 'w', encoding='utf-8'), indent=4)
+        # json.dump(ui_data.elements, open(ui_data.output_file_path_elements, 'w', encoding='utf-8'), indent=4)
         # print('Save elements to', self.output_file_path_elements)
 
     def ocr_detect_ui_text(self, ui_data):
@@ -59,7 +59,7 @@ class _UIAnalyser:
         Args:
             ui_data (UIData): Target UI data for analysis
         Returns:
-            ui_data.ocr_text: UI ocr detection result, list of texts {}
+            ui_data.ocr_text: UI ocr detection result, list of __texts {}
             ui_data.elements_leaves['text']: store text content for each element
         '''
         def match_text_and_element(ele):
@@ -117,7 +117,7 @@ class _UIAnalyser:
         '''
         # print('--- Generate element tree ---')
         ui_data.element_tree = self.__combine_children_to_tree(ui_data=ui_data, start_element=ui_data.elements[0])
-        json.dump(ui_data.element_tree, open(ui_data.output_file_path_element_tree, 'w'), indent=4)
+        # json.dump(ui_data.element_tree, open(ui_data.output_file_path_element_tree, 'w'), indent=4)
         # print('Save element tree to', self.output_file_path_element_tree)
 
     def __combine_children_to_tree(self, ui_data, start_element):

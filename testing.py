@@ -1,6 +1,6 @@
 from DataStructures.config import *
 
-test_section = 3
+test_section = 1
 
 if test_section == 1:
     '''
@@ -23,8 +23,7 @@ if test_section == 1:
     from UIProcessing.UIProcessor import UIProcessor
     ui = UIProcessor(model_manager=model_mg)
     ui_data = ui.load_ui_data(screenshot_file=screen_path, xml_file=xml_path, ui_resize=sys_connector.get_device_resolution())
-    ui.process_ui()
-    ui_data.show_all_elements()
+    ui_data = ui.process_ui(ui_data=ui_data, show=True)
 
 elif test_section == 2:
     '''

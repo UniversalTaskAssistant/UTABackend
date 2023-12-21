@@ -6,7 +6,6 @@ from UIProcessing._UIAnalyser import _UIAnalyser
 
 class UIProcessor:
     def __init__(self, model_manager):
-        self.ui_data = None
         self.ui_preprocessor = _UIPreProcessor()
         self.ui_analyser = _UIAnalyser(model_manager)
 
@@ -21,8 +20,7 @@ class UIProcessor:
         Returns:
             self.ui_data (UIData)
         '''
-        self.ui_data = UIData(screenshot_file, xml_file, ui_resize, output_dir)
-        return self.ui_data
+        return UIData(screenshot_file, xml_file, ui_resize, output_dir)
 
     def ui_vh_xml_cvt_to_json(self, ui_data):
         '''
@@ -66,7 +64,7 @@ class UIProcessor:
         '''
         self.ui_analyser.ui_build_element_tree(ui_data)
 
-    def process_ui(self, ui_data=None, show=False):
+    def process_ui(self, ui_data, show=False):
         '''
         Process a UI, including
             1. Convert vh to tidy and formatted json
@@ -79,16 +77,13 @@ class UIProcessor:
         Returns:
              ui_data (UIData): UI data after processing
         '''
-        if not ui_data:
-            ui_data = self.ui_data
-        else:
-            self.ui_data = ui_data
         self.ui_vh_xml_cvt_to_json(ui_data)
         self.ui_info_extraction(ui_data)
         self.ui_analysis_elements_description(ui_data)
         self.ui_build_element_tree(ui_data)
         if show:
             ui_data.show_all_elements()
+        return ui_data
 
 
 if __name__ == '__main__':
@@ -97,5 +92,5 @@ if __name__ == '__main__':
     model_mg.initialize_vision_model()
 
     ui = UIProcessor(model_manager=model_mg)
-    ui_data = ui.load_ui_data(screenshot_file=WORK_PATH + 'data/0.png', xml_file=WORK_PATH + 'data/0.xml', ui_resize=(1080, 1920))
-    ui.process_ui()
+    uidata = ui.load_ui_data(screenshot_file=WORK_PATH + 'data/0.png', xml_file=WORK_PATH + 'data/0.xml', ui_resize=(1080, 1920))
+    uidata = ui.process_ui(ui_data=uidata)

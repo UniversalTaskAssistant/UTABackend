@@ -21,11 +21,10 @@ class UIData:
         self.elements_leaves = []   # leaf nodes that does not have children
         self.element_tree = None    # structural element tree, dict type
         self.blocks = []            # list of blocks from element tree
-        self.ocr_text = []          # UI ocr detection result, list of texts {}
+        self.ocr_text = []          # UI ocr detection result, list of __texts {}
 
         # output file paths
         self.output_dir = pjoin(output_dir, 'guidata')
-        os.makedirs(self.output_dir, exist_ok=True)
         self.output_file_path_elements = pjoin(self.output_dir, self.ui_no + '_elements.json')
         self.output_file_path_element_tree = pjoin(self.output_dir, self.ui_no + '_tree.json')
 
