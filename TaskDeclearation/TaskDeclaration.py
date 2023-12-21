@@ -52,7 +52,8 @@ class TaskDeclarator:
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
         '''
-        self.task_clarifier_dict[clarifier_identifier].clarify_task(task=org_task, user_message=user_message, printlog=printlog)
+        return self.task_clarifier_dict[clarifier_identifier].clarify_task(task=org_task, user_message=user_message,
+                                                                            printlog=printlog)
 
     def classify_task(self, classifier_identifier, task, printlog=False):
         '''
@@ -64,7 +65,7 @@ class TaskDeclarator:
         Returns:
             LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
         '''
-        self.task_classifier_dict[classifier_identifier].classify_task(task=task, printlog=printlog)
+        return self.task_classifier_dict[classifier_identifier].classify_task(task=task, printlog=printlog)
 
     def decompose_task(self, decomposer_identifier, task, printlog=False):
         '''
@@ -76,7 +77,7 @@ class TaskDeclarator:
         Returns:
             LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
         '''
-        self.task_decomposer_dict[decomposer_identifier].decompose_task(task=task, printlog=printlog)
+        return self.task_decomposer_dict[decomposer_identifier].decompose_task(task=task, printlog=printlog)
 
 
 if __name__ == '__main__':

@@ -29,6 +29,7 @@ class _TaskClassifier:
             cls = self.__model_manager.create_llm_conversation(self.__model_identifier, message, printlog=printlog)['content']
             cls = json.loads(cls)
             print(cls)
+            return cls
         except Exception as e:
             raise e
 
