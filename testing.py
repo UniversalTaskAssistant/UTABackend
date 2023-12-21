@@ -1,6 +1,6 @@
 from DataStructures.config import *
 
-test_section = 1
+test_section = 2
 
 if test_section == 1:
     '''
@@ -31,9 +31,11 @@ elif test_section == 2:
     *** Section 2 - Task Declaration ***
     ************************************
     '''
+    # initiate model manager
     from ModelManagement import ModelManager
     model_mg = ModelManager()
 
+    # declare task
     from TaskDeclearation.TaskDeclaration import TaskDeclarator
     task = 'Open wechat and send my mom a message'
     task_declarator = TaskDeclarator(model_manager=model_mg)
@@ -50,29 +52,27 @@ elif test_section == 3:
     *** Section 3 - Task Execution ***
     ************************************
     '''
-    from TaskExecution import AppTasker
+    # initiate model manager
     from ModelManagement import ModelManager
-    from SystemConnection import SystemConnector
-    from DataStructures import UIData
     model_manager = ModelManager()
     model_manager.initialize_llm_model(identifier='ui_relation_checker')
     model_manager.initialize_llm_model(identifier='ui_action_checker')
-    app_tasker = AppTasker(model_manager=model_manager, ui_relation_checker_identifier='ui_relation_checker',
-                           ui_action_checker_identifier='ui_action_checker')
 
+    # load testing ui
+    from SystemConnection import SystemConnector
+    from DataStructures import UIData
     system_connector = SystemConnector()
-    elements = system_connector.load_json('./data/test/guidata/0_elements.json')
-    tree = system_connector.load_json('./data/test/guidata/0_tree.json')
-
     ui_data = UIData('./data/test/guidata/0.png')
-    ui_data.elements = elements
-    ui_data.element_tree = tree
+    ui_data.elements = system_connector.load_json('./data/test/guidata/0_elements.json')
+    ui_data.element_tree = system_connector.load_json('./data/test/guidata/0_tree.json')
 
+    # check ui action
+    from TaskExecution import AppTasker
     task = 'Open the youtube'
-
+    app_tasker = AppTasker(model_manager=model_manager, ui_relation_checker_identifier='ui_relation_checker', ui_action_checker_identifier='ui_action_checker')
     app_tasker.check_task_ui_relation(ui_data, task)
     app_tasker.check_ui_action(ui_data, task)
-    app_tasker.analyze_app_task(ui_data, task)
+    app_tasker.analyze_ui_task(ui_data, task)
 
 elif test_section == 4:
     '''
@@ -80,9 +80,11 @@ elif test_section == 4:
     *** Section 4 - Third Party App ***
     ***********************************
     '''
+    # initiate model manager
     from ModelManagement import ModelManager
     model_mg = ModelManager()
 
+    # check third party apps
     from ThirdPartyAppManagement import ThirdPartyAppManager
     app_mg = ThirdPartyAppManager(model_manager=model_mg)
     apps = app_mg.search_apps_fuzzy('chinese food')

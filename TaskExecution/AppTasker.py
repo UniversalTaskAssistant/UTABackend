@@ -40,7 +40,7 @@ class AppTasker:
         """
         return self.action_checker.check_action(ui=ui_data, task=task, except_elements=except_elements, printlog=printlog)
 
-    def analyze_app_task(self, ui_data, task, except_elements=None, printlog=False):
+    def analyze_ui_task(self, ui_data, task, except_elements=None, printlog=False):
         '''
         Identify the relation and action for the app-related task
         Args:
