@@ -1,6 +1,6 @@
 from DataStructures.config import *
 
-test_section = 1
+test_section = 3
 
 if test_section == 1:
     '''
@@ -45,3 +45,33 @@ elif test_section == 2:
     task_declarator.decompose_task(decomposer_identifier='task_dec1', task=task)
     task_declarator.initialize_task_classifier('task_cls1')
     task_declarator.classify_task(classifier_identifier='task_cls1', task=task)
+
+elif test_section == 3:
+    '''
+    ************************************
+    *** Section 3 - Task Execution ***
+    ************************************
+    '''
+    from TaskExecution import AppTasker
+    from ModelManagement import ModelManager
+    from SystemConnection import SystemConnector
+    from DataStructures import UIData
+    model_manager = ModelManager()
+    model_manager.initialize_llm_model(identifier='ui_relation_checker')
+    model_manager.initialize_llm_model(identifier='ui_action_checker')
+    app_tasker = AppTasker(model_manager=model_manager, ui_relation_checker_identifier='ui_relation_checker',
+                           ui_action_checker_identifier='ui_action_checker')
+
+    system_connector = SystemConnector()
+    elements = system_connector.load_json('./data/test/guidata/0_elements.json')
+    tree = system_connector.load_json('./data/test/guidata/0_tree.json')
+
+    ui_data = UIData('./data/test/guidata/0.png')
+    ui_data.elements = elements
+    ui_data.element_tree = tree
+
+    task = 'Open the youtube'
+
+    app_tasker.check_task_ui_relation(ui_data, task)
+    app_tasker.check_ui_action(ui_data, task)
+    app_tasker.analyze_app_task(ui_data, task)

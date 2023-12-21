@@ -27,6 +27,7 @@ class _TaskDecomposer:
             decomposition = self.__model_manager.create_llm_conversation(self.__model_identifier, message, printlog=printlog)['content']
             decomposition = json.loads(decomposition)
             print(decomposition)
+            return decomposition
         except Exception as e:
             raise e
 

@@ -30,6 +30,7 @@ class _TaskClarifier:
             clear = self.__model_manager.create_llm_conversation(self.__model_identifier, message, printlog=printlog)['content']
             clear = json.loads(clear)
             print(clear)
+            return clear
         except Exception as e:
             raise e
 

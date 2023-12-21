@@ -2,16 +2,17 @@ from .AutoTasker import _TaskUIActionChecker, _TaskUIRelationChecker
 
 
 class AppTasker:
-    def __init__(self, **kwargs):
+    def __init__(self, model_manager, **kwargs):
         """
         Initializes the AppTasker with required paths and settings.
         Args:
             **kwargs: Keyword arguments containing paths and settings for task automation.
                       Required keys are 'ui_relation_checker', 'ui_action_checker', and 'model_manager'.
         """
-        assert 'ui_relation_checker' in kwargs and 'ui_action_checker' in kwargs and 'model_manager' in kwargs
-        self.relation_checker = _TaskUIRelationChecker(kwargs['ui_relation_checker'], kwargs['model_manager'])
-        self.action_checker = _TaskUIActionChecker(kwargs['ui_action_checker'], kwargs['model_manager'])
+        assert 'ui_relation_checker_identifier' in kwargs and 'ui_action_checker_identifier' in kwargs
+        self.model_manager = model_manager
+        self.relation_checker = _TaskUIRelationChecker(kwargs['ui_relation_checker_identifier'], self.model_manager)
+        self.action_checker = _TaskUIActionChecker(kwargs['ui_action_checker_identifier'], self.model_manager)
 
     def check_task_ui_relation(self, ui_data, task, except_elements=None, printlog=False):
         """
@@ -54,10 +55,10 @@ class AppTasker:
         # 1. check the relation between the UI and the task
         relation = self.check_task_ui_relation(ui_data=ui_data, task=task, except_elements=except_elements, printlog=printlog)
         # If the task is unrelated to this UI, return unrelated status to try to launch related app
-        if relation['Relation'] == 'Unrelated':
+        if relation.relation == 'Unrelated':
             return 0
         # If the task is already completed, return complete status
-        elif relation['Relation'] == 'Completed':
+        elif relation.relation == 'Completed':
             return 1
         # If the task is related to this UI, check UI action
         else:
