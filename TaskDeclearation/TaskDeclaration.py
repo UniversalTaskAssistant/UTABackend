@@ -52,8 +52,7 @@ class TaskDeclarator:
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
         '''
-        return self.task_clarifier_dict[clarifier_identifier].clarify_task(task=org_task, user_message=user_message,
-                                                                            printlog=printlog)
+        return self.task_clarifier_dict[clarifier_identifier].clarify_task(task=org_task, user_message=user_message, printlog=printlog)
 
     def classify_task(self, classifier_identifier, task, printlog=False):
         '''
