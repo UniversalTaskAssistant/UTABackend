@@ -6,9 +6,9 @@ from TaskDeclearation._TaskDecomposer import _TaskDecomposer
 class TaskDeclarator:
     def __init__(self, model_manager):
         self.__model_manager = model_manager
-        self.task_clarifier_dict = dict()
-        self.task_classifier_dict = dict()
-        self.task_decomposer_dict = dict()
+        self.__task_clarifier_dict = dict()
+        self.__task_classifier_dict = dict()
+        self.__task_decomposer_dict = dict()
 
     def initialize_task_clarifier(self, clarifier_identifier):
         """
@@ -16,9 +16,9 @@ class TaskDeclarator:
         Args:
             clarifier_identifier: name of the new initialized task clarifier.
         """
-        assert clarifier_identifier not in self.task_clarifier_dict
+        assert clarifier_identifier not in self.__task_clarifier_dict
         self.__model_manager.initialize_llm_model(identifier=clarifier_identifier)
-        self.task_clarifier_dict[clarifier_identifier] = _TaskClarifier(model_identifier=clarifier_identifier, model_manager=self.__model_manager)
+        self.__task_clarifier_dict[clarifier_identifier] = _TaskClarifier(model_identifier=clarifier_identifier, model_manager=self.__model_manager)
 
     def initialize_task_classifier(self, classifier_identifier):
         """
@@ -26,9 +26,9 @@ class TaskDeclarator:
         Args:
             classifier_identifier: name of the new initialized task classifier.
         """
-        assert classifier_identifier not in self.task_classifier_dict
+        assert classifier_identifier not in self.__task_classifier_dict
         self.__model_manager.initialize_llm_model(identifier=classifier_identifier)
-        self.task_classifier_dict[classifier_identifier] = _TaskClassifier(model_identifier=classifier_identifier, model_manager=self.__model_manager)
+        self.__task_classifier_dict[classifier_identifier] = _TaskClassifier(model_identifier=classifier_identifier, model_manager=self.__model_manager)
 
     def initialize_task_decomposer(self, decomposer_identifier):
         """
@@ -37,9 +37,9 @@ class TaskDeclarator:
             decomposer_identifier: name of the new initialized task decomposer.
             model_manager: ModelManager.
         """
-        assert decomposer_identifier not in self.task_decomposer_dict
+        assert decomposer_identifier not in self.__task_decomposer_dict
         self.__model_manager.initialize_llm_model(identifier=decomposer_identifier)
-        self.task_decomposer_dict[decomposer_identifier] = _TaskDecomposer(model_identifier=decomposer_identifier, model_manager=self.__model_manager)
+        self.__task_decomposer_dict[decomposer_identifier] = _TaskDecomposer(model_identifier=decomposer_identifier, model_manager=self.__model_manager)
 
     def clarify_task(self, clarifier_identifier, org_task, user_message=None, printlog=False):
         '''
@@ -52,7 +52,7 @@ class TaskDeclarator:
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
         '''
-        return self.task_clarifier_dict[clarifier_identifier].clarify_task(task=org_task, user_message=user_message, printlog=printlog)
+        return self.__task_clarifier_dict[clarifier_identifier].clarify_task(task=org_task, user_message=user_message, printlog=printlog)
 
     def classify_task(self, classifier_identifier, task, printlog=False):
         '''
@@ -64,7 +64,7 @@ class TaskDeclarator:
         Returns:
             LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
         '''
-        return self.task_classifier_dict[classifier_identifier].classify_task(task=task, printlog=printlog)
+        return self.__task_classifier_dict[classifier_identifier].classify_task(task=task, printlog=printlog)
 
     def decompose_task(self, decomposer_identifier, task, printlog=False):
         '''
@@ -76,7 +76,7 @@ class TaskDeclarator:
         Returns:
             LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
         '''
-        return self.task_decomposer_dict[decomposer_identifier].decompose_task(task=task, printlog=printlog)
+        return self.__task_decomposer_dict[decomposer_identifier].decompose_task(task=task, printlog=printlog)
 
 
 if __name__ == '__main__':

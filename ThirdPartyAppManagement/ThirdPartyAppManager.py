@@ -4,11 +4,13 @@ from ThirdPartyAppManagement import _ThirdPartyAppAnalyser, _ThirdPartyAppAvaila
 class ThirdPartyAppManager:
     def __init__(self, model_manager):
         self.__model_manager = model_manager
-        self.__model_manager.initialize_llm_model(identifier='app_analyser')
-        self.__model_manager.initialize_llm_model(identifier='app_checker')
+        self.__app_analyser_identifier = 'app_analyser'
+        self.__app_checker_identifier = 'app_checker'
+        self.__model_manager.initialize_llm_model(identifier=self.__app_analyser_identifier)
+        self.__model_manager.initialize_llm_model(identifier=self.__app_checker_identifier)
 
-        self.__app_analyser_dict = _ThirdPartyAppAnalyser('app_analyser', self.__model_manager)
-        self.__app_checker_dict = _ThirdPartyAppAvailabilityChecker('app_checker', self.__model_manager)
+        self.__app_analyser_dict = _ThirdPartyAppAnalyser(self.__app_analyser_identifier, self.__model_manager)
+        self.__app_checker_dict = _ThirdPartyAppAvailabilityChecker(self.__app_checker_identifier, self.__model_manager)
         self.__app_searcher = _ThirdPartyAppSearcher()
 
     def search_app_by_name(self, app_name):
@@ -31,11 +33,10 @@ class ThirdPartyAppManager:
         """
         return self.__app_searcher.search_apps_fuzzy(disp)
 
-    def check_related_apps(self, checker_identifier, task, app_list, except_apps=None, printlog=False):
+    def check_related_apps(self, task, app_list, except_apps=None, printlog=False):
         """
         Checks for apps related to a given task.
         Args:
-            checker_identifier: identifier of initialized checker
             task (str): The task for which related apps are to be found.
             app_list (list): A list of apps to consider.
             except_apps (list, optional): Apps to exclude from consideration.

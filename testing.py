@@ -14,12 +14,9 @@ if test_section == 1:
     sys_connector.connect_adb_device()
     screen_path, xml_path = sys_connector.cap_and_save_ui_screenshot_and_xml(ui_id=1, output_dir=WORK_PATH + 'data/device')
 
-    # initiate model manager
+    # process ui data
     from ModelManagement import ModelManager
     model_mg = ModelManager()
-    model_mg.initialize_vision_model()
-
-    # process ui data
     from UIProcessing.UIProcessor import UIProcessor
     ui = UIProcessor(model_manager=model_mg)
     ui_data = ui.load_ui_data(screenshot_file=screen_path, xml_file=xml_path, ui_resize=sys_connector.get_device_resolution())
@@ -61,8 +58,6 @@ elif test_section == 3:
     # initiate model manager
     from ModelManagement import ModelManager
     model_manager = ModelManager()
-    model_manager.initialize_llm_model(identifier='ui_relation_checker')
-    model_manager.initialize_llm_model(identifier='ui_action_checker')
 
     # load testing ui
     from SystemConnection import SystemConnector
@@ -75,10 +70,12 @@ elif test_section == 3:
     # check ui action
     from TaskExecution import AppTasker
     task = 'Open the youtube'
-    app_tasker = AppTasker(model_manager=model_manager, ui_relation_checker_identifier='ui_relation_checker', ui_action_checker_identifier='ui_action_checker')
-    app_tasker.check_task_ui_relation(ui_data, task)
-    app_tasker.check_ui_action(ui_data, task)
-    app_tasker.analyze_ui_task(ui_data, task)
+    app_tasker = AppTasker(model_manager=model_manager)
+    app_tasker.initialize_relation_checker('ui_relation_checker')
+    app_tasker.initialize_action_checker('ui_action_checker')
+    app_tasker.check_task_ui_relation('ui_relation_checker', ui_data, task)
+    app_tasker.check_ui_action('ui_action_checker', ui_data, task)
+    app_tasker.analyze_ui_task('ui_relation_checker', 'ui_action_checker', ui_data, task)
 
 elif test_section == 4:
     '''

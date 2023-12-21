@@ -6,8 +6,11 @@ from UIProcessing._UIAnalyser import _UIAnalyser
 
 class UIProcessor:
     def __init__(self, model_manager):
-        self.ui_preprocessor = _UIPreProcessor()
-        self.ui_analyser = _UIAnalyser(model_manager)
+        self.__model_manager = model_manager
+        self.__model_manager.initialize_vision_model()
+
+        self.__ui_preprocessor = _UIPreProcessor()
+        self.__ui_analyser = _UIAnalyser(self.__model_manager)
 
     @staticmethod
     def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/'):
@@ -31,7 +34,7 @@ class UIProcessor:
         Returns:
             ui_data.ui_vh_json (dict): VH in a tidy json format
         '''
-        self.ui_preprocessor.ui_vh_xml_cvt_to_json(ui_data=ui_data)
+        self.__ui_preprocessor.ui_vh_xml_cvt_to_json(ui_data=ui_data)
 
     def ui_info_extraction(self, ui_data):
         '''
@@ -41,7 +44,7 @@ class UIProcessor:
         Returns:
             ui_data.elements; ui_data.elements_leaves (list of dicts)
         '''
-        self.ui_preprocessor.ui_info_extraction(ui_data=ui_data)
+        self.__ui_preprocessor.ui_info_extraction(ui_data=ui_data)
 
     def ui_analysis_elements_description(self, ui_data, ocr=True, cls=True):
         '''
@@ -53,7 +56,7 @@ class UIProcessor:
         Returns:
             ui_data.element['description']: 'description' attribute in element
         '''
-        self.ui_analyser.ui_analysis_elements_description(ui_data=ui_data, ocr=ocr, cls=cls)
+        self.__ui_analyser.ui_analysis_elements_description(ui_data=ui_data, ocr=ocr, cls=cls)
 
     def ui_build_element_tree(self, ui_data):
         '''
@@ -63,7 +66,7 @@ class UIProcessor:
         Returns:
             ui_data.element_tree (dict): structural element tree
         '''
-        self.ui_analyser.ui_build_element_tree(ui_data)
+        self.__ui_analyser.ui_build_element_tree(ui_data)
 
     def process_ui(self, ui_data, show=False):
         '''

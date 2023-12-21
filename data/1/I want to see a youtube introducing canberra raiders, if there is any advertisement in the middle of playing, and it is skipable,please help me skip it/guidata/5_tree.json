@@ -1,0 +1,108 @@
+{
+    "class": "root(container)",
+    "clickable": false,
+    "scrollable": false,
+    "id": 0,
+    "children": [
+        {
+            "class": "x.recyclerview.widget.RecyclerView(container)",
+            "clickable": false,
+            "scrollable": true,
+            "id": 1,
+            "children": [
+                {
+                    "class": ".widget.ScrollView(container)",
+                    "clickable": false,
+                    "scrollable": false,
+                    "id": 2,
+                    "children": [
+                        {
+                            "resource-id": ".chrome:id/fre_logo",
+                            "class": ".widget.ImageView",
+                            "clickable": false,
+                            "id": 3
+                        },
+                        {
+                            "resource-id": ".chrome:id/title",
+                            "class": ".widget.TextView",
+                            "clickable": false,
+                            "id": 4,
+                            "description": "Welcome to Chrome"
+                        },
+                        {
+                            "resource-id": ".chrome:id/signin_fre_selected_account",
+                            "class": ".widget.LinearLayout(container)",
+                            "clickable": true,
+                            "scrollable": false,
+                            "id": 5,
+                            "children": [
+                                {
+                                    "resource-id": ".chrome:id/account_image",
+                                    "class": ".widget.ImageView",
+                                    "clickable": true,
+                                    "id": 6,
+                                    "description": "TI F"
+                                },
+                                {
+                                    "resource-id": ".chrome:id/account_text_primary",
+                                    "class": ".widget.TextView",
+                                    "clickable": true,
+                                    "id": 7,
+                                    "description": "Frank Sun"
+                                },
+                                {
+                                    "resource-id": ".chrome:id/account_text_secondary",
+                                    "class": ".widget.TextView",
+                                    "clickable": true,
+                                    "id": 8,
+                                    "description": "franksun1126@gmail.com"
+                                },
+                                {
+                                    "resource-id": ".chrome:id/signin_fre_selected_account_expand_icon",
+                                    "class": ".widget.ImageView",
+                                    "clickable": true,
+                                    "id": 9,
+                                    "description": "expand_more"
+                                }
+                            ]
+                        },
+                        {
+                            "resource-id": ".chrome:id/signin_fre_continue_button",
+                            "class": ".widget.Button",
+                            "clickable": true,
+                            "id": 10,
+                            "description": "Continue as Frank"
+                        },
+                        {
+                            "resource-id": ".chrome:id/signin_fre_dismiss_button",
+                            "class": ".widget.Button",
+                            "clickable": true,
+                            "id": 11,
+                            "description": "Use without an account"
+                        }
+                    ]
+                },
+                {
+                    "resource-id": ".chrome:id/signin_fre_footer",
+                    "class": ".widget.TextView",
+                    "clickable": false,
+                    "id": 12,
+                    "description": "By continuing, you agree to the Terms of Service. To help improve the app, Chrome sends usage and crash data to Google. Manage"
+                }
+            ]
+        },
+        {
+            "resource-id": ":id/statusBarBackground",
+            "class": ".view.View",
+            "clickable": false,
+            "id": 13,
+            "description": "2:38"
+        },
+        {
+            "resource-id": ":id/navigationBarBackground",
+            "class": ".view.View",
+            "clickable": false,
+            "id": 14
+        }
+    ]
+}

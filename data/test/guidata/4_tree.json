@@ -1,0 +1,436 @@
+{
+    "class": "root(container)",
+    "clickable": false,
+    "scrollable": false,
+    "id": 0,
+    "children": [
+        {
+            "resource-id": ".google.youtube:id/watch_while_layout_coordinator_layout",
+            "class": ".widget.ScrollView(container)",
+            "clickable": false,
+            "scrollable": true,
+            "id": 1,
+            "children": [
+                {
+                    "resource-id": ".google.youtube:id/toolbar",
+                    "class": ".view.ViewGroup(container)",
+                    "clickable": false,
+                    "scrollable": false,
+                    "id": 2,
+                    "children": [
+                        {
+                            "class": ".widget.ImageButton",
+                            "clickable": true,
+                            "id": 3,
+                            "description": "Navigate up"
+                        },
+                        {
+                            "resource-id": ".google.youtube:id/search_query",
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 4,
+                            "description": "canberra raiders"
+                        },
+                        {
+                            "resource-id": ".google.youtube:id/search_clear",
+                            "class": ".widget.ImageView",
+                            "clickable": true,
+                            "id": 5,
+                            "description": "Clear"
+                        },
+                        {
+                            "resource-id": ".google.youtube:id/voice_search",
+                            "class": ".widget.ImageView",
+                            "clickable": true,
+                            "id": 6,
+                            "description": "Voice search"
+                        },
+                        {
+                            "resource-id": ".google.youtube:id/media_route_button",
+                            "class": ".view.View",
+                            "clickable": true,
+                            "id": 7,
+                            "description": "Cast. Disconnected"
+                        },
+                        {
+                            "class": ".widget.ImageView",
+                            "clickable": true,
+                            "id": 8,
+                            "description": ": / More options"
+                        }
+                    ]
+                },
+                {
+                    "resource-id": ".google.youtube:id/inline_player_container",
+                    "class": ".view.ViewGroup",
+                    "clickable": false,
+                    "id": 9,
+                    "description": "Canberra Raiders Jersey 2023Melbourne Storm Jersey 2023Visit siteYour favorite team merchandiseRetro IndigenousAnzac Jersey with worldwide delivery .Sponsoredwww.irugbystore.com/2023 JerseysLatest highlightsCanberra RaidersNational Rugby LeagueNRLHIGHLIGHTSNRLRetro JerseysFINALFOR THEAGES !!All BlacksNRL Highlights : KnightsRaidersFinals WeekNRL on NineNRL on Nine62K viewsmonths agoA15:14NRL:AFLNRLDRASENOFFNRLRounNRL"
+                },
+                {
+                    "resource-id": ".google.youtube:id/results",
+                    "class": ".support.v7.widget.RecyclerView(container)",
+                    "clickable": false,
+                    "scrollable": true,
+                    "id": 10,
+                    "children": [
+                        {
+                            "class": ".view.ViewGroup",
+                            "clickable": false,
+                            "id": 11
+                        },
+                        {
+                            "class": ".view.ViewGroup(container)",
+                            "clickable": false,
+                            "scrollable": false,
+                            "id": 12,
+                            "children": [
+                                {
+                                    "class": ".view.ViewGroup(container)",
+                                    "clickable": false,
+                                    "scrollable": false,
+                                    "id": 13,
+                                    "children": [
+                                        {
+                                            "class": ".view.ViewGroup",
+                                            "clickable": true,
+                                            "id": 14,
+                                            "description": "Canberra Raiders Jersey 2023Melbourne Storm Jersey 2023"
+                                        },
+                                        {
+                                            "class": ".widget.ImageView",
+                                            "clickable": true,
+                                            "id": 15,
+                                            "description": "Visit site"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "class": ".view.ViewGroup(container)",
+                                    "clickable": true,
+                                    "scrollable": false,
+                                    "id": 16,
+                                    "children": [
+                                        {
+                                            "class": ".view.ViewGroup",
+                                            "clickable": true,
+                                            "id": 17,
+                                            "description": "Your favorite team merchandiseRetro IndigenousAnzac Jersey with worldwide delivery ."
+                                        },
+                                        {
+                                            "class": ".widget.Button",
+                                            "clickable": true,
+                                            "id": 18,
+                                            "description": ": / More options"
+                                        },
+                                        {
+                                            "class": ".view.ViewGroup",
+                                            "clickable": true,
+                                            "id": 19,
+                                            "description": "Sponsored"
+                                        },
+                                        {
+                                            "class": ".view.ViewGroup",
+                                            "clickable": true,
+                                            "id": 20,
+                                            "description": "www.irugbystore.com/"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "class": ".support.v7.widget.RecyclerView(container)",
+                                    "clickable": false,
+                                    "scrollable": true,
+                                    "id": 21,
+                                    "children": [
+                                        {
+                                            "class": ".view.ViewGroup",
+                                            "clickable": true,
+                                            "id": 22,
+                                            "description": "2023 Jerseys"
+                                        },
+                                        {
+                                            "class": ".view.ViewGroup",
+                                            "clickable": true,
+                                            "id": 23,
+                                            "description": "Retro Jerseys"
+                                        },
+                                        {
+                                            "class": ".view.ViewGroup",
+                                            "clickable": true,
+                                            "id": 24,
+                                            "description": "All Blacks"
+                                        },
+                                        {
+                                            "class": ".view.ViewGroup",
+                                            "clickable": true,
+                                            "id": 25,
+                                            "description": "AFL"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "class": ".view.ViewGroup",
+                            "clickable": false,
+                            "id": 26
+                        },
+                        {
+                            "class": ".view.ViewGroup(container)",
+                            "clickable": false,
+                            "scrollable": false,
+                            "id": 27,
+                            "children": [
+                                {
+                                    "clickable": false,
+                                    "id": 28
+                                },
+                                {
+                                    "class": ".view.ViewGroup",
+                                    "clickable": false,
+                                    "id": 29,
+                                    "description": "Canberra RaidersNational Rugby League / Canberra Raiders, National Rugby League"
+                                }
+                            ]
+                        },
+                        {
+                            "class": ".view.ViewGroup(container)",
+                            "clickable": false,
+                            "scrollable": false,
+                            "id": 30,
+                            "children": [
+                                {
+                                    "class": ".view.ViewGroup",
+                                    "clickable": false,
+                                    "id": 31,
+                                    "description": "Latest highlights"
+                                },
+                                {
+                                    "class": ".support.v7.widget.RecyclerView(container)",
+                                    "clickable": false,
+                                    "scrollable": true,
+                                    "id": 32,
+                                    "children": [
+                                        {
+                                            "class": ".view.ViewGroup(container)",
+                                            "clickable": true,
+                                            "scrollable": false,
+                                            "id": 33,
+                                            "children": [
+                                                {
+                                                    "clickable": true,
+                                                    "id": 34,
+                                                    "description": "NRLHIGHLIGHTSFINALFOR THEAGES !!A15:14"
+                                                },
+                                                {
+                                                    "class": ".view.ViewGroup(container)",
+                                                    "clickable": true,
+                                                    "scrollable": false,
+                                                    "id": 35,
+                                                    "children": [
+                                                        {
+                                                            "class": ".widget.Button",
+                                                            "clickable": true,
+                                                            "id": 36,
+                                                            "description": "NRL / Go to channel"
+                                                        },
+                                                        {
+                                                            "class": ".view.ViewGroup(container)",
+                                                            "clickable": true,
+                                                            "scrollable": false,
+                                                            "id": 37,
+                                                            "children": [
+                                                                {
+                                                                    "class": ".view.ViewGroup",
+                                                                    "clickable": true,
+                                                                    "id": 38,
+                                                                    "description": "NRL Highlights : KnightsRaidersFinals WeekNRL on Nine"
+                                                                },
+                                                                {
+                                                                    "class": ".view.ViewGroup",
+                                                                    "clickable": true,
+                                                                    "id": 39,
+                                                                    "description": "NRL on Nine62K viewsmonths ago"
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "class": ".widget.Button",
+                                                            "clickable": true,
+                                                            "id": 40,
+                                                            "description": "Action menu"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "class": ".view.ViewGroup(container)",
+                                            "clickable": true,
+                                            "scrollable": false,
+                                            "id": 41,
+                                            "children": [
+                                                {
+                                                    "clickable": true,
+                                                    "id": 42,
+                                                    "description": "NRLDRASENOFF"
+                                                },
+                                                {
+                                                    "class": ".view.ViewGroup(container)",
+                                                    "clickable": true,
+                                                    "scrollable": false,
+                                                    "id": 43,
+                                                    "children": [
+                                                        {
+                                                            "class": ".widget.Button",
+                                                            "clickable": true,
+                                                            "id": 44,
+                                                            "description": "NRL / Go to channel"
+                                                        },
+                                                        {
+                                                            "class": ".view.ViewGroup(container)",
+                                                            "clickable": true,
+                                                            "scrollable": false,
+                                                            "id": 45,
+                                                            "children": [
+                                                                {
+                                                                    "class": ".view.ViewGroup",
+                                                                    "clickable": true,
+                                                                    "id": 46,
+                                                                    "description": "NRLRoun"
+                                                                },
+                                                                {
+                                                                    "class": ".view.ViewGroup",
+                                                                    "clickable": true,
+                                                                    "id": 47,
+                                                                    "description": "NRL"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "resource-id": ".google.youtube:id/pivot_bar",
+            "class": ".widget.HorizontalScrollView(container)",
+            "clickable": false,
+            "scrollable": false,
+            "id": 48,
+            "children": [
+                {
+                    "class": ".widget.Button(container)",
+                    "clickable": true,
+                    "scrollable": false,
+                    "selected": true,
+                    "id": 49,
+                    "children": [
+                        {
+                            "resource-id": ".google.youtube:id/image",
+                            "class": ".widget.ImageView",
+                            "clickable": true,
+                            "selected": true,
+                            "id": 50,
+                            "description": "home"
+                        },
+                        {
+                            "resource-id": ".google.youtube:id/text",
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "selected": true,
+                            "id": 51,
+                            "description": "Home"
+                        }
+                    ]
+                },
+                {
+                    "class": ".widget.Button(container)",
+                    "clickable": true,
+                    "scrollable": false,
+                    "id": 52,
+                    "children": [
+                        {
+                            "resource-id": ".google.youtube:id/image",
+                            "class": ".widget.ImageView",
+                            "clickable": true,
+                            "id": 53
+                        },
+                        {
+                            "resource-id": ".google.youtube:id/text",
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 54,
+                            "description": "Shorts"
+                        }
+                    ]
+                },
+                {
+                    "resource-id": ".google.youtube:id/image",
+                    "class": ".widget.ImageView",
+                    "clickable": true,
+                    "id": 55,
+                    "description": "( + ) / Create"
+                },
+                {
+                    "class": ".widget.Button(container)",
+                    "clickable": true,
+                    "scrollable": false,
+                    "id": 56,
+                    "children": [
+                        {
+                            "resource-id": ".google.youtube:id/image",
+                            "class": ".widget.ImageView",
+                            "clickable": true,
+                            "id": 57,
+                            "description": "play"
+                        },
+                        {
+                            "resource-id": ".google.youtube:id/text",
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 58,
+                            "description": "Subscriptions"
+                        }
+                    ]
+                },
+                {
+                    "class": ".widget.Button(container)",
+                    "clickable": true,
+                    "scrollable": false,
+                    "id": 59,
+                    "children": [
+                        {
+                            "resource-id": ".google.youtube:id/image",
+                            "class": ".widget.ImageView",
+                            "clickable": true,
+                            "id": 60,
+                            "description": "play"
+                        },
+                        {
+                            "resource-id": ".google.youtube:id/text",
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 61,
+                            "description": "Library"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "resource-id": ":id/navigationBarBackground",
+            "class": ".view.View",
+            "clickable": false,
+            "id": 62
+        }
+    ]
+}
