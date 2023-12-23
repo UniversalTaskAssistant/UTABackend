@@ -16,6 +16,13 @@ class ModelManager:
         """
         self.__vision_model = _VisionModel()
 
+    def delete_vision_model(self):
+        """
+        Remove the vision Model to None.
+        """
+        assert self.__vision_model is not None
+        self.__vision_model = None
+
     def detect_text_ocr(self, img_path):
         """
         Sends an OCR request to the Google Cloud Vision API.
@@ -47,8 +54,16 @@ class ModelManager:
             identifier: name of the new initialized llm model.
             kwargs: Key-value pairs for model configuration.
         """
-        assert identifier not in self.__llm_model_dict
         self.__llm_model_dict[identifier] = _LLMModel(**kwargs)
+
+    def delete_llm_model(self, identifier):
+        """
+        Remove the llm Model with provided identifier.
+        Args:
+            identifier: name of the llm model that is going to be removed.
+        """
+        assert identifier in self.__llm_model_dict
+        del self.__llm_model_dict[identifier]
 
     def create_llm_conversation(self, identifier, conversation, **kwargs):
         """
@@ -115,8 +130,16 @@ class ModelManager:
             identifier: name of the new initialized assistant model.
             kwargs: Key-value pairs for model configuration.
         """
-        assert identifier not in self.__assistant_model_dict
         self.__assistant_model_dict[identifier] = _AssistantModel(**kwargs)
+
+    def delete_assistant_model(self, identifier):
+        """
+        Remove the assistant Model with provided identifier.
+        Args:
+            identifier: name of the assistant model that is going to be removed.
+        """
+        assert identifier in self.__assistant_model_dict
+        del self.__llm_model_dict[identifier]
 
     def create_assistant_conversation(self, identifier, task_id, conversation, **kwargs):
         """

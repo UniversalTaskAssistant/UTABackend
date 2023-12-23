@@ -12,6 +12,12 @@ class _TaskDecomposer:
                              'Output you answer in JSON format with two factors: 1. Need to be decomposed? (bool); 2. List of sub-tasks if decomposed, otherwise None; 3. Short explanation.' \
                              'Example: {{"Decompose": "True", "Sub-tasks":["Login to Facebook", "Send message to my dad on Facebook"], "Explanation": "This given task contains two independent subtasks that should be completed one by one."}}'
 
+    def initialize_agent(self):
+        """
+            Initialize llm model in model manager.
+        """
+        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
+
     def decompose_task(self, task, printlog=False):
         '''
         Clarify task to be clear to complete

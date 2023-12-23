@@ -21,6 +21,12 @@ class _ThirdPartyAppAvailabilityChecker:
                              'Example: {{"App": "com.example.app", "Reason": "Directly performs the task"}} or ' \
                              '{{"App": "None", "Reason": "No app is related"}}.'
 
+    def initialize_agent(self):
+        """
+            Initialize llm model in model manager.
+        """
+        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
+
     def check_related_apps(self, task, app_list, except_apps=None, printlog=False):
         """
         Checks for apps related to a given task.

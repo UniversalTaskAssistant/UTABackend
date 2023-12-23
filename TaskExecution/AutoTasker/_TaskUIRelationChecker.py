@@ -28,6 +28,12 @@ class _TaskUIRelationChecker:
                              'Previous actions: {action_history}\n' \
                              'Excluded elements: {except_elements}'
 
+    def initialize_agent(self):
+        """
+            Initialize llm model in model manager.
+        """
+        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
+
     def check_relation(self, ui, task, except_elements=None, printlog=False):
         """
         Checks the relation between a given ui and a task.

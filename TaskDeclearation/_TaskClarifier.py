@@ -6,10 +6,22 @@ class _TaskClarifier:
         self.__model_identifier = model_identifier
         self.__model_manager = model_manager
 
-        self.__base_prompt = 'Do you think this user task "{task}" is clear enough to be completed on the smartphone?' \
-                             'If the task is not clear enough, ask further question to gather more info and make the task clearly executable.' \
-                             'Return your answer in JSON format to include 1. Clear (bool) and 2. Further question.' \
-                             'Example: {{"Clear": "True", "Question": "None"}} or {{"Clear": "False", "Question": "Do you want to search for answers on the browser or through certain app?"}}'
+        self.__base_prompt = 'Assess the user task "{task}" to determine if it is sufficiently clear for execution '\
+                             'on a smartphone. Given that seniors often provide vague or incomplete task descriptions, ' \
+                             'identify the most crucial piece of missing information. Ask a single, focused question ' \
+                             'that is most likely to clarify the task effectively. Return your analysis in JSON format, comprising: '\
+                             '1. "Clear": a boolean indicating if the task is clear enough as is, '\
+                             '2. "Question": a single question to obtain the most essential missing detail for task clarification. '\
+                             'Example response for a clear task: {{"IsClear": "True", "Question": ""}} '\
+                             'Example response for an unclear task: {{"Clear": "False", "Question": "What is the ' \
+                             'full name of the person you want to contact?"}} or {{"IsClear": "False", "Question": ' \
+                             '"Which app would you prefer to use for this communication?"}}'
+
+    def initialize_agent(self):
+        """
+            Initialize llm model in model manager.
+        """
+        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
 
     def clarify_task(self, task, user_message=None, printlog=False):
         '''

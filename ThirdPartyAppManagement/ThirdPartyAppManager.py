@@ -4,14 +4,19 @@ from ThirdPartyAppManagement import _ThirdPartyAppAnalyser, _ThirdPartyAppAvaila
 class ThirdPartyAppManager:
     def __init__(self, model_manager):
         self.__model_manager = model_manager
-        self.__app_analyser_identifier = 'app_analyser'
-        self.__app_checker_identifier = 'app_checker'
-        self.__model_manager.initialize_llm_model(identifier=self.__app_analyser_identifier)
-        self.__model_manager.initialize_llm_model(identifier=self.__app_checker_identifier)
+        self.__app_analyser_identifier = 'app analyser'
+        self.__app_checker_identifier = 'app checker'
 
-        self.__app_analyser_dict = _ThirdPartyAppAnalyser(self.__app_analyser_identifier, self.__model_manager)
-        self.__app_checker_dict = _ThirdPartyAppAvailabilityChecker(self.__app_checker_identifier, self.__model_manager)
+        self.__app_analyser = _ThirdPartyAppAnalyser(self.__app_analyser_identifier, self.__model_manager)
+        self.__app_checker = _ThirdPartyAppAvailabilityChecker(self.__app_checker_identifier, self.__model_manager)
         self.__app_searcher = _ThirdPartyAppSearcher()
+
+    def initialize_agents(self):
+        """
+            Initialize all agents.
+        """
+        self.__app_analyser.initialize_agent()
+        self.__app_checker.initialize_agent()
 
     def search_app_by_name(self, app_name):
         """
@@ -44,7 +49,7 @@ class ThirdPartyAppManager:
         Returns:
             JSON data with related app information.
         """
-        return self.__app_checker_dict.check_related_apps(task, app_list, except_apps, printlog)
+        return self.__app_checker.check_related_apps(task, app_list, except_apps, printlog)
 
     def conclude_app_functionality(self, tar_app, printlog=False):
         """
@@ -55,7 +60,7 @@ class ThirdPartyAppManager:
         Returns:
             Functionality of given app.
         """
-        return self.__app_analyser_dict.conclude_app_functionality(tar_app, printlog)
+        return self.__app_analyser.conclude_app_functionality(tar_app, printlog)
 
     def recommend_apps(self, search_tar, fuzzy=False, max_return=5):
         """
@@ -90,5 +95,7 @@ if __name__ == '__main__':
     model_mg = ModelManager()
 
     app_mg = ThirdPartyAppManager(model_manager=model_mg)
+    app_mg.initialize_agents()
+
     apps = app_mg.search_apps_fuzzy('chinese food')
     print(app_mg.conclude_app_functionality(apps[0]))

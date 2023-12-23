@@ -44,6 +44,12 @@ class _TaskUIActionChecker:
                              '"Description": "Click on the \'Back\' button"}} or {{"Can": "No", "Element": "None", ' \
                              '"Reason": "No back button present", "Description": "None"}}.'
 
+    def initialize_agent(self):
+        """
+            Initialize llm model in model manager.
+        """
+        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
+
     def check_go_back_availability(self, ui, task, reset_history=False, printlog=False):
         """
         Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.

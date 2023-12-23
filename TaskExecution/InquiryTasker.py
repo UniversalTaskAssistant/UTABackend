@@ -5,6 +5,12 @@ class InquiryTasker:
         self.__model_identifier = model_identifier
         self.__model_manager = model_manager
 
+    def initialize_agent(self):
+        """
+            Initialize llm model in model manager.
+        """
+        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
+
     def execute_inquiry_task(self, conversation):
         # Create a new conversation message and send it to the llmModel
         try:

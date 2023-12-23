@@ -24,6 +24,12 @@ class _ThirdPartyAppAnalyser:
                              '- Subscribe to favorite channels for personalized content; \n' \
                              '...and so on.'
 
+    def initialize_agent(self):
+        """
+            Initialize llm model in model manager.
+        """
+        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
+
     def conclude_app_functionality(self, tar_app, printlog=False):
         """
         Conclude the functionality of given app.

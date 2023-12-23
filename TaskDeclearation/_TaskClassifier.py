@@ -14,6 +14,12 @@ class _TaskClassifier:
                              'Output you answer in JSON format with two factors: 1. Task Type; 2. Short explanation.' \
                              'Example: {{"Task Type": "1. General Inquiry", "Explanation": "The task is an inquiry that has nothing to do with the system or app functions and can be answered through searching on the Internet"}}'
 
+    def initialize_agent(self):
+        """
+            Initialize llm model in model manager.
+        """
+        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
+
     def classify_task(self, task, printlog=False):
         '''
         Clarify task to be clear to complete

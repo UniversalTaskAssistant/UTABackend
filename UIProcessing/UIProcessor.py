@@ -7,7 +7,6 @@ from UIProcessing._UIAnalyser import _UIAnalyser
 class UIProcessor:
     def __init__(self, model_manager):
         self.__model_manager = model_manager
-        self.__model_manager.initialize_vision_model()
 
         self.__ui_preprocessor = _UIPreProcessor()
         self.__ui_analyser = _UIAnalyser(self.__model_manager)
