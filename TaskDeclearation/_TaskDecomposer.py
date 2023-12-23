@@ -6,11 +6,18 @@ class _TaskDecomposer:
         self.__model_identifier = model_identifier
         self.__model_manager = model_manager
 
-        self.__base_prompt = 'Some user tasks may actually contain multiple sub-tasks and cannot be completed straightforward.' \
-                             'For example, "Login Facebook and send message to my dad." is actually composed of two independent tasks and should be decomposed to "Login to Facebook" and "Send message to my dad on Facebook".' \
-                             'Does the given task "{task}" need to be decomposed into multiple independent tasks?' \
-                             'Output you answer in JSON format with two factors: 1. Need to be decomposed? (bool); 2. List of sub-tasks if decomposed, otherwise None; 3. Short explanation.' \
-                             'Example: {{"Decompose": "True", "Sub-tasks":["Login to Facebook", "Send message to my dad on Facebook"], "Explanation": "This given task contains two independent subtasks that should be completed one by one."}}'
+        self.__base_prompt = 'Analyze the user task "{task}" to determine if it comprises multiple, distinct sub-tasks. ' \
+                             'Complex tasks often consist of several steps that need to be executed separately. ' \
+                             'For instance, the task "Login to Facebook and send a message to Sam Wellson" involves ' \
+                             'two separate actions: logging into Facebook and sending a message. ' \
+                             'Identify if the given task requires decomposition and if so, break it down into its ' \
+                             'constituent sub-tasks. Provide your analysis in JSON format, including: ' \
+                             '1. "Decompose": a boolean string indicating whether the task should be decomposed, ' \
+                             '2. "Sub-tasks": an array of the identified sub-tasks, or "None" if no decomposition is needed, ' \
+                             '3. "Explanation": a brief explanation of your decision. ' \
+                             'Example: {{"Decompose": "True", "Sub-tasks": ["Login to Facebook", ' \
+                             '"Send message to Sam Wellson on Facebook"], "Explanation": "The task contains ' \
+                             'two independent actions that need to be completed sequentially."}}'
 
     def initialize_agent(self):
         """

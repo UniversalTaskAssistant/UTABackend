@@ -6,13 +6,22 @@ class _TaskClassifier:
         self.__model_identifier = model_identifier
         self.__model_manager = model_manager
 
-        self.__base_prompt = 'We categorize the user tasks on the smartphone into three types:' \
-                             '1. General Inquiry: Some general questions that have nothing to do with the system or app functions and can be answered through searching on the Internet, such as "What is the weather of today?"' \
-                             '2. System Function: Tasks related to system-level functions, such as "Turn up the brightness", "Set an alarm at 2pm".' \
-                             '3. App Related Task: Tasks that need to be done through certain apps, such as "Take an uber to my home", "Watch movie on Youtube".' \
-                             'What is the type of the given task "{task}"?' \
-                             'Output you answer in JSON format with two factors: 1. Task Type; 2. Short explanation.' \
-                             'Example: {{"Task Type": "1. General Inquiry", "Explanation": "The task is an inquiry that has nothing to do with the system or app functions and can be answered through searching on the Internet"}}'
+        self.__base_prompt = 'Classify the given user task "{task}" into one of three categories for smartphone usage: ' \
+                             '1. General Inquiry: This category includes tasks that are general questions not related ' \
+                             'to specific system or app functions. They can typically be answered through internet ' \
+                             'searches. Example: "What is the weather today?" ' \
+                             '2. System Function: These are tasks that involve system-level functions of the ' \
+                             'smartphone. Examples include adjusting settings or using built-in features like alarms. ' \
+                             'Example: "Turn up the brightness", "Set an alarm at 2 pm". ' \
+                             '3. App-Related Task: Tasks in this category require the use of specific applications to ' \
+                             'accomplish the objective. Examples include using ride-sharing apps or streaming ' \
+                             'services. Example: "Book a ride to my home using Uber", "Watch a movie on YouTube". ' \
+                             'Determine which category the task "{task}" falls into. ' \
+                             'Output your classification in JSON format with two elements: 1. "Task Type" indicating ' \
+                             'the category, and 2. "Explanation" providing a brief rationale for your classification. '\
+                             'Example: {{"Task Type": "General Inquiry", "Explanation": "This task is a general query ' \
+                             'that can be resolved through an internet search, without the need for system-level ' \
+                             'access or specific apps."}}'
 
     def initialize_agent(self):
         """
