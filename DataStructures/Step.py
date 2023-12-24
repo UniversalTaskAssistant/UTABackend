@@ -17,7 +17,7 @@ class AutoModeStep:
         self.recommended_action = kwargs["recommended_action"] if kwargs.get("recommended_action") else "None"
         self.relation = kwargs["relation"] if kwargs.get("relation") else "None"
         self.ui_data = kwargs["ui_data"] if kwargs.get("ui_data") else "None"
-        self.execution_result: str = "None"
+        self.execution_result: str = kwargs["execution_result"] if kwargs.get("execution_result") else "None"
 
     def __dict__(self):
         return {

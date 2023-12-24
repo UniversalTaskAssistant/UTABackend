@@ -1,4 +1,5 @@
-from .AutoTasker import _TaskUIActionChecker, _TaskUIRelationChecker
+from ._TaskUIActionChecker import _TaskUIActionChecker
+from ._TaskUIRelationChecker import _TaskUIRelationChecker
 
 
 class AppTasker:
@@ -51,6 +52,19 @@ class AppTasker:
         """
         return self.__action_checker.check_action(ui=ui_data, task=task,
                                                             except_elements=except_elements, printlog=printlog)
+
+    def check_go_back_availability(self, ui, task, reset_history=False, printlog=False):
+        """
+        Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
+        Args:
+           ui: The current ui object.
+           task (str): The task for which back navigation is being checked.
+           reset_history (bool): If True, resets the conversation history in the model manager.
+           printlog (bool): If True, enables logging of outputs.
+        Returns:
+           Action indicating back navigation availability.
+        """
+        return self.__action_checker.check_go_back_availability(ui, task, reset_history=reset_history, printlog=printlog)
 
     def analyze_ui_task(self, ui_data, task, except_elements=None, printlog=False):
         '''

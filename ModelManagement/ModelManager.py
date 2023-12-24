@@ -78,7 +78,7 @@ class ModelManager:
             Response from the Text Model.
         """
         assert identifier in self.__llm_model_dict
-        return self.__llm_model_dict[identifier].create_conversation(conversation=conversation, **kwargs)
+        return self.__llm_model_dict[identifier].create_conversation(conversation, **kwargs)
 
     def get_llm_conversations(self, identifier, **kwargs):
         """
@@ -153,8 +153,7 @@ class ModelManager:
            Response from the Assistant Model.
         """
         assert identifier in self.__assistant_model_dict
-        return self.__assistant_model_dict[identifier].create_conversation(task_id=task_id, conversation=conversation,
-                                                                           **kwargs)
+        return self.__assistant_model_dict[identifier].create_conversation(task_id, conversation, **kwargs)
 
     def get_assistant_conversations(self, identifier, task_id):
         """
@@ -166,7 +165,7 @@ class ModelManager:
             List: Historical conversations for the task.
         """
         assert identifier in self.__assistant_model_dict
-        return self.__assistant_model_dict[identifier].get_conversations(task_id=task_id)
+        return self.__assistant_model_dict[identifier].get_conversations(task_id)
 
     def reset_assistant_conversations(self, identifier, task_id):
         """
@@ -176,4 +175,4 @@ class ModelManager:
             task_id: Identifier for the specific task.
         """
         assert identifier in self.__assistant_model_dict
-        return self.__assistant_model_dict[identifier].reset_conversations(task_id=task_id)
+        return self.__assistant_model_dict[identifier].reset_conversations(task_id)
