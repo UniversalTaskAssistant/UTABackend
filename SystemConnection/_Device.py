@@ -27,6 +27,15 @@ class _Device:
             # Raise an error if a device connection already exists
             raise Exception("Device has already been connected.")
 
+    def is_connected(self):
+        """
+        Check whether the ADB device is connected.
+        """
+        if self.__adb_device is None:
+            return False
+        else:
+            return True
+
     def disconnect(self):
         """
         Disconnects from the ADB device if a connection exists.

@@ -12,16 +12,30 @@ class _TaskClarifier:
                              'that is most likely to clarify the task effectively. Return your analysis in JSON format, comprising: '\
                              '1. "Clear": a boolean indicating if the task is clear enough as is, '\
                              '2. "Question": a single question to obtain the most essential missing detail for task clarification. '\
-                             'Example response for a clear task: {{"IsClear": "True", "Question": ""}} '\
+                             'Example response for a clear task: {{"Clear": "True", "Question": ""}} '\
                              'Example response for an unclear task: {{"Clear": "False", "Question": "What is the ' \
-                             'full name of the person you want to contact?"}} or {{"IsClear": "False", "Question": ' \
+                             'full name of the person you want to contact?"}} or {{"Clear": "False", "Question": ' \
                              '"Which app would you prefer to use for this communication?"}}'
 
     def initialize_agent(self):
         """
-            Initialize llm model in model manager.
+        Initialize llm model in model manager.
         """
+        if self.is_agent_initialized():
+            self.delete_agent()
         self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
+
+    def is_agent_initialized(self):
+        """
+        Check whether agent is initialized.
+        """
+        return self.__model_manager.is_llm_model_initialized(identifier=self.__model_identifier)
+
+    def delete_agent(self):
+        """
+        Remove llm model in model manager.
+        """
+        self.__model_manager.delete_llm_model(identifier=self.__model_identifier)
 
     def clarify_task(self, task, user_message=None, printlog=False):
         '''

@@ -1,6 +1,6 @@
 from .Action import Action
 from .Relation import Relation
-from .Step import AutoModeStep
-from .Task import Task
+from .Step import AutoModeStep, InquiryStep
+from .Task import DecomposedTask, OriginalTask
 from .UIData import UIData
-from .User import _User
+from .User import User

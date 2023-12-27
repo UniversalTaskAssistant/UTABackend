@@ -53,7 +53,7 @@ class AutoModeStep:
         self.ui_data.annotate_ui_openation(self.recommended_action)
 
 
-class _ConversationStep:
+class InquiryStep:
     """
     Initializes an ConversationStep instance.
     Args:
@@ -63,16 +63,19 @@ class _ConversationStep:
     """
     def __init__(self, step_id: int, **kwargs):
         self.step_id: int = step_id
-        self.conversation: dict = kwargs["conversation"] if kwargs.get("conversation") else None
+        self.user_conversation: dict = kwargs["user_conversation"] if kwargs.get("user_conversation") else None
+        self.llm_conversation: dict = kwargs["llm_conversation"] if kwargs.get("llm_conversation") else None
 
     def __dict__(self):
         return {
             'step_id': self.step_id,
-            'conversation': self.conversation,
+            'user_conversation': self.user_conversation,
+            'llm_conversation': self.llm_conversation,
         }
 
     def __str__(self):
-        return f"_ConversationStep(step_id={self.step_id}, conversation={self.conversation})"
+        return f"_ConversationStep(step_id={self.step_id}, user_conversation={self.user_conversation}, " \
+            f"llm_conversation={self.llm_conversation})"
 
     def set_attributes(self, **kwargs):
         """

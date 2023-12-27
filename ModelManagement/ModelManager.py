@@ -16,6 +16,15 @@ class ModelManager:
         """
         self.__vision_model = _VisionModel()
 
+    def is_vision_model_initialized(self):
+        """
+        Check whether vision model is initialized.
+        """
+        if self.__vision_model is not None:
+            return True
+        else:
+            return False
+
     def delete_vision_model(self):
         """
         Remove the vision Model to None.
@@ -54,7 +63,17 @@ class ModelManager:
             identifier: name of the new initialized llm model.
             kwargs: Key-value pairs for model configuration.
         """
+        assert identifier not in self.__llm_model_dict
         self.__llm_model_dict[identifier] = _LLMModel(**kwargs)
+
+    def is_llm_model_initialized(self, identifier):
+        """
+        Check whether llm model is initialized.
+        """
+        if identifier in self.__llm_model_dict:
+            return True
+        else:
+            return False
 
     def delete_llm_model(self, identifier):
         """
@@ -132,6 +151,15 @@ class ModelManager:
         """
         self.__assistant_model_dict[identifier] = _AssistantModel(**kwargs)
 
+    def is_assistant_model_initialized(self, identifier):
+        """
+        Check whether assistant model is initialized.
+        """
+        if identifier in self.__assistant_model_dict:
+            return True
+        else:
+            return False
+
     def delete_assistant_model(self, identifier):
         """
         Remove the assistant Model with provided identifier.
@@ -139,7 +167,7 @@ class ModelManager:
             identifier: name of the assistant model that is going to be removed.
         """
         assert identifier in self.__assistant_model_dict
-        del self.__llm_model_dict[identifier]
+        del self.__assistant_model_dict[identifier]
 
     def create_assistant_conversation(self, identifier, task_id, conversation, **kwargs):
         """

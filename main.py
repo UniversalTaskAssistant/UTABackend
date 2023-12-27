@@ -1,3 +1,7 @@
+import json
+import time
+from os.path import join as pjoin
+
 from DataStructures import *
 from ModelManagement import ModelManager
 from SystemConnection import SystemConnector
@@ -6,14 +10,22 @@ from TaskExecution import AppTasker, InquiryTasker
 from ThirdPartyAppManagement import ThirdPartyAppManager
 from UIProcessing import UIProcessor
 
-import time
-
 
 class UTA:
-    def __init__(self, img_path, xml_path, output_dir):
+    def __init__(self, user_id, img_path, xml_path, output_dir):
+        """
+        Initialize the UTA class with necessary modules and user data paths.
+
+        Args:
+            user_id (str): The identifier for the user.
+            img_path (str): Path to store screenshots.
+            xml_path (str): Path to store UI hierarchy XML data.
+            output_dir (str): Directory to store output files.
+        """
         self.model_manager = ModelManager()
         self.task_declarator = TaskDeclarator(self.model_manager)
         self.system_connector = SystemConnector()
+        self.system_connector.connect_adb_device()
         self.ui_processor = UIProcessor(self.model_manager)
         self.app_tasker = AppTasker(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
@@ -22,28 +34,58 @@ class UTA:
         self.xml_path = img_path
         self.img_path = xml_path
         self.output_dir = output_dir
+        self.user = User(user_id)
+
+        self.ori_task_id = 0
+        self.decompose_task_id = 1
+        self.step_id = 1
 
     def initialize_agents(self):
+        """
+        Initializes all the agents required for task processing.
+        Resets task and step identifiers for a new user session.
+        """
         self.task_declarator.initialize_agents()
         self.app_tasker.initialize_agents()
         self.app_recommender.initialize_agents()
         self.inquiry_tasker.initialize_agent()
 
+        self.ori_task_id += 1
+        self.decompose_task_id = 1
+        self.step_id = 1
+
     def execute_inquiry_task(self, conversation):
-        self.inquiry_tasker.execute_inquiry_task(conversation)
+        """
+        Execute an inquiry task using the provided conversation string.
+
+        Args:
+            conversation (str): The conversation string for the inquiry.
+        Returns:
+            The response from the inquiry tasker.
+        """
+        return self.inquiry_tasker.execute_inquiry_task(conversation)
 
     def clarify_task(self, task, printlog=False):
-        '''
+        """
         Clarify task to be clear to complete
         Args:
             task (string): The user's task
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
-        '''
+        """
         return self.task_declarator.clarify_task(task, printlog=printlog)
 
     def decompose_and_classify_tasks(self, task, printlog=False):
+        """
+        Decomposes the given task into sub-tasks and classifies each one.
+
+        Args:
+            task (str): The main task to decompose.
+            printlog (bool, optional): Flag to enable logging of the process. Defaults to False.
+        Returns:
+            List of tuples: Each tuple contains a sub-task and its classification.
+        """
         task_class_tuple = []
         decomposed_tasks = self.task_declarator.decompose_task(task, printlog=printlog)
         if decomposed_tasks['Decompose'] == 'True':
@@ -85,67 +127,54 @@ class UTA:
             ValueError: If an unexpected action is encountered.
         """
         element = ui.elements[action['Element']]
-        if action['Action'].lower() == 'click':
+        if action['Action'] == 'Click':
             self.system_connector.click_screen(ui, element, show)
-        elif action['Action'].lower() == 'scroll up':
+        elif action['Action'] == 'Scroll Up':
             self.system_connector.up_scroll_screen(ui, element, show)
-        elif action['Action'].lower() == 'scroll down':
+        elif action['Action'] == 'Scroll Down':
             self.system_connector.down_scroll_screen(ui, element, show)
-        elif action['Action'].lower() == 'swipe right':
+        elif action['Action'] == 'Swipe Right':
             self.system_connector.right_swipe_screen(ui, element, show)
-        elif action['Action'].lower() == 'swipe left':
+        elif action['Action'] == 'Swipe Left':
             self.system_connector.left_swipe_screen(ui, element, show)
-        elif action['Action'].lower() == 'long press':
+        elif action['Action'] == 'Long Press':
             self.system_connector.long_press_screen(ui, element, show)
-        elif action['Action'].lower() == 'input':
+        elif action['Action'] == 'Input':
             self.system_connector.input_text(action['Input Text'])
         else:
             raise ValueError(f"No expected action returned from model, returned action: {action['Action']}")
         time.sleep(waiting_time)
 
-    def automate_app_and_system_task(self, step_id, task, except_apps=None, printlog=False, show_operation=False,
-                      debug=False, related_app_max_try=3):
+    def automate_app_and_system_task(self, task, except_apps=None, printlog=False, show_operation=False,
+                                     related_app_max_try=3):
         """
         Automates a task based on the current UI and task description.
         Args:
-            step_id (int): Identifier for the current step.
             task (str): Description of the task to be automated.
             except_apps (list, optional): Apps to be excluded.
             printlog (bool): Enables logging if True.
             show_operation (bool): Shows UI operation if True.
             related_app_max_try (int): Max attempts to launch related apps.
         Returns:
-            _Step: Step information.
+            ui_data, relation, recommended_action, execution_result
         """
 
-        step_record = AutoModeStep(step_id)  # Create a new step with the given step_id
-
         ui_data = self.capture_ui_information()  # Capture the current UI and analyze it for further processing
-        step_record.set_attributes(ui_data=ui_data)  # Assign UI data to the step
-
         relation = self.app_tasker.check_task_ui_relation(ui_data, task, except_elements=except_apps, printlog=printlog)
-        # relationship of the current UI with the task
-        step_record.set_attributes(relation=relation)
 
         if relation.relation == 'Completed':
             # If task is already completed
-            step_record.set_attributes(execution_result="Task is completed.")
-            return step_record
+            return ui_data, relation, None, "Task is completed."
         elif relation.relation == 'Unrelated':
             # Check for a back navigation possibility if current UI is unrelated to the task
             back_availability_action = self.app_tasker.check_go_back_availability(ui_data, task,
-                                                                                reset_history=True, printlog=printlog)
-            if back_availability_action.action.lower() == 'click':
+                                                                                  reset_history=True, printlog=printlog)
+            if back_availability_action.action == 'Click':
                 # Execute the recommended back navigation action
                 self.execute_ui_operation(back_availability_action, ui_data, show_operation)
-                step_record.set_attributes(recommended_action=back_availability_action, is_go_back=True,
-                                           execution_result="Enter next turn.")
-                if debug:
-                    step_record.annotate_ui_openation()
-                return step_record
+                return ui_data, relation, back_availability_action, "Can go back, enter next turn."
             else:
                 # If back navigation is not possible, look for related apps
-                step_record.set_attributes(recommended_action=back_availability_action)
                 excepted_related_apps = self.system_connector.get_current_package_and_activity_name()['package_name']
                 device_app_list = self.system_connector.get_app_list_on_the_device()
 
@@ -155,24 +184,122 @@ class UTA:
                                                                       except_apps=excepted_related_apps,
                                                                       printlog=printlog)
                     if rel_app == 'None':
-                        step_record.set_attributes(execution_result="No related app can be found.")
-                        return step_record
+                        return ui_data, relation, back_availability_action, "No related app can be found."
                     else:
                         self.system_connector.launch_app(rel_app)
                         cur_app, cur_activity = self.system_connector.get_current_package_and_activity_name().values()
                         if cur_app in rel_app:
-                            step_record.set_attributes(execution_result="Enter next turn.")
-                            return step_record
+                            return ui_data, relation, back_availability_action, "Found related app, enter next turn."
                         else:
                             excepted_related_apps.append(rel_app)
-                step_record.set_attributes(execution_result="Failed to launch related apps within max attempts.")
-                return step_record
+                return ui_data, relation, back_availability_action, "Failed to launch related apps within max attempts."
         else:
             # If the relation is neither completed nor unrelated
             # Check for an action to perform in the current UI
             action = self.app_tasker.check_ui_action(ui_data, task, printlog=printlog)
-            self.execute_ui_operation(action, ui, show_operation)
-            step_record.set_attributes(recommended_action=action, execution_result="Enter next turn.")
-            if debug:
-                step_record.annotate_ui_openation()
-            return step_record
+            self.execute_ui_operation(action, ui_data, show_operation)
+            return ui_data, relation, action, "Enter next turn."
+
+    def store_data_to_local(self, json_file, file_name):
+        """
+        Stores the given JSON data in a specified file.
+
+        Args:
+            json_file (dict): JSON data to be saved.
+            file_name (str): The name of the file to store the data.
+        """
+        self.system_connector.save_json(json_file, pjoin(file_name, self.output_dir))
+
+    def automate_task(self, task, max_turn=100, clarify_max_turn=3, related_app_max_turn=3, debug=False,
+                      except_apps=None, printlog=False, show_operation=False):
+        """
+        Main function to automate a given task, handling task decomposition, execution, and result storage.
+
+        Args:
+            task (str): The task description.
+            max_turn (int, optional): Maximum iterations for task automation. Defaults to 100.
+            clarify_max_turn (int, optional): Maximum iterations for task clarification. Defaults to 3.
+            related_app_max_turn (int, optional): Maximum attempts to launch related apps. Defaults to 3.
+            debug (bool, optional): Enables debug mode if set to True. Defaults to False.
+            except_apps (list, optional): List of apps to exclude from task automation. Defaults to None.
+            printlog (bool, optional): Enables detailed logging if set to True. Defaults to False.
+            show_operation (bool, optional): Whether to visually show UI operations. Defaults to False.
+        """
+        # Initializes the task execution agents
+        self.initialize_agents()
+
+        # Create a new original task object and increment task ID
+        original_task = OriginalTask(self.ori_task_id, original_task=task)
+        conversation = task
+        clarifyed_result = {"Clear": "False", "Question": ""}
+
+        # Loop for task clarification with user interaction
+        while clarify_max_turn and clarifyed_result['Clear'] == "False":
+            clarifyed_result = self.clarify_task(conversation, printlog)
+            original_task.append_clarifying_conversation(({'role': 'user', 'content': task},
+                                                          {'role': 'assistant', 'content': clarifyed_result}))
+
+            conversation = input(clarifyed_result)  # we send this to front and wait for answer
+            clarify_max_turn -= 1
+        original_task.set_attributes(clarifyed_task=clarifyed_result['content'])
+
+        # Decompose and classify the task into sub-tasks
+        task_class_tuple = self.decompose_and_classify_tasks(task, printlog)
+        for (clarifyed_task, task_class) in task_class_tuple:
+            # Create a new decomposed task object and increment task ID
+            new_task = DecomposedTask(self.decompose_task_id, task=clarifyed_task, task_type=task_class)
+            self.decompose_task_id += 1
+
+            # Process task based on its classification
+            if task_class == "General Inquiry":
+                llm_response = self.execute_inquiry_task(clarifyed_task)
+
+                # Create an inquiry step and append it to the new task
+                inquiry_step = InquiryStep(self.step_id)
+                inquiry_step.set_attributes(user_conversation={'role': 'user', 'content': clarifyed_task},
+                                            llm_conversation={'role': 'assistant', 'content': llm_response})
+                self.step_id += 1
+
+                new_task.append_step(inquiry_step)
+                new_task.set_attributes(execution_result="Finish")
+            else:
+                # Loop for executing non-inquiry tasks
+                for step_turn in range(max_turn):
+                    ui_data, relation, action, result = self.automate_app_and_system_task(clarifyed_task,
+                                                                                          except_apps=except_apps,
+                                                                                          printlog=printlog,
+                                                                                          show_operation=show_operation,
+                                                                                          related_app_max_try=related_app_max_turn)
+
+                    # Create a new automation step
+                    auto_mode_step = AutoModeStep(self.step_id)  # Create a new step with the given step_id
+                    auto_mode_step.set_attributes(ui_data=ui_data, relation=relation, execution_result=result)
+
+                    # Check the recommended action and set attributes
+                    if action:
+                        auto_mode_step.set_attributes(recommended_action=action)
+                        if result == "Can go back, enter next turn.":
+                            auto_mode_step.set_attributes(is_go_back=True)
+
+                    # Annotate UI operation for debugging
+                    if debug:
+                        auto_mode_step.annotate_ui_openation()
+                    self.step_id += 1
+
+                    new_task.append_step(auto_mode_step)
+
+                    # Break loop if task is completed or failed
+                    if result in {"Failed to launch related apps within max attempts.", "No related app can be found."}:
+                        new_task.set_attributes(execution_result="Failed")
+                        break
+                    elif result == "Task is completed.":
+                        new_task.set_attributes(execution_result="Finish")
+                        break
+                    else:
+                        continue
+            original_task.append_decomposed_task(new_task)
+            self.user.append_user_task(original_task)
+
+        # Store the user's task data in a local file or database
+        self.store_data_to_local(json.loads(str(self.user)), f"result_user_{self.user.user_id}")  # later should be
+        # changed to database/server

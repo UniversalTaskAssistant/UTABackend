@@ -23,6 +23,12 @@ class SystemConnector:
         """
         self.__adb_device.connect(printlog)
 
+    def is_connected(self):
+        """
+        Check whether the ADB device is connected.
+        """
+        return self.__adb_device.is_connected()
+
     def disconnect_device(self):
         """
         Disconnects from the ADB device if a connection exists.
