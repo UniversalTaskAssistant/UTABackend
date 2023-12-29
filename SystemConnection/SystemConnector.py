@@ -14,6 +14,7 @@ class SystemConnector:
     ******************
     *** Adb Device ***
     ******************
+    Can only be used in emulator mode
     '''
     def connect_adb_device(self, printlog=False):
         """

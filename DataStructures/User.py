@@ -1,14 +1,14 @@
 
 
 class User:
-    def __init__(self, user_id: int):
+    def __init__(self, user_id: str):
         """
         Initializes a _User instance.
         Args:
-            user_id (int): Identifier for the user.
+            user_id (str): Identifier for the user.
         """
         self.user_id = user_id
-        self.user_tasks = []  # [{'original_task': OriginalTask, 'decomposed_task': DecomposedTask}, ...]
+        self.user_tasks = []  # [OriginalTask, ...]
 
     def __dict__(self):
         return {

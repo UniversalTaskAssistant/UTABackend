@@ -27,8 +27,11 @@ class _TaskUIActionChecker:
                                'Respond in JSON format: {{"Action": "<type>", "Element": <id>, "Description": ' \
                                '"<desc>", "Input Text": "<text>", "Reason": "<why>"}}. \n' \
                                'Example: {{"Action": "Click", "Element": 3, "Description": "Open Settings", ' \
-                               '"Reason": "Access task settings"}}. \n' \
-                               'Previous actions: {action_history}, Excluded elements: {except_elements}.'
+                               '"Input Text": "N/A", "Reason": "Access task settings"}}. \n' \
+                               'Previous actions: {action_history}, Excluded elements: {except_elements}. \n' \
+                               'If the current UI is not related to the task, return {{"Action": "N/A", "Element": ' \
+                               '"N/A", "Description": "N/A", "Input Text": "N/A", "Reason": "The current UI is not ' \
+                               'related to the task."}}'
 
         self.__back_prompt = 'Is there an element in the current UI that can be clicked to navigate back and assist ' \
                              'in completing the task "{task}"? \n' \
@@ -127,19 +130,19 @@ class _TaskUIActionChecker:
 
             ui_task_action = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation, printlog=printlog)['content']
             ui_task_action = json.loads(ui_task_action)
-            ui_task_action['Element'] = int(ui_task_action['Element'])
 
-            if ui_task_action.get("Input Text") is None:
-                action = Action(ui_task_action["Action"], ui_task_action["Element"],
-                                ui_task_action["Description"], "None", ui_task_action["Reason"])
-            else:
-                action = Action(ui_task_action["Action"], ui_task_action["Element"],
-                                ui_task_action["Description"], ui_task_action["Input Text"],
-                                ui_task_action["Reason"])
+            try:
+                ui_task_action['Element'] = int(ui_task_action['Element'])
+            except ValueError:
+                print('No valid action on the UI for the task')
+                ui_task_action['Element'] = -1
+
+            action = Action(ui_task_action["Action"], ui_task_action["Element"],
+                            ui_task_action["Description"], ui_task_action["Input Text"],
+                            ui_task_action["Reason"])
             print(action)
             return action
-        except TypeError as e:
-            print('No valid action on the UI for the task')
+        except Exception as e:
             raise e
 
     def reset_ui_action_checker(self):

@@ -1,18 +1,18 @@
 
 
 class AutoModeStep:
-    def __init__(self, step_id: int, **kwargs):
+    def __init__(self, step_id: str, **kwargs):
         """
         Initializes an AutoModeStep instance.
         Args:
-            step_id (int): Identifier for the step.
+            step_id (str): Identifier for the step.
             **kwargs: Additional keyword arguments. Supported keywords:
                        - is_go_back (bool): Indicates if the step involves a 'go back' action.
                        - recommended_action (str): Recommended action for this step.
                        - relation (str): Relation of this step to the task.
                        - ui_data: UI data associated with this step.
         """
-        self.step_id: int = step_id
+        self.step_id: str = step_id
         self.is_go_back: bool = kwargs["is_go_back"] if kwargs.get("is_go_back") else False
         self.recommended_action = kwargs["recommended_action"] if kwargs.get("recommended_action") else "None"
         self.relation = kwargs["relation"] if kwargs.get("relation") else "None"
@@ -57,12 +57,12 @@ class InquiryStep:
     """
     Initializes an ConversationStep instance.
     Args:
-        step_id (int): Identifier for the step.
+        step_id (str): Identifier for the step.
         **kwargs: Additional keyword arguments. Supported keywords:
                    - conversation (str): conversation content for this step.
     """
-    def __init__(self, step_id: int, **kwargs):
-        self.step_id: int = step_id
+    def __init__(self, step_id: str, **kwargs):
+        self.step_id: str = step_id
         self.user_conversation: dict = kwargs["user_conversation"] if kwargs.get("user_conversation") else None
         self.llm_conversation: dict = kwargs["llm_conversation"] if kwargs.get("llm_conversation") else None
 

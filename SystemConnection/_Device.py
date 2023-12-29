@@ -240,11 +240,10 @@ class _Device:
         scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[1])
         if show:
             board = ui.img.copy()
-            cv2.circle(board, scroll_start, 20, (255, 0, 255), 8)
-            cv2.circle(board, scroll_end, 20, (255, 0, 255), 8)
-            cv2.imshow('scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
+            cv2.arrowedLine(board, scroll_start, scroll_end, (255, 0, 255), 8)
+            cv2.imshow('up_scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
             cv2.waitKey()
-            cv2.destroyWindow('scroll')
+            cv2.destroyWindow('up_scroll')
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
 
     def down_scroll_screen(self, ui, element, show=False):
@@ -261,11 +260,10 @@ class _Device:
         scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         if show:
             board = ui.img.copy()
-            cv2.circle(board, scroll_start, 20, (255, 0, 255), 8)
-            cv2.circle(board, scroll_end, 20, (255, 0, 255), 8)
-            cv2.imshow('scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
+            cv2.arrowedLine(board, scroll_start, scroll_end, (255, 0, 255), 8)
+            cv2.imshow('down_scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
             cv2.waitKey()
-            cv2.destroyWindow('scroll')
+            cv2.destroyWindow('down_scroll')
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
 
     def right_swipe_screen(self, ui, element, show=False):

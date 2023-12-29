@@ -1,6 +1,5 @@
 from ._OpenAI import _OpenAI
 import time
-import json
 import logging
 import openai
 
@@ -44,9 +43,7 @@ class _AssistantModel(_OpenAI):
 
             msg = {'content': resp}
             if runtime:
-                msg['content'] = json.loads(msg['content'])
-                msg['content']['Runtime'] = '{:.3f}s'.format(time.time() - start)
-                msg['content'] = json.dumps(msg['content'])
+                msg['runtime'] = '{:.3f}s'.format(time.time() - start)
 
             # Append the processed response to conversation history
             self.__conversations_by_thread[thread.id].append({'role': "assistant", 'content': msg['content']})

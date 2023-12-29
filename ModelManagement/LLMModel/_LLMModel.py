@@ -1,6 +1,5 @@
 from ._OpenAI import _OpenAI
 import time
-import json
 import logging
 import openai
 
@@ -36,9 +35,7 @@ class _LLMModel(_OpenAI):
 
             msg = dict(resp.choices[0].message)
             if runtime:
-                msg['content'] = json.loads(msg['content'])
-                msg['content']['Runtime'] = '{:.3f}s'.format(time.time() - start)
-                msg['content'] = json.dumps(msg['content'])
+                msg['runtime'] = '{:.3f}s'.format(time.time() - start)
 
             # Append the processed response to conversation history
             self._conversations.append({'role': msg['role'], 'content': msg['content']})
