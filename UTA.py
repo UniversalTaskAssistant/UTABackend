@@ -124,7 +124,7 @@ class UTA:
         """
         Try to find a related app.
         """
-        rel_app = self.app_recommender.check_related_apps(task, app_list=app_list,
+        rel_app = self.check_related_apps(task, app_list=app_list,
                                                           except_apps=except_apps, printlog=printlog)
         if rel_app == 'None':
             return relation, None, "No related app can be found."
@@ -157,6 +157,19 @@ class UTA:
             return self.handle_unrelated_ui(task, ui_data, relation, app_list, except_apps, printlog)
 
         return relation, action, "Enter next turn."
+
+    def check_related_apps(self, task, app_list, except_apps=None, printlog=False):
+        """
+        Checks for apps related to a given task.
+        Args:
+            task (str): The task for which related apps are to be found.
+            app_list (list): A list of apps to consider.
+            except_apps (list, optional): Apps to exclude from consideration.
+            printlog (bool): If True, enables logging of outputs.
+        Returns:
+            JSON data with related app information.
+        """
+        return self.app_recommender.check_related_apps(task, app_list, except_apps, printlog)
 
     def store_data_to_local(self, json_file, file_name):
         """
