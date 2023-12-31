@@ -172,7 +172,7 @@ def automate_task(uta, task, max_turn=100, clarify_max_turn=3, related_app_max_t
                         excepted_related_apps.append(rel_app)
                         rel_app = uta.check_related_apps(clarifyed_task, device_app_list,
                                                          except_apps=excepted_related_apps, printlog=printlog)
-                        
+
                     if not launch:
                         new_task.set_attributes(execution_result="Failed")
                         break

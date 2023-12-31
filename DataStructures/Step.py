@@ -7,12 +7,15 @@ class AutoModeStep:
         Args:
             step_id (str): Identifier for the step.
             **kwargs: Additional keyword arguments. Supported keywords:
+                       - parent_id (str): Identifier for the parental autonomic task.
                        - is_go_back (bool): Indicates if the step involves a 'go back' action.
                        - recommended_action (str): Recommended action for this step.
                        - relation (str): Relation of this step to the task.
                        - ui_data: UI data associated with this step.
+                       - execution_result (str): Execution result of the step.
         """
         self.step_id: str = step_id
+        self.parent_id = kwargs["parent_id"] if kwargs.get("parent_id") else "None"
         self.is_go_back: bool = kwargs["is_go_back"] if kwargs.get("is_go_back") else False
         self.recommended_action = kwargs["recommended_action"] if kwargs.get("recommended_action") else "None"
         self.relation = kwargs["relation"] if kwargs.get("relation") else "None"
@@ -22,6 +25,7 @@ class AutoModeStep:
     def __dict__(self):
         return {
             'step_id': self.step_id,
+            'parent_id': self.parent_id,
             'is_go_back': self.is_go_back,
             'recommended_action': self.recommended_action,
             'relation': self.relation,
@@ -30,7 +34,7 @@ class AutoModeStep:
         }
 
     def __str__(self):
-        return f"AutoModeStep(step_id={self.step_id}, is_go_back={self.is_go_back}, " \
+        return f"AutoModeStep(step_id={self.step_id}, parent_id={self.parent_id}, is_go_back={self.is_go_back}, " \
             f"recommended_action={self.recommended_action}, relation={self.relation}, ui_data={self.ui_data}" \
             f"execution_result={self.execution_result})"
 
@@ -59,10 +63,13 @@ class InquiryStep:
     Args:
         step_id (str): Identifier for the step.
         **kwargs: Additional keyword arguments. Supported keywords:
-                   - conversation (str): conversation content for this step.
+                   - parent_id (str): Identifier for the parental autonomic task.
+                   - user_conversation (str): user conversation content for this step.
+                   - llm_conversation (str): gpt conversation response for this step.
     """
     def __init__(self, step_id: str, **kwargs):
         self.step_id: str = step_id
+        self.parent_id = kwargs["parent_id"] if kwargs.get("parent_id") else "None"
         self.user_conversation: dict = kwargs["user_conversation"] if kwargs.get("user_conversation") else None
         self.llm_conversation: dict = kwargs["llm_conversation"] if kwargs.get("llm_conversation") else None
 
