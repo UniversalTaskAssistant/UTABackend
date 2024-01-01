@@ -7,6 +7,7 @@ from TaskDeclearation import TaskDeclarator
 from TaskExecution import AppTasker, InquiryTasker
 from ThirdPartyAppManagement import ThirdPartyAppManager
 from UIProcessing import UIProcessor
+from HistoryManagement import HistoryManager
 
 
 class UTA:
@@ -27,6 +28,7 @@ class UTA:
         self.app_tasker = AppTasker(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
         self.inquiry_tasker = InquiryTasker("inquiry_tasker", self.model_manager)
+        self.history_manager = HistoryManager(user_id)
 
         self.xml_path = img_path
         self.img_path = xml_path
@@ -46,6 +48,7 @@ class UTA:
         self.app_tasker.initialize_agents()
         self.app_recommender.initialize_agents()
         self.inquiry_tasker.initialize_agent()
+        self.history_manager.initialize_storage()
 
         self.ori_task_postfix_id += 1
         self.autonomic_task_postfix_id = 1

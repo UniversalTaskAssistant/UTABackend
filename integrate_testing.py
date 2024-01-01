@@ -99,7 +99,7 @@ def automate_task(uta, task, max_turn=100, clarify_max_turn=3, related_app_max_t
     # Loop for task clarification with user interaction
     while clarify_max_turn and clarifyed_result['Clear'] == "False":
         clarifyed_result = uta.clarify_task(conversation, printlog)
-        original_task.append_clarifying_conversation(({'role': 'user', 'content': task},
+        original_task.append_clarifying_conversation(({'role': 'user', 'content': conversation},
                                                       {'role': 'assistant', 'content': clarifyed_result}))
 
         conversation = input(clarifyed_result)  # we send this to front and wait for answer
