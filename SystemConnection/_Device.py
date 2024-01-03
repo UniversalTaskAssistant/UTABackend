@@ -1,7 +1,6 @@
 from ppadb.client import Client as AdbClient
 import time
 import cv2
-import xmltodict
 from os.path import join as pjoin
 import os
 from DataStructures.config import *
@@ -49,14 +48,14 @@ class _Device:
     ***********************
     '''
     def cap_and_save_ui_screenshot_and_xml(self, ui_id, output_dir):
-        '''
+        """
         Capture and save ui screenshot and xml to target directory
         Args:
             ui_id (int or string): The id of the current ui, used to name the saved files
             output_dir (path): Directory to save img and xml
         Returns:
             screen_path, xml_path
-        '''
+        """
         os.makedirs(output_dir, exist_ok=True)
         screen_path = pjoin(output_dir, str(ui_id) + '.png')
         xml_path = pjoin(output_dir, str(ui_id) + '.xml')

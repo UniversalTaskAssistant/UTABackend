@@ -87,19 +87,23 @@ class _TaskUIActionChecker:
 
             if ui:
                 messages = [
-                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
+                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various '
+                                                'UI blocks and elements.'},
                     {'role': 'user', 'content': str(ui.element_tree)}
                 ]
                 self.__model_manager.set_llm_conversations(self.__model_identifier, messages)
 
-            go_back_availability = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation, printlog=printlog)['content']
+            go_back_availability = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation,
+                                                                                printlog=printlog)['content']
             go_back_availability = json.loads(go_back_availability)
             print(go_back_availability)
 
             if go_back_availability['Can'].lower() == 'yes':
-                return Action("Click", go_back_availability["Element"], go_back_availability["Description"], "None", go_back_availability["Reason"])
+                return Action("Click", go_back_availability["Element"], go_back_availability["Description"], "None",
+                              go_back_availability["Reason"])
             else:
-                return Action("Find Relevant Apps", go_back_availability["Element"], go_back_availability["Description"], "None", go_back_availability["Reason"])
+                return Action("Find Relevant Apps", go_back_availability["Element"],
+                              go_back_availability["Description"], "None", go_back_availability["Reason"])
         except Exception as e:
             raise e
 
@@ -119,16 +123,19 @@ class _TaskUIActionChecker:
             # Format the prompt
             except_elements_str = ','.join(except_elements) if except_elements else ''
             action_history_str = str(self.__model_manager.get_llm_conversations(self.__model_identifier))
-            conversation = self.__action_prompt.format(task=task, except_elements=except_elements_str, action_history=action_history_str)
+            conversation = self.__action_prompt.format(task=task, except_elements=except_elements_str,
+                                                       action_history=action_history_str)
 
             if ui:
                 messages = [
-                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
+                    {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI '
+                                                'blocks and elements.'},
                     {'role': 'user', 'content': str(ui.element_tree)}
                 ]
                 self.__model_manager.set_llm_conversations(self.__model_identifier, messages)
 
-            ui_task_action = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation, printlog=printlog)['content']
+            ui_task_action = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation,
+                                                                          printlog=printlog)['content']
             ui_task_action = json.loads(ui_task_action)
 
             try:

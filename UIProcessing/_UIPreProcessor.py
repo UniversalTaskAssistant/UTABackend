@@ -14,25 +14,26 @@ class _UIPreProcessor:
     ******************************************
     '''
     def ui_vh_xml_cvt_to_json(self, ui_data):
-        '''
+        """
         Convert xml vh to json format for easier processing
         Args:
             ui_data (UIData): ui data for processing
         Returns:
              ui_data.ui_vh_json (dict): VH in a tidy json format
-        '''
+        """
         ui_data.ui_vh_json = xmltodict.parse(open(ui_data.xml_file, 'r', encoding='utf-8').read())
         # Tidy up and reformat the json vh into Rico format
-        ui_data.ui_vh_json = {'activity': {'root': self.__cvt_node_to_rico_format(ui_data.ui_vh_json['hierarchy']['node'])}}
+        ui_data.ui_vh_json = {'activity': {'root': self.__cvt_node_to_rico_format(ui_data.ui_vh_json['hierarchy']
+                                                                                  ['node'])}}
 
     def __cvt_node_to_rico_format(self, node):
-        '''
+        """
         Recursively reformat ui element node to rico format
         Args:
             node: ui element node in the dict
         Return:
             Reformatted node
-        '''
+        """
         node = self.__reformat_node(node)
         if 'children' in node:
             if type(node['children']) == list:
@@ -46,9 +47,9 @@ class _UIPreProcessor:
 
     @staticmethod
     def __reformat_node(node):
-        '''
+        """
         Tidy up node attributes
-        '''
+        """
         node_new = {}
         for key in node.keys():
             if node[key] == 'true':
@@ -66,20 +67,19 @@ class _UIPreProcessor:
                 node_new[key.replace('@', '')] = node[key]
         return node_new
 
-
     '''
     **************************
     *** UI Info Extraction ***
     **************************
     '''
     def ui_info_extraction(self, ui_data):
-        '''
+        """
         Extract elements from raw view hierarchy Json file and store them as dictionaries
         Args:
             ui_data (UIData): ui data for processing
         Returns:
             ui_data.elements; ui_data.elements_leaves (list of dicts)
-        '''
+        """
         # print('--- Extract elements from VH ---')
         json_vh = ui_data.ui_vh_json
         json_cp = copy.deepcopy(json_vh)
@@ -97,15 +97,15 @@ class _UIPreProcessor:
         ui_data.elements_leaves = self.__elements_leaves
 
     def __prone_invalid_children(self, element):
-        '''
+        """
         Prone invalid children elements
         Leave valid children and prone their children recursively
         Take invalid children's children as its own directly
-        '''
+        """
         def check_if_element_valid(ele, min_length=5):
-            '''
+            """
             Check if the element is valid and should be kept
-            '''
+            """
             if (ele['bounds'][0] >= ele['bounds'][2] - min_length or ele['bounds'][1] >= ele['bounds'][
                 3] - min_length) or \
                     ('layout' in ele['class'].lower() and not ele['clickable']):
@@ -124,9 +124,9 @@ class _UIPreProcessor:
         return valid_children
 
     def __remove_redundant_nesting(self, element):
-        '''
+        """
         Remove redundant parent node whose bounds are same
-        '''
+        """
         if 'children' in element and len(element['children']) > 0:
             redundant = False
             new_children = []
@@ -146,9 +146,9 @@ class _UIPreProcessor:
         return [element]
 
     def __merge_element_with_single_leaf_child(self, element):
-        '''
+        """
         Keep the resource-id and class and clickable of the child element
-        '''
+        """
         if 'children' in element:
             if len(element['children']) == 1 and 'children' not in element['children'][0]:
                 child = element['children'][0]
@@ -164,9 +164,9 @@ class _UIPreProcessor:
         return element
 
     def __extract_children_elements(self, element, layer):
-        '''
+        """
         Recursively extract children from an element
-        '''
+        """
         element['id'] = self.__element_no
         element['layer'] = layer
         self.__elements.append(element)
@@ -185,9 +185,9 @@ class _UIPreProcessor:
         return children_depth
 
     def __gather_leaf_elements(self):
-        '''
+        """
         Gather all leaf elements that have no children together
-        '''
+        """
         i = 0
         for ele in self.__elements:
             if 'children-id' not in ele:

@@ -16,7 +16,7 @@ class AppTasker:
         self.__relation_checker = _TaskUIRelationChecker(model_identifier=self.__relation_checker_identifier,
                                                          model_manager=self.__model_manager)
         self.__action_checker = _TaskUIActionChecker(model_identifier=self.__action_checker_identifier,
-                                                         model_manager=self.__model_manager)
+                                                     model_manager=self.__model_manager)
 
     def initialize_agents(self):
         """
@@ -36,8 +36,8 @@ class AppTasker:
         Returns:
             Relation between the ui and the task.
         """
-        return self.__relation_checker.check_relation(ui=ui_data, task=task,
-                                                                except_elements=except_elements, printlog=printlog)
+        return self.__relation_checker.check_relation(ui=ui_data, task=task, except_elements=except_elements,
+                                                      printlog=printlog)
 
     def check_ui_action(self, ui_data, task, except_elements=None, printlog=False):
         """
@@ -50,8 +50,8 @@ class AppTasker:
         Returns:
             Action with the determined action and target element.
         """
-        return self.__action_checker.check_action(ui=ui_data, task=task,
-                                                            except_elements=except_elements, printlog=printlog)
+        return self.__action_checker.check_action(ui=ui_data, task=task, except_elements=except_elements,
+                                                  printlog=printlog)
 
     def check_go_back_availability(self, ui, task, reset_history=False, printlog=False):
         """
@@ -64,10 +64,11 @@ class AppTasker:
         Returns:
            Action indicating back navigation availability.
         """
-        return self.__action_checker.check_go_back_availability(ui, task, reset_history=reset_history, printlog=printlog)
+        return self.__action_checker.check_go_back_availability(ui, task, reset_history=reset_history,
+                                                                printlog=printlog)
 
     def analyze_ui_task(self, ui_data, task, except_elements=None, printlog=False):
-        '''
+        """
         Identify the relation and action for the app-related task
         Args:
             ui_data (UIData): ui object to be analyzed.
@@ -77,7 +78,7 @@ class AppTasker:
         Returns:
             Status (int, 0, 1, 2): 0 - unrelated; 1 - complete; 2 - related
             Action (Action): If related, UI action on the current UI
-        '''
+        """
         # 1. check the relation between the UI and the task
         relation = self.check_task_ui_relation(ui_data=ui_data,
                                                task=task, except_elements=except_elements, printlog=printlog)

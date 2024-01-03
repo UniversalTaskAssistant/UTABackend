@@ -1,5 +1,4 @@
 
-
 class AutonomicTask:
     def __init__(self, task_id: str, **kwargs):
         """
@@ -63,7 +62,8 @@ class OriginalTask:
         self.original_task: str = kwargs["original_task"] if kwargs.get("original_task") else "None"
         self.clarifyed_task: str = kwargs["clarifyed_task"] if kwargs.get("clarifyed_task") else "None"
         self.autonomic_tasks: list = kwargs["autonomic_tasks"] if kwargs.get("autonomic_tasks") else []
-        self.clarifying_conversations: list = kwargs["clarifying_conversations"] if kwargs.get("clarifying_conversations") else []
+        self.clarifying_conversations: list = kwargs["clarifying_conversations"] if \
+            kwargs.get("clarifying_conversations") else []
         # [({'role': 'user', 'content': conversation}, {'role': 'assistant', 'content': conversation}), ...}
 
     def __dict__(self):
@@ -77,7 +77,8 @@ class OriginalTask:
         }
 
     def __str__(self):
-        return f"Task(task_id={self.task_id}, parent_id={self.parent_id}, original_task={self.original_task}, clarifyed_task={self.clarifyed_task}, " \
+        return f"Task(task_id={self.task_id}, parent_id={self.parent_id}, original_task={self.original_task}, " \
+            f"clarifyed_task={self.clarifyed_task}, " \
             f"autonomic_tasks={self.autonomic_tasks}, clarifying_conversations={self.clarifying_conversations})"
 
     def set_attributes(self, **kwargs):

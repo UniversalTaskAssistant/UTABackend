@@ -75,7 +75,8 @@ class _TaskUIRelationChecker:
                 ]
                 self.__model_manager.set_llm_conversations(self.__model_identifier, messages)
 
-            ui_task_relation = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation, printlog=printlog)['content']
+            ui_task_relation = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation,
+                                                                            printlog=printlog)['content']
             ui_task_relation = json.loads(ui_task_relation)
 
             relation = Relation(ui_task_relation['Relation'], ui_task_relation['Reason'])

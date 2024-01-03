@@ -3,7 +3,6 @@ import json
 from base64 import b64encode
 import time
 import cv2
-import os
 from os.path import join as pjoin
 
 from DataStructures.Text import Text

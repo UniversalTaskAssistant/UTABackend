@@ -38,4 +38,3 @@ class InquiryTasker:
     def reset_inquiry_tasker(self):
         # reset conversation history
         self.__model_manager.reset_llm_conversations(self.__model_identifier)
-

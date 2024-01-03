@@ -77,7 +77,8 @@ class ThirdPartyAppManager:
             if fuzzy:
                 app_list = self.search_apps_fuzzy(search_tar)[:max_return]
                 app_functions = [self.conclude_app_functionality(one_app) for one_app in app_list]
-                return [{'title': app_list[idx]['title'], 'function': one_func} for idx, one_func in enumerate(app_functions)]
+                return [{'title': app_list[idx]['title'], 'function': one_func} for idx, one_func in
+                        enumerate(app_functions)]
             else:
                 tar_app = self.search_app_by_name(search_tar)
                 app_function = self.conclude_app_functionality(tar_app)

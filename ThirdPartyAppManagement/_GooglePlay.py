@@ -38,7 +38,8 @@ class _GooglePlay:
             app_id = re.search(r'id=([^ ]+)', element['href'])
             if app_id:
                 tar_app = app(app_id.group(1))
-                print('Running Time:%.3fs, ' % (time.time() - start), 'Fetched APP: {App id:', tar_app['appId'], '} {App title:', tar_app['title'], '}')
+                print('Running Time:%.3fs, ' % (time.time() - start),
+                      'Fetched APP: {App id:', tar_app['appId'], '} {App title:', tar_app['title'], '}')
                 return tar_app
             else:
                 print("No match found!")

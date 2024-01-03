@@ -94,44 +94,35 @@ def automate_task(uta, task, max_turn=100, clarify_max_turn=3, related_app_max_t
     # Create a new original task object and increment task ID
     original_task = OriginalTask(f"{uta.user_id}-{uta.ori_task_postfix_id}", original_task=task)
     conversation = task
-    clarifyed_result = {"Clear": "False", "Question": ""}
+    clarified_result = {"Clear": "False", "Question": ""}
 
     # Loop for task clarification with user interaction
-    while clarify_max_turn and clarifyed_result['Clear'] == "False":
-        clarifyed_result = uta.clarify_task(conversation, printlog)
+    while clarify_max_turn and clarified_result['Clear'] == "False":
+        clarified_result = uta.clarify_task(conversation, printlog)
         original_task.append_clarifying_conversation(({'role': 'user', 'content': conversation},
-                                                      {'role': 'assistant', 'content': clarifyed_result}))
+                                                      {'role': 'assistant', 'content': clarified_result}))
 
-        conversation = input(clarifyed_result)  # we send this to front and wait for answer
+        conversation = input(clarified_result)  # we send this to front and wait for answer
         clarify_max_turn -= 1
-    original_task.set_attributes(clarifyed_task=clarifyed_result['content'])
+    original_task.set_attributes(clarifyed_task=clarified_result['content'])
 
     # Decompose and classify the task into sub-tasks
     task_class_tuple = uta.decompose_and_classify_tasks(task, printlog)
-    for (clarifyed_task, task_class) in task_class_tuple:
+    for (clarified_task, task_class) in task_class_tuple:
         # Create a new autonomic task object and increment task ID
         new_task = AutonomicTask(f"{uta.user_id}-{uta.ori_task_postfix_id}-{uta.autonomic_task_postfix_id}",
-                                 task=clarifyed_task, task_type=task_class)
+                                 task=clarified_task, task_type=task_class)
         uta.autonomic_task_postfix_id += 1
 
         # Process task based on its classification
         if task_class == "General Inquiry":
-            llm_response = uta.execute_inquiry_task(clarifyed_task)
-
-            # Create an inquiry step and append it to the new task
-            inquiry_step = InquiryStep(f"{uta.user_id}-{uta.ori_task_postfix_id}-{uta.autonomic_task_postfix_id}"
-                                       f"-{uta.step_postfix_id}")
-            inquiry_step.set_attributes(user_conversation={'role': 'user', 'content': clarifyed_task},
-                                        llm_conversation={'role': 'assistant', 'content': llm_response})
-            uta.step_postfix_id += 1
-
-            new_task.append_step(inquiry_step)
-            new_task.set_attributes(execution_result="Finish")
+            llm_response = uta.execute_inquiry_task(clarified_task)
+            print(llm_response)
         else:
             # Loop for executing non-inquiry tasks
             for step_turn in range(max_turn):
                 excepted_related_apps, device_app_list = get_app_lists(uta)
-                relation, action, result = uta.automate_app_and_system_task(ui_data, clarifyed_task,
+                relation, action, result = uta.automate_app_and_system_task(ui_data, clarified_task,
                                                                             excepted_related_apps, device_app_list,
                                                                                       except_apps=except_apps,
                                                                                       printlog=printlog)
@@ -170,7 +161,7 @@ def automate_task(uta, task, max_turn=100, clarify_max_turn=3, related_app_max_t
                             launch = 1
                             break
                         excepted_related_apps.append(rel_app)
-                        rel_app = uta.check_related_apps(clarifyed_task, device_app_list,
+                        rel_app = uta.check_related_apps(clarified_task, device_app_list,
                                                          except_apps=excepted_related_apps, printlog=printlog)
 
                     if not launch:

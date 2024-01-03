@@ -1,4 +1,5 @@
 from os.path import join as pjoin
+import json
 
 from DataStructures import *
 from ModelManagement import ModelManager
@@ -33,11 +34,11 @@ class UTA:
         self.xml_path = img_path
         self.img_path = xml_path
         self.output_dir = output_dir
-        self.user = User(user_id)
 
-        self.ori_task_postfix_id = 0
-        self.autonomic_task_postfix_id = 1
-        self.step_postfix_id = 1
+        self.user_id = user_id
+        self.original_task_id = 0
+        self.autonomic_task_id = 1
+        self.step_id = 1
 
     def initialize_agents(self):
         """
@@ -50,9 +51,9 @@ class UTA:
         self.inquiry_tasker.initialize_agent()
         self.history_manager.initialize_storage()
 
-        self.ori_task_postfix_id += 1
-        self.autonomic_task_postfix_id = 1
-        self.step_postfix_id = 1
+        self.original_task_id += 1
+        self.autonomic_task_id = 1
+        self.step_id = 1
 
     def execute_inquiry_task(self, conversation):
         """
@@ -63,7 +64,12 @@ class UTA:
         Returns:
             The response from the inquiry tasker.
         """
-        return self.inquiry_tasker.execute_inquiry_task(conversation)
+        llm_response = self.inquiry_tasker.execute_inquiry_task(conversation)
+        self.history_manager.store_inquiry_step(step_id=self.step_id, parent_id=self.autonomic_task_id,
+                                                user_conversation=conversation, llm_conversation=llm_response)
+        # Store inquiry step
+        self.step_id += 1
+        return llm_response
 
     def clarify_task(self, task, printlog=False):
         """
@@ -74,7 +80,11 @@ class UTA:
         Returns:
             LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
         """
-        return self.task_declarator.clarify_task(task, printlog=printlog)
+        llm_response = self.task_declarator.clarify_task(task, printlog=printlog)
+        self.history_manager.store_original_task(task_id=self.original_task_id, parent_id=self.user_id, task=task,
+                                                 conversation=task, clarified_result=llm_response)
+        # Store clarification
+        return llm_response
 
     def decompose_and_classify_tasks(self, task, printlog=False):
         """
@@ -95,6 +105,12 @@ class UTA:
         else:
             task_class = self.task_declarator.classify_task(task, printlog=printlog)['Task Type']
             task_class_tuple.append((task, task_class))
+
+        # store sub-tasks information
+        for (clarifyed_task, task_class) in task_class_tuple:
+            self.history_manager.store_autonomic_task(task_id=self.autonomic_task_id, parent_id=self.original_task_id,
+                                                      task=clarifyed_task, task_type=task_class)
+            self.autonomic_task_id += 1
 
         return task_class_tuple
 
@@ -118,8 +134,15 @@ class UTA:
         back_availability_action = self.app_tasker.check_go_back_availability(ui_data, task, reset_history=True,
                                                                               printlog=printlog)
         if back_availability_action.action == 'Click':
-            # self.execute_ui_operation(back_availability_action, ui_data, show_operation)
-            return relation, back_availability_action, "Can go back, execute the back action."
+            execution_result = "Can go back, execute the back action."
+
+            self.history_manager.store_auto_mode_step(step_id=self.step_id, parent_id=self.autonomic_task_id,
+                                                      ui_data=ui_data, relation=relation,
+                                                      action=back_availability_action,
+                                                      execution_result=execution_result)  # Store steps
+            self.step_id += 1
+
+            return relation, back_availability_action, execution_result
 
         return self.try_related_apps(task, ui_data, relation, app_list, except_apps, printlog)
 
@@ -128,19 +151,37 @@ class UTA:
         Try to find a related app.
         """
         rel_app = self.check_related_apps(task, app_list=app_list,
-                                                          except_apps=except_apps, printlog=printlog)
+                                          except_apps=except_apps, printlog=printlog)
         if rel_app == 'None':
-            return relation, None, "No related app can be found."
+            execution_result = "No related app can be found."
+
+            self.history_manager.store_auto_mode_step(step_id=self.step_id, parent_id=self.autonomic_task_id,
+                                                      ui_data=ui_data, relation=relation,
+                                                      action="None",
+                                                      execution_result=execution_result)  # Store steps
+            self.step_id += 1
+
+            return relation, None, execution_result
 
         action = Action(action='Launch App', element_id=-1, description=rel_app["App"], reason=rel_app["Reason"],
                         input_text="N/A")
-        return ui_data, relation, action, "Found related app, try to launch the app."
+        execution_result = "Found related app, try to launch the app."
+
+        self.history_manager.store_auto_mode_step(step_id=self.step_id, parent_id=self.autonomic_task_id,
+                                                  ui_data=ui_data, relation=relation,
+                                                  action="None",
+                                                  execution_result=execution_result)  # Store steps
+        self.step_id += 1
+
+        return ui_data, relation, action, execution_result
 
     def automate_app_and_system_task(self, ui_data, task, app_list=None, except_apps=None, printlog=False):
         """
         Automates a task based on the current UI and task description.
         Args:
+            ui_data: processed UI_Data
             task (str): Description of the task to be automated.
+            app_list (list, optional): Apps to be independently considered.
             except_apps (list, optional): Apps to be excluded.
             printlog (bool): Enables logging if True.
         Returns:
@@ -151,7 +192,14 @@ class UTA:
 
         if relation.relation in {'Completed', 'Unrelated'}:
             if relation.relation == 'Completed':
-                return relation, None, "Task is completed."
+                execution_result = "Task is completed."
+
+                self.history_manager.store_auto_mode_step(step_id=self.step_id, parent_id=self.autonomic_task_id,
+                                                          ui_data=ui_data,  relation=relation, action="None",
+                                                          execution_result=execution_result)  # Store steps
+                self.step_id += 1
+
+                return relation, None, execution_result
             return self.handle_unrelated_ui(task, ui_data, relation, app_list, except_apps, printlog)
 
         # Handle the case where the relation is neither completed nor unrelated
@@ -159,7 +207,14 @@ class UTA:
         if action == "N/A":
             return self.handle_unrelated_ui(task, ui_data, relation, app_list, except_apps, printlog)
 
-        return relation, action, "Enter next turn."
+        execution_result = "Enter next turn."
+
+        self.history_manager.store_auto_mode_step(step_id=self.step_id, parent_id=self.autonomic_task_id,
+                                                  ui_data=ui_data, relation=relation, action="None",
+                                                  execution_result=execution_result)  # Store steps
+        self.step_id += 1
+
+        return relation, action, execution_result
 
     def check_related_apps(self, task, app_list, except_apps=None, printlog=False):
         """
@@ -174,13 +229,12 @@ class UTA:
         """
         return self.app_recommender.check_related_apps(task, app_list, except_apps, printlog)
 
-    def store_data_to_local(self, json_file, file_name):
+    def store_user_to_local(self, file_name):
         """
-        Stores the given JSON data in a specified file.
+        Stores the user data in a specified file.
 
         Args:
-            json_file (dict): JSON data to be saved.
-            file_name (str): The name of the file to store the data.
+            file_name (str): The name of the file to store the user data.
         """
+        json_file = json.loads(str(self.history_manager.get_user()))
         self.system_connector.save_json(json_file, pjoin(file_name, self.output_dir))
-

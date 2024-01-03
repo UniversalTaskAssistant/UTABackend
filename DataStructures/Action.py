@@ -1,5 +1,4 @@
 
-
 class Action:
     def __init__(self, action: str, element_id: int, description: str,
                  input_text: str, reason: str):

@@ -79,14 +79,14 @@ class SystemConnector:
         return self.__adb_device.get_app_list_on_the_device()
 
     def cap_and_save_ui_screenshot_and_xml(self, ui_id, output_dir):
-        '''
+        """
         Capture and save ui screenshot and xml to target directory
         Args:
             ui_id (int or string): The id of the current ui, used to name the saved files
             output_dir (path): Directory to save img and xml
         Returns:
             screen_path, xml_path
-        '''
+        """
         return self.__adb_device.cap_and_save_ui_screenshot_and_xml(ui_id, output_dir)
 
     def cap_screenshot(self, recur_time=0):

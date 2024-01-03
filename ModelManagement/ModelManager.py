@@ -90,8 +90,6 @@ class ModelManager:
         Args:
             identifier: name of the llm model.
             conversation: Conversation context.
-            printlog: Whether to print input conversation
-            runtime: Whether to calculate running time
             kwargs: Additional configurations.
         Returns:
             Response from the Text Model.

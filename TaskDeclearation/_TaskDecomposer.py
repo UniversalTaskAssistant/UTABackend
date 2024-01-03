@@ -40,18 +40,19 @@ class _TaskDecomposer:
         self.__model_manager.delete_llm_model(identifier=self.__model_identifier)
 
     def decompose_task(self, task, printlog=False):
-        '''
+        """
         Clarify task to be clear to complete
         Args:
             task (string): The user's task
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
-        '''
+        """
         try:
             self.__model_manager.reset_llm_conversations(self.__model_identifier)
             message = self.__base_prompt.format(task=task)
-            decomposition = self.__model_manager.create_llm_conversation(self.__model_identifier, message, printlog=printlog)['content']
+            decomposition = self.__model_manager.create_llm_conversation(self.__model_identifier, message,
+                                                                         printlog=printlog)['content']
             decomposition = json.loads(decomposition)
             print(decomposition)
             return decomposition

@@ -1,5 +1,4 @@
 
-
 class AutoModeStep:
     def __init__(self, step_id: str, **kwargs):
         """

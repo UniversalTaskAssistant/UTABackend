@@ -73,7 +73,7 @@ class _AssistantModel(_OpenAI):
             status = ""
 
             # Poll for the run status until completion, cancellation, failure, or expiration
-            while not status in {"completed", "cancelled", "failed", "expired"}:
+            while status not in {"completed", "cancelled", "failed", "expired"}:
                 time.sleep(1)
                 run_status = openai.beta.threads.runs.retrieve(
                     thread_id=thread.id,

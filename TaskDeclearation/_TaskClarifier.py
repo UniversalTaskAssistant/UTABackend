@@ -38,7 +38,7 @@ class _TaskClarifier:
         self.__model_manager.delete_llm_model(identifier=self.__model_identifier)
 
     def clarify_task(self, task, user_message=None, printlog=False):
-        '''
+        """
         Clarify task to be clear to complete
         Args:
             task (string): The user's task
@@ -46,14 +46,15 @@ class _TaskClarifier:
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
-        '''
+        """
         try:
             if not user_message:
                 self.__model_manager.reset_llm_conversations(self.__model_identifier)
                 message = self.__base_prompt.format(task=task)
             else:
                 message = user_message
-            clear = self.__model_manager.create_llm_conversation(self.__model_identifier, message, printlog=printlog)['content']
+            clear = self.__model_manager.create_llm_conversation(self.__model_identifier, message,
+                                                                 printlog=printlog)['content']
             clear = json.loads(clear)
             print(clear)
             return clear
