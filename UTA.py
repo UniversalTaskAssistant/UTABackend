@@ -49,6 +49,46 @@ class UTA:
         self.autonomic_task_id = 1
         self.step_id = 1
 
+    '''
+    ************************
+    *** Task Declaration ***
+    ************************
+    '''
+    def clarify_task(self, task, user_message=None, printlog=False):
+        """
+        Clarify task to be clear to complete
+        Args:
+            task (string): The user's task
+            user_message (string): The user's feedback
+            printlog (bool): True to print the intermediate log
+        Returns:
+            LLM answer (dict): {"Clear": "True", "Question": "None"}
+        """
+        return self.task_declarator.clarify_task(task=task, user_message=user_message, printlog=printlog)
+
+    def decompose_task(self, task, printlog=False):
+        """
+        Clarify task to be clear to complete
+        Args:\
+            task (string): The user's task
+            printlog (bool): True to print the intermediate log
+        Returns:
+            LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
+        """
+        return self.task_declarator.decompose_task(task=task, printlog=printlog)
+
+    def classify_task(self, task, printlog=False):
+        """
+        Clarify task to be clear to complete
+        Args:
+            task (string): The user's task
+            printlog (bool): True to print the intermediate log
+        Returns:
+            LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
+        """
+        return self.task_declarator.classify_task(task=task, printlog=printlog)
+
+
     def execute_inquiry_task(self, conversation):
         """
         Execute an inquiry task using the provided conversation string.
@@ -64,49 +104,6 @@ class UTA:
         # Store inquiry step
         self.step_id += 1
         return llm_response
-
-    def clarify_task(self, task, printlog=False):
-        """
-        Clarify task to be clear to complete
-        Args:
-            task (string): The user's task
-            printlog (bool): True to print the intermediate log
-        Returns:
-            LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
-        """
-        llm_response = self.task_declarator.clarify_task(task, printlog=printlog)
-        self.history_manager.store_original_task(task_id=self.original_task_id, parent_id=self.user_id, task=task,
-                                                 conversation=task, clarified_result=llm_response)
-        # Store clarification
-        return llm_response
-
-    def decompose_and_classify_tasks(self, task, printlog=False):
-        """
-        Decomposes the given task into sub-tasks and classifies each one.
-
-        Args:
-            task (str): The main task to decompose.
-            printlog (bool, optional): Flag to enable logging of the process. Defaults to False.
-        Returns:
-            List of tuples: Each tuple contains a sub-task and its classification.
-        """
-        task_class_tuple = []
-        decomposed_tasks = self.task_declarator.decompose_task(task, printlog=printlog)
-        if decomposed_tasks['Decompose'] == 'True':
-            for sub_task in decomposed_tasks['Sub-tasks']:
-                task_class = self.task_declarator.classify_task(sub_task, printlog=printlog)['Task Type']
-                task_class_tuple.append((sub_task, task_class))
-        else:
-            task_class = self.task_declarator.classify_task(task, printlog=printlog)['Task Type']
-            task_class_tuple.append((task, task_class))
-
-        # store sub-tasks information
-        for (clarifyed_task, task_class) in task_class_tuple:
-            self.history_manager.store_autonomic_task(task_id=self.autonomic_task_id, parent_id=self.original_task_id,
-                                                      task=clarifyed_task, task_type=task_class)
-            self.autonomic_task_id += 1
-
-        return task_class_tuple
 
     def process_ui(self, screenshot, vh, ui_resize):
         """

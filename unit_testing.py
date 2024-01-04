@@ -39,7 +39,7 @@ elif test_section == 2:
     task = 'Open wechat and send my mom a message'
     task_declarator = TaskDeclarator(model_manager=model_mg)
     task_declarator.initialize_task_clarifier('task_clarifier1')
-    task_declarator.clarify_task(clarifier_identifier='task_clarifier1', org_task=task)
+    task_declarator.clarify_task(task=task)
     task_declarator.initialize_task_decomposer('task_dec1')
     task_declarator.decompose_task(decomposer_identifier='task_dec1', task=task)
     task_declarator.initialize_task_classifier('task_cls1')
