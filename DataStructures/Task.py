@@ -9,9 +9,9 @@ class Task:
         self.parent_task_id = parent_task_id
         self.children_ids = []
 
+        self.conversation_declaration = [{'role':'system', 'content':'You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task.'}]
+        self.conversation_automation = [{'role':'system', 'content':'You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task.'}]
         self.steps = []
-        self.conversation_declaration = None
-        self.conversation_automation = None
         self.task_execution_result = None
 
 
