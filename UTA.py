@@ -88,7 +88,11 @@ class UTA:
         """
         return self.task_declarator.classify_task(task=task, printlog=printlog)
 
-
+    '''
+    ***********************
+    *** Task Automation ***
+    ***********************
+    '''
     def execute_inquiry_task(self, conversation):
         """
         Execute an inquiry task using the provided conversation string.
