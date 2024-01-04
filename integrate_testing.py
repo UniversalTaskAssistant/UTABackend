@@ -146,7 +146,7 @@ def automate_task(uta, task, max_turn=100, clarify_max_turn=3, related_app_max_t
                     execute_ui_operation(uta, action, ui_data, show_operation)
                     # Annotate UI operation for debugging
                     if debug:
-                        auto_mode_step.annotate_ui_openation()
+                        auto_mode_step.annotate_ui_operation()
                 elif result == "No related app can be found.":
                     new_task.set_attributes(execution_result="Failed")
                     break

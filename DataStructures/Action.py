@@ -1,22 +1,8 @@
+from ._Data import _Data
 
-class Action:
+
+class Action(_Data):
     def __init__(self, action: str, element_id: int, description: str,
                  input_text: str, reason: str):
-        self.action: str = action
-        self.element_id: int = element_id
-        self.description: str = description
-        self.input_text: str = input_text
-        self.reason: str = reason
-
-    def __dict__(self):
-        return {
-            'action': self.action,
-            'element_id': self.element_id,
-            'description': self.description,
-            'input_text': self.input_text,
-            'reason': self.reason,
-        }
-
-    def __str__(self):
-        return f"Action(action={self.action}, element_id={self.element_id}, " \
-            f"description={self.description}, input_text={self.input_text}, reason={self.reason})"
+        super().__init__(action=action, element_id=element_id, description=description, input_text=input_text,
+                         reason=reason)

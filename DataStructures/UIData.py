@@ -153,8 +153,7 @@ class UIData:
         '''
         assert recommended_action != "None"
 
-        element = self.elements[recommended_action.element_id]
-        ele = self.elements[element]
+        ele = self.elements[recommended_action.element_id]
         bounds = ele['bounds']
 
         if recommended_action.action.lower() == 'click':

@@ -82,7 +82,7 @@ class HistoryManager:
         """
         assert step_id in self.__auto_mode_step_dict
 
-        self.__auto_mode_step_dict[step_id].annotate_ui_openation()
+        self.__auto_mode_step_dict[step_id].annotate_ui_operation()
 
     def store_autonomic_task(self, task_id, parent_id, task, task_type):
         """

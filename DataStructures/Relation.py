@@ -1,15 +1,6 @@
+from ._Data import _Data
 
 
-class Relation:
+class Relation(_Data):
     def __init__(self, relation: str, reason: str):
-        self.relation: str = relation
-        self.reason: str = reason
-
-    def __dict__(self):
-        return {
-            'relation': self.relation,
-            'reason': self.reason
-        }
-
-    def __str__(self):
-        return f"Relation(relation={self.relation}, reason={self.reason})"
+        super().__init__(relation=relation, reason=reason)

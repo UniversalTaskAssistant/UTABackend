@@ -1,28 +1,21 @@
+from ._Data import _Data
 
-class User:
+
+class User(_Data):
     def __init__(self, user_id: str):
         """
         Initializes a _User instance.
         Args:
             user_id (str): Identifier for the user.
         """
-        self.user_id = user_id
-        self.user_tasks = []  # [OriginalTask, ...]
-
-    def __dict__(self):
-        return {
-            'user_id': self.user_id,
-            'user_tasks': self.user_tasks,
-        }
-
-    def __str__(self):
-        return f"_User(task_id={self.user_id}, user_tasks={self.user_tasks})"
+        super().__init__(user_id=user_id)
+        self.user_tasks = []  # [task_id, ...]
 
     def append_user_task(self, user_task):
         """
         Appends a new user task to the user_tasks.
         Args:
-            user_task: The user task to be added.
+            user_task: The user task id to be added.
                        Format:{'original_task': OriginalTask, 'decomposed_task': DecomposedTask}
         """
         self.user_tasks.append(user_task)
