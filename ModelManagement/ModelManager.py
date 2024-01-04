@@ -1,18 +1,16 @@
-from LLMModel._OpenAI import _OpenAI
-from LLMModel._AssistantModel import _AssistantModel
+from FMModel._OpenAI import _OpenAI
 from VisionModel._VisionModel import _VisionModel
 
 
 class ModelManager:
     def __init__(self):
         self.__vision_model = _VisionModel()
-        self.__llm_model = _OpenAI()
-        self.__assistant_model = _AssistantModel()
+        self.__fm_model = _OpenAI()
 
     '''
-    ************************
+    ********************
     *** Vision Model ***
-    ************************
+    ********************
     '''
     def detect_text_ocr(self, img_path):
         """
@@ -39,31 +37,6 @@ class ModelManager:
     *** LLM Model ***
     *****************
     '''
-    def send_llm_prompt(self, prompt, system_prompt=None, printlog=False, runtime=True):
-        """
-        Send single prompt to the llm Model
-        Args:
-            system_prompt (str) : system role setting
-            prompt (str): Single prompt
-            printlog (bool): True to printout detailed intermediate result of llm
-            runtime (bool): True to record the runtime of llm
-        Returns:
-            message (dict): {'role':'assistant', 'content': '...'}
-        """
-        return self.__llm_model.send_openai_prompt(prompt=prompt, system_prompt=system_prompt, printlog=printlog, runtime=runtime)
-
-    def send_llm_conversation(self, conversation, printlog=False, runtime=True):
-        """
-        Send conversation to the llm Model.
-        Args:
-            conversation (list): llm conversation [{'role': 'user', 'content': '...'}, {'role': 'assistant', 'content':'...'}]
-            printlog (bool): True to printout detailed intermediate result of llm
-            runtime (bool): True to record the runtime of llm
-        Returns:
-            message (dict): {'role':'assistant', 'content': '...'}
-        """
-        return self.__llm_model.send_openai_conversation(conversation=conversation, printlog=printlog, runtime=runtime)
-
     @staticmethod
     def count_token_size(string, model='gpt-3.5-turbo'):
         """
@@ -76,25 +49,32 @@ class ModelManager:
         """
         return _OpenAI().count_token_size(string, model=model)
 
-    '''
-    ***********************
-    *** Assistant Model ***
-    ***********************
-    '''
-    def send_assistant_conversation(self, task_id, conversation, **kwargs):
+    def send_fm_prompt(self, prompt, system_prompt=None, printlog=False, runtime=True):
         """
-        Create a conversation using the Assistant Model.
+        Send single prompt to the llm Model
         Args:
-           task_id: Identifier for the specific task.
-           conversation: Conversation context.
-           kwargs: Additional configurations.
+            system_prompt (str) : system role setting
+            prompt (str): Single prompt
+            printlog (bool): True to printout detailed intermediate result of llm
+            runtime (bool): True to record the runtime of llm
         Returns:
-           Response from the Assistant Model.
+            message (dict): {'role':'assistant', 'content': '...'}
         """
-        return self.__assistant_model.create_conversation(task_id, conversation, **kwargs)
+        return self.__fm_model.send_openai_prompt(prompt=prompt, system_prompt=system_prompt, printlog=printlog, runtime=runtime)
+
+    def send_fm_conversation(self, conversation, printlog=False, runtime=True):
+        """
+        Send conversation to the llm Model.
+        Args:
+            conversation (list): llm conversation [{'role': 'user', 'content': '...'}, {'role': 'assistant', 'content':'...'}]
+            printlog (bool): True to printout detailed intermediate result of llm
+            runtime (bool): True to record the runtime of llm
+        Returns:
+            message (dict): {'role':'assistant', 'content': '...'}
+        """
+        return self.__fm_model.send_openai_conversation(conversation=conversation, printlog=printlog, runtime=runtime)
 
 
 if __name__ == '__main__':
     model_mg = ModelManager()
-    model_mg.send_llm_prompt(prompt='How are you', system_prompt='You are an assistant')
-
+    model_mg.send_fm_prompt(prompt='How are you', system_prompt='You are an assistant')
