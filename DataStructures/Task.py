@@ -1,5 +1,19 @@
 from ._Data import _Data
 
+class Task:
+    def __init__(self, task_id, task_description, parent_task_id=None):
+        self.task_id = task_id
+        self.task_description = task_description
+        self.task_type = None
+
+        self.parent_task_id = parent_task_id
+        self.children_ids = []
+
+        self.steps = []
+        self.conversation_declaration = None
+        self.conversation_automation = None
+        self.task_execution_result = None
+
 
 class Task(_Data):
     def __init__(self, task_id: str, parent_id="None", original_task="None", atomic_tasks=None,
