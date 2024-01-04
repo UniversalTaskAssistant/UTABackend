@@ -12,30 +12,24 @@ from HistoryManagement import HistoryManager
 
 
 class UTA:
-    def __init__(self, user_id, img_path, xml_path, output_dir):
+    def __init__(self, user_id):
         """
         Initialize the UTA class with necessary modules and user data paths.
 
         Args:
             user_id (str): The identifier for the user.
-            img_path (str): Path to store screenshots.
-            xml_path (str): Path to store UI hierarchy XML data.
-            output_dir (str): Directory to store output files.
         """
+        # basics
         self.model_manager = ModelManager()
-        self.task_declarator = TaskDeclarator(self.model_manager)
         self.system_connector = SystemConnector()
+        self.history_manager = HistoryManager(user_id)
+        # workers
         self.ui_processor = UIProcessor(self.model_manager)
+        self.task_declarator = TaskDeclarator(self.model_manager)
         self.app_tasker = AppTasker(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
-        self.inquiry_tasker = InquiryTasker("inquiry_tasker", self.model_manager)
-        self.history_manager = HistoryManager(user_id)
+        self.inquiry_tasker = InquiryTasker(self.model_manager)
 
-        self.xml_path = img_path
-        self.img_path = xml_path
-        self.output_dir = output_dir
-
-        self.user_id = user_id
         self.original_task_id = 0
         self.autonomic_task_id = 1
         self.step_id = 1

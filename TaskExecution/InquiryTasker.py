@@ -1,8 +1,8 @@
 
 
 class InquiryTasker:
-    def __init__(self, model_identifier, model_manager):
-        self.__model_identifier = model_identifier
+    def __init__(self, model_manager):
+        self.__model_identifier = 'inquiry_tasker'
         self.__model_manager = model_manager
 
     def initialize_agent(self):
