@@ -8,8 +8,11 @@ class ModelManager:
         self.__llm_model_dict = dict()
         self.__assistant_model_dict = dict()
 
-    # Vision model relevant functions below
-
+    '''
+    ************************
+    *** Vision Model ***
+    ************************
+    '''
     def initialize_vision_model(self):
         """
         Initialize vision model.
@@ -54,8 +57,11 @@ class ModelManager:
         assert self.__vision_model is not None
         return self.__vision_model.classify_icons(imgs)
 
-    # LLM model relevant functions below
-
+    '''
+    *****************
+    *** LLM Model ***
+    *****************
+    '''
     def initialize_llm_model(self, identifier, **kwargs):
         """
         Initialize the llm Model with provided configurations.
@@ -65,6 +71,12 @@ class ModelManager:
         """
         assert identifier not in self.__llm_model_dict
         self.__llm_model_dict[identifier] = _LLMModel(**kwargs)
+
+    def get_all_llm_models(self):
+        '''
+        Print out all initialized llm models with their identifiers
+        '''
+        print(self.__llm_model_dict)
 
     def is_llm_model_initialized(self, identifier):
         """
@@ -138,8 +150,11 @@ class ModelManager:
         """
         return _LLMModel().count_token_size(string)
 
-    # Assistant model relevant functions below
-
+    '''
+    ***********************
+    *** Assistant Model ***
+    ***********************
+    '''
     def initialize_assistant_model(self, identifier, **kwargs):
         """
         Initialize the Assistant Model with provided configurations.
@@ -148,6 +163,12 @@ class ModelManager:
             kwargs: Key-value pairs for model configuration.
         """
         self.__assistant_model_dict[identifier] = _AssistantModel(**kwargs)
+
+    def get_all_assistant_models(self):
+        '''
+        Print out all initialized assistant models with their identifiers
+        '''
+        print(self.__assistant_model_dict)
 
     def is_assistant_model_initialized(self, identifier):
         """
