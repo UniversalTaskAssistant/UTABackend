@@ -8,7 +8,7 @@ from TaskDeclearation import TaskDeclarator
 from TaskExecution import AppTasker, InquiryTasker
 from ThirdPartyAppManagement import ThirdPartyAppManager
 from UIProcessing import UIProcessor
-from HistoryManagement import HistoryManager
+from deprecated.HistoryManagement import HistoryManager
 
 
 class UTA:
@@ -69,7 +69,7 @@ class UTA:
     def decompose_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
-        Args:\
+        Args:
             task (string): The user's task
             printlog (bool): True to print the intermediate log
         Returns:

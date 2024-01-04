@@ -73,9 +73,9 @@ class ModelManager:
         self.__llm_model_dict[identifier] = _LLMModel(**kwargs)
 
     def get_all_llm_models(self):
-        '''
+        """
         Print out all initialized llm models with their identifiers
-        '''
+        """
         print(self.__llm_model_dict)
 
     def is_llm_model_initialized(self, identifier):
