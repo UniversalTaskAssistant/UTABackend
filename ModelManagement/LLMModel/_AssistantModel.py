@@ -5,8 +5,8 @@ import openai
 
 
 class _AssistantModel(_OpenAI):
-    def __init__(self, instructions="NOT_GIVEN", **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, instructions="NOT_GIVEN", model='gpt-4'):
+        super().__init__(model=model)
 
         # Initialize the AssistantModel with default settings, and override with any provided kwargs
         self._default_config = {
