@@ -110,8 +110,12 @@ class TaskDeclarator:
 
 
 if __name__ == '__main__':
-    t = 'Open wechat and send my mom a message'
-
     from ModelManagement import ModelManager
     model_mg = ModelManager()
+    from DataStructures.Task import Task
+    tsk = Task(task_id=1, task_description='Open wechat and send my mom a message')
 
+    task_declarer = TaskDeclarator(model_manager=model_mg)
+    print(task_declarer.clarify_task(task=tsk))
+    print(task_declarer.decompose_task(task=tsk))
+    print(task_declarer.classify_task(task=tsk))
