@@ -35,10 +35,7 @@ class InquiryStep(_Data):
             user_conversation (dict): user conversation content for this step.
             llm_conversation (dict): gpt conversation response for this step.
         """
-        if llm_conversation is None:
-            llm_conversation = dict()
-        if user_conversation is None:
-            user_conversation = dict()
+        super().__init__(step_id=step_id, parent_id=parent_id)
 
-        super().__init__(step_id=step_id, parent_id=parent_id, user_conversation=user_conversation,
-                         llm_conversation=llm_conversation)
+        self.llm_conversation = llm_conversation if llm_conversation else dict()
+        self.user_conversation = user_conversation if user_conversation else dict()
