@@ -17,7 +17,6 @@ class AutoModeStep(_Data):
         self.is_go_back = False  # Indicates if the step involves a 'go back' action.
         self.relation = "None"  # Recommended action for this step.
         self.recommended_action = "None"  # Recommended action for this step.
-        self.execution_result = "None"  # Execution result of the step.
 
     def annotate_ui_operation(self):
         """
