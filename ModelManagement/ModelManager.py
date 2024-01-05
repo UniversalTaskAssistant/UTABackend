@@ -1,5 +1,5 @@
-from FMModel._OpenAI import _OpenAI
-from VisionModel._VisionModel import _VisionModel
+from .FMModel._OpenAI import _OpenAI
+from .VisionModel._VisionModel import _VisionModel
 
 
 class ModelManager:

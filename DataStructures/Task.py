@@ -16,14 +16,13 @@ class Task:
 
 
 class Task(_Data):
-    def __init__(self, task_id: str, parent_id="None", original_task="None", atomic_tasks=None,
-                 clarifying_conversations=None, atomic_task="None", steps=None, task_type="None",
-                 execution_result="None"):
+    def __init__(self, task_id: str, parent_task_id="None", task_description="None", children_ids=None,
+                 conversation_declaration=None, conversation_automation=None, steps=None, task_type="None",
+                 task_execution_result="None"):
         """
         Initializes a Task instance, which is a more specific type of _Data.
 
         Args:
-            **Rest attributes are used for original task
             task_id (str): Unique identifier for the task.
             parent_id (str, optional): Identifier of the parent task. Defaults to "None".
             original_task (str, optional): Description or details of the original task. Defaults to "None".
@@ -31,8 +30,6 @@ class Task(_Data):
             list.
             clarifying_conversations (list, optional): List of conversations that occurred during task clarification.
             Defaults to empty list.
-
-            **Rest attributes are used for atomic task
             atomic_task (str, optional): Identifier for an atomic task. Defaults to "None".
             steps (list, optional): List of step identifiers associated with this task. Defaults to empty list.
             task_type (str, optional): Type of the task, can be either General Inquiry or System Function or
