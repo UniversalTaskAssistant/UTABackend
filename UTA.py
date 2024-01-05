@@ -30,11 +30,6 @@ class UTA:
         user = User(user_id=user_id)
         self.users[user_id] = user
 
-    '''
-    ************************
-    *** Task Declaration ***
-    ************************
-    '''
     def init_task(self, user_id, task_description):
         user = self.users[user_id]
         task_id = str(len(user.tasks))
@@ -44,6 +39,11 @@ class UTA:
     def retrieve_task(self, user_id, task_id):
         task = self.system_connector.load_json('uerserId/task+taskid.json')
 
+    '''
+    ************************
+    *** Task Declaration ***
+    ************************
+    '''
     def clarify_task(self, task, user_message=None, printlog=False):
         """
         Clarify task to be clear to complete
