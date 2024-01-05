@@ -37,11 +37,11 @@ class _TaskClarifier:
         """
         self.__model_manager.delete_llm_model(identifier=self.__model_identifier)
 
-    def clarify_task(self, task, user_message=None, printlog=False):
+    def clarify_task(self, task_desc, user_message=None, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
-            task (string): The user's task
+            task_desc (string): The user's task
             user_message (string): The user's feedback
             printlog (bool): True to print the intermediate log
         Returns:
@@ -67,6 +67,5 @@ if __name__ == '__main__':
     model_mg = ModelManager()
     model_mg.initialize_llm_model(identifier='task_decomposer')
 
-    task = 'Open wechat and send my mom a message'
     task_decompo = _TaskClarifier('task_decomposer', model_manager=model_mg)
-    task_decompo.clarify_task(task=task, printlog=True)
+    task_decompo.clarify_task(task='Open wechat and send my mom a message', printlog=True)

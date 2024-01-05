@@ -1,5 +1,6 @@
 from os.path import join as pjoin
 import json
+from datetime import datetime
 
 from DataStructures import *
 from ModelManagement import ModelManager
@@ -8,33 +9,26 @@ from TaskDeclearation import TaskDeclarator
 from TaskExecution import AppTasker, InquiryTasker
 from ThirdPartyAppManagement import ThirdPartyAppManager
 from UIProcessing import UIProcessor
-from HistoryManagement import HistoryManager
 
 
 class UTA:
-    def __init__(self, user_id):
+    def __init__(self):
         """
         Initialize the UTA class with necessary modules and user data paths.
-
-        Args:
-            user_id (str): The identifier for the user.
         """
         # basics
         self.model_manager = ModelManager()
         self.system_connector = SystemConnector()
-        self.history_manager = HistoryManager(user_id)
         # workers
         self.ui_processor = UIProcessor(self.model_manager)
         self.task_declarator = TaskDeclarator(self.model_manager)
         self.app_tasker = AppTasker(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
         self.inquiry_tasker = InquiryTasker(self.model_manager)
+        # user
+        self.users = {}   # dict of User objects {user id: User object}
 
-        self.original_task_id = 0
-        self.autonomic_task_id = 1
-        self.step_id = 1
-
-    def initialize_agents(self):
+    def init_agents(self):
         """
         Initializes all the agents required for task processing.
         Resets task and step identifiers for a new user session.
@@ -43,28 +37,38 @@ class UTA:
         self.app_tasker.initialize_agents()
         self.app_recommender.initialize_agents()
         self.inquiry_tasker.initialize_agent()
-        self.history_manager.initialize_storage()
 
-        self.original_task_id += 1
-        self.autonomic_task_id = 1
-        self.step_id = 1
+    def init_user(self, user_id):
+        user = User(user_id=user_id)
+        self.users[user_id] = user
 
     '''
     ************************
     *** Task Declaration ***
     ************************
     '''
-    def clarify_task(self, task, user_message=None, printlog=False):
+    def initial_task(self, user_id, task_description):
+        task_id = str(len(self.users[user_id].tasks))
+        return Task(task_id, task_description=task_description)
+
+    def retrieve_task(self, user_id, task_id):
+        return self.users[user_id].tasks[task_id]
+
+    def clarify_task(self, user_id, task_id, user_message=None, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
-            task (string): The user's task
             user_message (string): The user's feedback
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
         """
-        return self.task_declarator.clarify_task(task=task, user_message=user_message, printlog=printlog)
+        task = self.retrieve_task(user_id, task_id)
+        task.add_message_to_declaration_conv(user_message)
+
+        self.task_declarator.clarify_task(task_desc=task.task_description, user_message=user_message, printlog=printlog)
+        self.system_connector.save_json(dict(task))
+        return task.conversation_declaration[-1]['content']
 
     def decompose_task(self, task, printlog=False):
         """

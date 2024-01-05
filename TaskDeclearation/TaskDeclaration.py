@@ -22,11 +22,11 @@ class TaskDeclarator:
         self.__task_classifier.initialize_agent()
         self.__task_decomposer.initialize_agent()
 
-    def clarify_task(self, task, user_message=None, printlog=False):
+    def clarify_task(self, task_desc, user_message=None, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
-            task (string): The user's task
+            task_desc (string): The user's task
             user_message (string): The user's feedback
             printlog (bool): True to print the intermediate log
         Returns:

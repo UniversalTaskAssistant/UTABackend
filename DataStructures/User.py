@@ -9,7 +9,7 @@ class User(_Data):
             user_id (str): Identifier for the user.
         """
         super().__init__(user_id=user_id)
-        self.user_tasks = []  # [task_id, ...]
+        self.tasks = []  # list of Task objects
 
     def append_user_task(self, user_task):
         """
