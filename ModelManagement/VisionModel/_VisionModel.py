@@ -4,6 +4,9 @@ from ._IconClassifier import _IconClassifier
 
 class _VisionModel:
     def __init__(self):
+        """
+        Initializes a VisionModel instance with ocr and icon classifier.
+        """
         self.__google_ocr = _GoogleOCR()
         self.__icon_classifier = _IconClassifier()
 

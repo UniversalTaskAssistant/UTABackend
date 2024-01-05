@@ -4,6 +4,9 @@ from .VisionModel._VisionModel import _VisionModel
 
 class ModelManager:
     def __init__(self):
+        """
+        Initializes a ModelManager instance with vision model and fm model.
+        """
         self.__vision_model = _VisionModel()
         self.__fm_model = _OpenAI()
 

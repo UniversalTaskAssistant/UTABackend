@@ -7,6 +7,9 @@ from DataStructures.config import *
 
 class SystemConnector:
     def __init__(self):
+        """
+        Initializes a SystemConnector instance.
+        """
         self.__adb_device = _Device()
         self.__local = _Local()
 

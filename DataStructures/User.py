@@ -8,13 +8,5 @@ class User(_Data):
         Args:
             user_id (str): Identifier for the user.
         """
-        super().__init__(user_id=user_id)
-        self.tasks = []  # list of Task objects
-
-    def append_user_task(self, task):
-        """
-        Appends a new user task to the user_tasks.
-        Args:
-            task (Task): Task object
-        """
-        self.tasks.append(task)
+        super().__init__()
+        self.user_id = user_id

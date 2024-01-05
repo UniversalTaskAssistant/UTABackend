@@ -1,7 +1,6 @@
 class _Data:
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+    def __init__(self):
+        pass
 
     def __str__(self):
         """

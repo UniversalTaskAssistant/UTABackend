@@ -1,9 +1,11 @@
 import cv2
 import numpy as np
+from ._Data import _Data
 
 
-class Text:
+class Text(_Data):
     def __init__(self, id, content, location):
+        super().__init__()
         self.id = id
         self.content = content
         self.location = location
@@ -19,13 +21,13 @@ class Text:
     ********************************
     '''
     def is_justified(self, ele_b, direction='h', max_bias_justify=4):
-        '''
+        """
         Check if the element is justified
         :param max_bias_justify: maximum bias if two elements to be justified
         :param direction:
              - 'v': vertical up-down connection
              - 'h': horizontal left-right connection
-        '''
+        """
         l_a = self.location
         l_b = ele_b.location
         # connected vertically - up and below
@@ -41,13 +43,13 @@ class Text:
             return False
 
     def is_on_same_line(self, text_b, direction='h', bias_gap=4, bias_justify=4):
-        '''
+        """
         Check if the element is on the same row(direction='h') or column(direction='v') with ele_b
         :param direction:
              - 'v': vertical up-down connection
              - 'h': horizontal left-right connection
         :return:
-        '''
+        """
         l_a = self.location
         l_b = text_b.location
         # connected vertically - up and below

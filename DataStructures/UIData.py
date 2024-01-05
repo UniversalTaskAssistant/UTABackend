@@ -1,12 +1,13 @@
-import os
 import cv2
 from os.path import join as pjoin
 from difflib import SequenceMatcher
+from ._Data import _Data
 
 
-class UIData:
+class UIData(_Data):
     def __init__(self, screenshot_file, xml_file=None,
                  ui_resize=(1080, 2280), output_dir='data'):
+        super().__init__()
         self.screenshot_file = screenshot_file
         self.xml_file = xml_file
         self.ui_no = screenshot_file.replace('/', '\\').split('\\')[-1].split('.')[0]
@@ -29,13 +30,13 @@ class UIData:
         self.output_file_path_element_tree = pjoin(self.output_dir, self.ui_no + '_tree.json')
 
     def get_ui_element_node_by_id(self, ele_id):
-        '''
+        """
         Return UI element by its id
         Args:
             ele_id (str or int): The element ID
         Returns:
             Element node (dict): If found, otherwise None
-        '''
+        """
         def search_node_by_id(node, ele_id):
             '''
             Recursively search for node by element id, if not matched for current node, look into its children
@@ -61,13 +62,13 @@ class UIData:
         return search_node_by_id(self.element_tree, ele_id)
 
     def check_ui_tree_similarity(self, ui_data2):
-        '''
+        """
         Compute the similarity between two uis by checking their element trees
         Args:
             ui_data2 (UIData): The comparing ui
         Returns:
             similarity (float): The similarity between two trees
-        '''
+        """
         return SequenceMatcher(None, str(self.element_tree), str(ui_data2.element_tree)).ratio()
 
     '''
@@ -76,11 +77,11 @@ class UIData:
     *********************
     '''
     def show_each_element(self, only_leaves=False):
-        '''
+        """
         Show elements one by one
         Args:
             only_leaves (bool): True to just show element_leaves
-        '''
+        """
         board = self.ui_screenshot.copy()
         if only_leaves:
             elements = self.elements_leaves
@@ -101,11 +102,11 @@ class UIData:
         cv2.destroyAllWindows()
 
     def show_all_elements(self, only_leaves=False):
-        '''
+        """
         Show all elements at once
         Args:
             only_leaves (bool): True to just show element_leaves
-        '''
+        """
         board = self.ui_screenshot.copy()
         if only_leaves:
             elements = self.elements_leaves
@@ -120,12 +121,12 @@ class UIData:
         cv2.destroyWindow('elements')
 
     def show_element_by_id(self, ele_id, show_children=True):
-        '''
+        """
         Show specific element by id
         Args:
             ele_id (int): id of element
             show_children (bool): True to show the children of the element
-        '''
+        """
         element = self.elements[ele_id]
         board = self.ui_screenshot.copy()
         color = (0,255,0) if not element['clickable'] else (0,0,255)
@@ -140,17 +141,17 @@ class UIData:
         cv2.destroyWindow('element')
 
     def show_screen(self):
-        '''
+        """
         Show screenshot of the UI
-        '''
+        """
         cv2.imshow('screen', self.ui_screenshot)
         cv2.waitKey()
         cv2.destroyWindow('screen')
 
     def annotate_ui_operation(self, recommended_action):
-        '''
+        """
         Store annotated UI for debugging
-        '''
+        """
         assert recommended_action != "None"
 
         ele = self.elements[recommended_action.element_id]
