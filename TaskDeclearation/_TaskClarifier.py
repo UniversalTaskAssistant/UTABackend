@@ -28,18 +28,17 @@ class _TaskClarifier:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
         """
         try:
-            # for new conv
-            if len(task.conversation_declaration) == 1:
-                task.add_message_to_declaration_conversation(self.__base_prompt.format(task=task.task_description))
+            # set base prompt for new conv
+            if len(task.conversation_clarification) == 1:
+                task.conversation_clarification.append({'role': 'user', 'content': self.__base_prompt.format(task=task.task_description)})
             # add user feedback
             if user_message:
-                task.add_message_to_declaration_conversation(user_message)
+                task.conversation_clarification.append({'role': 'user', 'content': user_message})
             # send conv to fm
-            resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_declaration, printlog=printlog)
-            task.conversation_declaration.append(resp)
-            clr = json.loads(resp['content'])
-            print(clr)
-            return clr
+            resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
+            task.res_clarification = json.loads(resp['content'])
+            task.conversation_clarification.append(resp)
+            return task.res_clarification
         except Exception as e:
             raise e
 

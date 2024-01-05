@@ -1,4 +1,5 @@
 import json
+from DataStructures.config import *
 
 
 class _TaskDecomposer:
@@ -18,52 +19,22 @@ class _TaskDecomposer:
                              '"Send message to Sam Wellson on Facebook"], "Explanation": "The task contains ' \
                              'two independent actions that need to be completed sequentially."}}'
 
-    def initialize_agent(self):
-        """
-            Initialize llm model in model manager.
-        """
-        if self.is_agent_initialized():
-            self.delete_agent()
-        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
-
-    def is_agent_initialized(self):
-        """
-        Check whether agent is initialized.
-        """
-        return self.__model_manager.is_llm_model_initialized(identifier=self.__model_identifier)
-
-    def delete_agent(self):
-        """
-        Remove llm model in model manager.
-        """
-        self.__model_manager.delete_llm_model(identifier=self.__model_identifier)
-
     def decompose_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
-            task (string): The user's task
+            task (Task): Task object
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
         """
         try:
-            self.__model_manager.reset_llm_conversations(self.__model_identifier)
-            message = self.__base_prompt.format(task=task)
-            decomposition = self.__model_manager.create_llm_conversation(self.__model_identifier, message,
-                                                                         printlog=printlog)['content']
-            decomposition = json.loads(decomposition)
-            print(decomposition)
-            return decomposition
+            conversation = [{'role': 'system', 'content': SYSTEM_PROMPT},
+                            {'role': 'user', 'content': self.__base_prompt.format(task=task.task_description)}]
+            resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
+            task.res_decomposition = json.loads(resp['content'])
+            return task.res_decomposition
         except Exception as e:
             raise e
 
 
-if __name__ == '__main__':
-    from ModelManagement import ModelManager
-    model_mg = ModelManager()
-    model_mg.initialize_llm_model(identifier='task_decomposer')
-
-    task = 'Open wechat and send my mom a message'
-    task_decompo = _TaskDecomposer('task_decomposer', model_manager=model_mg)
-    task_decompo.decompose_task(task=task, printlog=True)

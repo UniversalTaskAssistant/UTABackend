@@ -26,8 +26,8 @@ class TaskDeclarator:
     def decompose_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
-        Args:\
-            task (string): The user's task
+        Args:
+            task (Task): Task object
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
