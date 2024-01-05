@@ -54,14 +54,13 @@ class UTA:
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
         """
-        self.task_declarator.clarify_task(task=task, user_message=user_message, printlog=printlog)
-        return task.conversation_declaration[-1]['content']
+        return self.task_declarator.clarify_task(task=task, user_message=user_message, printlog=printlog)
 
     def decompose_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
-        Args:\
-            task (string): The user's task
+        Args:
+            task (Task): The user's task
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }

@@ -1,4 +1,5 @@
 import json
+from DataStructures.config import *
 
 
 class _TaskClassifier:
@@ -21,52 +22,21 @@ class _TaskClassifier:
                              'that can be resolved through an internet search, without the need for system-level ' \
                              'access or specific apps."}}'
 
-    def initialize_agent(self):
-        """
-            Initialize llm model in model manager.
-        """
-        if self.is_agent_initialized():
-            self.delete_agent()
-        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
-
-    def is_agent_initialized(self):
-        """
-        Check whether agent is initialized.
-        """
-        return self.__model_manager.is_llm_model_initialized(identifier=self.__model_identifier)
-
-    def delete_agent(self):
-        """
-        Remove llm model in model manager.
-        """
-        self.__model_manager.delete_llm_model(identifier=self.__model_identifier)
-
     def classify_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
-            task (string): The user's task
+            task (Task): Task object
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
         """
         try:
-            self.__model_manager.reset_llm_conversations(self.__model_identifier)
-            message = self.__base_prompt.format(task=task)
-            cls = self.__model_manager.create_llm_conversation(self.__model_identifier, message,
-                                                               printlog=printlog)['content']
-            cls = json.loads(cls)
-            print(cls)
-            return cls
+            conversation = [{'role': 'system', 'content': SYSTEM_PROMPT},
+                            {'role': 'user', 'content': self.__base_prompt.format(task=task.task_description)}]
+            resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
+            task.res_classification = json.loads(resp['content'])
+            return task.res_classification
         except Exception as e:
             raise e
 
-
-if __name__ == '__main__':
-    from ModelManagement import ModelManager
-    model_mg = ModelManager()
-    model_mg.initialize_llm_model(identifier='task_decomposer')
-
-    task = 'Open wechat and send my mom a message'
-    task_decompo = _TaskClassifier('task_decomposer', model_manager=model_mg)
-    task_decompo.classify_task(task=task, printlog=True)
