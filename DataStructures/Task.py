@@ -11,29 +11,13 @@ class Task:
         self.children_ids = []
 
         # task declaration
+        self.conversation_clarification = [{'role': 'system', 'content':SYSTEM_PROMPT}]   # for multi conversations of clarification
         self.res_clarification = None
         self.res_decomposition = None
         self.res_classification = None
-        self.conversation_declaration = [{'role': 'system', 'content':SYSTEM_PROMPT}]
-        self.conversation_automation = [{'role': 'system', 'content':SYSTEM_PROMPT}]
 
         # task automation
+        self.conversation_automation = [{'role': 'system', 'content':SYSTEM_PROMPT}]      # fpr multi conversations of automation
         self.steps = []
         self.task_execution_result = None
-
-    def add_message_to_declaration_conversation(self, message):
-        """
-        Appends a new clarifying conversation to the task.
-        Args:
-            message (str): The message to be added.
-        """
-        self.conversation_declaration.append({'role':'user', 'content':message})
-
-    def append_step(self, step):
-        """
-        Appends a new step to the task.
-        Args:
-            step: The step_id to be added.
-        """
-        self.steps.append(step)
 
