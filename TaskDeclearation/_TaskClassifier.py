@@ -2,10 +2,8 @@ import json
 
 
 class _TaskClassifier:
-    def __init__(self, model_identifier, model_manager):
-        self.__model_identifier = model_identifier
+    def __init__(self, model_manager):
         self.__model_manager = model_manager
-
         self.__base_prompt = 'Classify the given user task "{task}" into one of three categories for smartphone usage: ' \
                              '1. General Inquiry: This category includes tasks that are general questions not related ' \
                              'to specific system or app functions. They can typically be answered through internet ' \

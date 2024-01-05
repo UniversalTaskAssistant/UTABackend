@@ -2,8 +2,7 @@ import json
 
 
 class _TaskDecomposer:
-    def __init__(self, model_identifier, model_manager):
-        self.__model_identifier = model_identifier
+    def __init__(self, model_manager):
         self.__model_manager = model_manager
 
         self.__base_prompt = 'Analyze the user task "{task}" to determine if it comprises multiple, distinct sub-tasks. ' \

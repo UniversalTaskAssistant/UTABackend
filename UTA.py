@@ -25,18 +25,6 @@ class UTA:
         self.app_tasker = AppTasker(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
         self.inquiry_tasker = InquiryTasker(self.model_manager)
-        # user
-        self.users = {}   # dict of User objects {user id: User object}
-
-    def init_agents(self):
-        """
-        Initializes all the agents required for task processing.
-        Resets task and step identifiers for a new user session.
-        """
-        self.task_declarator.initialize_agents()
-        self.app_tasker.initialize_agents()
-        self.app_recommender.initialize_agents()
-        self.inquiry_tasker.initialize_agent()
 
     def init_user(self, user_id):
         user = User(user_id=user_id)
@@ -47,27 +35,26 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
-    def initial_task(self, user_id, task_description):
-        task_id = str(len(self.users[user_id].tasks))
-        return Task(task_id, task_description=task_description)
+    def init_task(self, user_id, task_description):
+        user = self.users[user_id]
+        task_id = str(len(user.tasks))
+        task = Task(task_id=task_id, task_description=task_description)
+        user.tasks.append(task)
 
     def retrieve_task(self, user_id, task_id):
-        return self.users[user_id].tasks[task_id]
+        task = self.system_connector.load_json('uerserId/task+taskid.json')
 
-    def clarify_task(self, user_id, task_id, user_message=None, printlog=False):
+    def clarify_task(self, task, user_message=None, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
+            task (Task): Task object
             user_message (string): The user's feedback
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
         """
-        task = self.retrieve_task(user_id, task_id)
-        task.add_message_to_declaration_conv(user_message)
-
-        self.task_declarator.clarify_task(task_desc=task.task_description, user_message=user_message, printlog=printlog)
-        self.system_connector.save_json(dict(task))
+        self.task_declarator.clarify_task(task=task, user_message=user_message, printlog=printlog)
         return task.conversation_declaration[-1]['content']
 
     def decompose_task(self, task, printlog=False):

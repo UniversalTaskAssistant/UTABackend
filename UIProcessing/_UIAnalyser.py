@@ -5,7 +5,6 @@ import copy
 class _UIAnalyser:
     def __init__(self, model_manager):
         self.__model_manager = model_manager
-        self.__model_manager.initialize_vision_model()
 
     '''
     *******************

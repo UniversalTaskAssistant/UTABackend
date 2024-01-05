@@ -9,7 +9,7 @@ from DataStructures.config import *
 class _OpenAI:
     def __init__(self, model='gpt-4'):
         # Initialize the Model with default settings, and override with any provided kwargs
-        openai.api_key = open(WORK_PATH + 'ModelManagement/LLMModel/openaikey.txt', 'r').readline()
+        openai.api_key = open(WORK_PATH + 'ModelManagement/FMModel/openaikey.txt', 'r').readline()
         self._model = model
 
     @staticmethod

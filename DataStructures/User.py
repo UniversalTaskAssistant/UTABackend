@@ -11,11 +11,10 @@ class User(_Data):
         super().__init__(user_id=user_id)
         self.tasks = []  # list of Task objects
 
-    def append_user_task(self, user_task):
+    def append_user_task(self, task):
         """
         Appends a new user task to the user_tasks.
         Args:
-            user_task: The user task id to be added.
-                       Format:{'original_task': OriginalTask, 'decomposed_task': DecomposedTask}
+            task (Task): Task object
         """
-        self.user_tasks.append(user_task)
+        self.tasks.append(task)

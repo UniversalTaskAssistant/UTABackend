@@ -1,9 +1,9 @@
 import json
+from DataStructures.config import *
 
 
 class _TaskClarifier:
-    def __init__(self, model_identifier, model_manager):
-        self.__model_identifier = model_identifier
+    def __init__(self, model_manager):
         self.__model_manager = model_manager
 
         self.__base_prompt = 'Assess the user task "{task}" to determine if it is sufficiently clear for execution '\
@@ -17,47 +17,29 @@ class _TaskClarifier:
                              'full name of the person you want to contact?"}} or {{"Clear": "False", "Question": ' \
                              '"Which app would you prefer to use for this communication?"}}'
 
-    def initialize_agent(self):
-        """
-        Initialize llm model in model manager.
-        """
-        if self.is_agent_initialized():
-            self.delete_agent()
-        self.__model_manager.initialize_llm_model(identifier=self.__model_identifier)
-
-    def is_agent_initialized(self):
-        """
-        Check whether agent is initialized.
-        """
-        return self.__model_manager.is_llm_model_initialized(identifier=self.__model_identifier)
-
-    def delete_agent(self):
-        """
-        Remove llm model in model manager.
-        """
-        self.__model_manager.delete_llm_model(identifier=self.__model_identifier)
-
-    def clarify_task(self, task_desc, user_message=None, printlog=False):
+    def clarify_task(self, task, user_message=None, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
-            task_desc (string): The user's task
             user_message (string): The user's feedback
+            task (Task): Task object
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
         """
         try:
-            if not user_message:
-                self.__model_manager.reset_llm_conversations(self.__model_identifier)
-                message = self.__base_prompt.format(task=task)
-            else:
-                message = user_message
-            clear = self.__model_manager.create_llm_conversation(self.__model_identifier, message,
-                                                                 printlog=printlog)['content']
-            clear = json.loads(clear)
-            print(clear)
-            return clear
+            # for new conv
+            if len(task.conversation_declaration) == 1:
+                task.add_message_to_declaration_conversation(self.__base_prompt.format(task=task.task_description))
+            # add user feedback
+            if user_message:
+                task.add_message_to_declaration_conversation(user_message)
+            # send conv to fm
+            resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_declaration, printlog=printlog)
+            task.conversation_declaration.append(resp)
+            clr = json.loads(resp['content'])
+            print(clr)
+            return clr
         except Exception as e:
             raise e
 
@@ -65,7 +47,8 @@ class _TaskClarifier:
 if __name__ == '__main__':
     from ModelManagement import ModelManager
     model_mg = ModelManager()
-    model_mg.initialize_llm_model(identifier='task_decomposer')
+    task_clr = _TaskClarifier(model_mg)
 
-    task_decompo = _TaskClarifier('task_decomposer', model_manager=model_mg)
-    task_decompo.clarify_task(task='Open wechat and send my mom a message', printlog=True)
+    from DataStructures.Task import Task
+    tsk = Task(task_id=1, task_description='Open wechat and send my mom a message')
+    task_clr.clarify_task(task=tsk, printlog=True)
