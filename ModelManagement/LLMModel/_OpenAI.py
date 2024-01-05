@@ -1,41 +1,75 @@
 import openai
+import time
 import tiktoken
+import json
+import logging
 from DataStructures.config import *
 
 
 class _OpenAI:
-    def __init__(self, system_prompt=None, **kwargs):
+    def __init__(self, model='gpt-4'):
         # Initialize the Model with default settings, and override with any provided kwargs
         openai.api_key = open(WORK_PATH + 'ModelManagement/LLMModel/openaikey.txt', 'r').readline()
-        self._default_config = {
-            'model': 'gpt-4',
-            'seed': 42,
-            'temperature': 0.0
-        }
-        self._default_config.update(kwargs)
-        self._conversations = []
-        self._system_prompt = system_prompt
-
-    def create_conversation(self, **kwargs):
-        # Create a conversation with GPT-4 based on the input and configuration, need to be implemented by the inheritor
-        pass
+        self._model = model
 
     @staticmethod
-    def count_token_size(string):
-        enc = tiktoken.encoding_for_model("gpt-3.5-turbo")
+    def count_token_size(string, model="gpt-3.5-turbo"):
+        """
+        Count the token size of a given string to the gpt models.
+        Args:
+            string (str): String to calculate token size.
+            model (str): Using which model for embedding
+        Returns:
+            int: Token size.
+        """
+        enc = tiktoken.encoding_for_model(model)
         return len(enc.encode(string))
 
-    def reset_conversations(self, **kwargs):
-        # Clear the historical conversations
-        if self._system_prompt is None:
-            self._conversations = []
+    def send_openai_prompt(self, prompt, system_prompt=None, printlog=False, runtime=True):
+        """
+        Send single prompt to the llm Model
+        Args:
+            system_prompt (str) : system role setting
+            prompt (str): Single prompt
+            printlog (bool): True to printout detailed intermediate result of llm
+            runtime (bool): True to record the runtime of llm
+        Returns:
+            message (dict): {'role':'assistant', 'content': '...'}
+        """
+        if system_prompt is None:
+            conversation = [{'role': 'user', 'content': prompt}]
         else:
-            self._conversations = [{'role': 'system', 'content': self._system_prompt}]
+            conversation = [{'role': 'system', 'content': system_prompt}, {'role': 'user', 'content': prompt}]
+        return self.send_openai_conversation(conversation=conversation, printlog=printlog, runtime=runtime)
 
-    def get_conversations(self, **kwargs):
-        # Get the historical conversations
-        return self._conversations
+    def send_openai_conversation(self, conversation, printlog=False, runtime=True):
+        """
+        Send conversation to the llm Model
+        Args:
+            conversation (list): llm conversation [{'role': 'user', 'content': '...'}, {'role': 'assistant', 'content':'...'}]
+            printlog (bool): True to printout detailed intermediate result of llm
+            runtime (bool): True to record the runtime of llm
+        Returns:
+            message (dict): {'role':'assistant', 'content': '...'}
+        """
+        start = time.time()
+        if printlog:
+            print('*** Asking ***\n', conversation)
+        resp = openai.chat.completions.create(model=self._model, messages=conversation)
+        msg = dict(resp.choices[0].message)
+        try:
+            if runtime:
+                msg['content'] = json.loads(msg['content'])
+                msg['content']['Runtime'] = '{:.3f}s'.format(time.time() - start)
+                msg['content'] = json.dumps(msg['content'])
+            if printlog:
+                print('\n*** Answer ***\n', msg, '\n')
+            return msg
+        except Exception as e:
+            logging.error('The return message content is not in JSON format')
+            raise e
 
-    def set_conversations(self, messages):
-        # Add messages to the historical conversations
-        self._conversations += messages
+
+if __name__ == '__main__':
+    llm = _OpenAI(model='gpt-3.5-turbo')
+    llm.send_openai_prompt(prompt='What app can I use to read ebooks?', printlog=True, runtime=False)
