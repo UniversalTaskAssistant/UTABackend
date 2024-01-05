@@ -56,7 +56,8 @@ class _OpenAI:
         if printlog:
             print('*** Asking ***\n', conversation)
         resp = openai.chat.completions.create(model=self._model, messages=conversation)
-        msg = dict(resp.choices[0].message)
+        resp = dict(resp.choices[0].message)
+        msg = {'role': resp['role'], 'content': resp['content']}
         try:
             if runtime:
                 msg['content'] = json.loads(msg['content'])
