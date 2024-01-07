@@ -36,7 +36,7 @@ class UTA:
         Returns:
             Task (Task): Task object
         """
-        task = self.system_connector.load_task(user_id=user_id, task_id=task_id)
+        task = self.system_connector.import_task(user_id=user_id, task_id=task_id)
         # if the task does not exist, creat a new one within the user's folder
         if not task:
             self.system_connector.set_user_folder(user_id=user_id)

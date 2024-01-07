@@ -6,11 +6,12 @@ import json
 
 
 class Task(_Data):
-    def __init__(self, task_id, user_id=None, parent_task_id=None, task_description=None):
+    def __init__(self, task_id, user_id, parent_task_id=None, task_description=None):
         """
         Initializes a Task instance.
         Args:
             task_id (str): Unique identifier for the task.
+            user_id (str): User id associated with the task.
             parent_task_id (str): Identifier of the parent task.
             task_description (str): Description or details of the task.
         """

@@ -30,7 +30,7 @@ class SystemConnector:
         """
         os.makedirs(pjoin(self.user_data_root, user_id), exist_ok=True)
 
-    def load_task(self, user_id, task_id):
+    def import_task(self, user_id, task_id):
         """
         Retrieve task if exists or create a new task if not
         Args:
@@ -46,12 +46,22 @@ class SystemConnector:
             if os.path.exists(task_file):
                 task = Task(task_id=task_id, user_id=user_id)
                 task.load_task_from_json(self.load_json(task_file))
+                print('Import task from file', task_file)
                 return task
         return None
 
-    def save_task(self, user_id, task):
-        os.makedirs(pjoin(WORK_PATH, self.user_data_root, user_id))
-        pass
+    def export_task(self, task):
+        """
+        Save Task object to json file under the associated user folder, and with the file name of task id
+        Args:
+            task (Task): Task object
+        """
+        user_folder = pjoin(self.user_data_root, task.user_id)
+        os.makedirs(user_folder, exist_ok=True)
+        task_file = pjoin(user_folder, task.task_id + '.json')
+        task_dict = task.wrap_task_to_json()
+        self.save_json(task_dict, task_file)
+        print('Export task to file', task_file)
 
     '''
     ****************
@@ -111,16 +121,16 @@ class SystemConnector:
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         self.__local.save_img(img, file_path)
 
-    def save_json(self, file, file_path, encoding='utf-8'):
+    def save_json(self, json_obj, file_path, encoding='utf-8'):
         """
         Saves a dictionary as a JSON file.
         Args:
-            file (dict): Dictionary to save as JSON.
+            json_obj (dict): Dictionary to save as JSON.
             file_path (str): Path where the JSON file will be saved.
             encoding (str, optional): File encoding. Defaults to 'utf-8'.
         """
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        self.__local.save_json(file, file_path, encoding)
+        self.__local.save_json(json_obj, file_path, encoding)
 
     '''
     ******************

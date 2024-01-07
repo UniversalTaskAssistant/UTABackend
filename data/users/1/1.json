@@ -1,0 +1,25 @@
+{
+    "task_id": "1",
+    "user_id": "1",
+    "parent_task_id": null,
+    "task_description": null,
+    "task_type": null,
+    "children_ids": [],
+    "conversation_clarification": [
+        {
+            "role": "system",
+            "content": "You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task."
+        }
+    ],
+    "res_clarification": {},
+    "res_decomposition": {},
+    "res_classification": {},
+    "conversation_automation": [
+        {
+            "role": "system",
+            "content": "You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task."
+        }
+    ],
+    "steps": [],
+    "task_execution_result": null
+}
