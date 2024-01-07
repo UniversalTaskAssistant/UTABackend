@@ -41,8 +41,8 @@ class SystemConnector:
             None if not exists
         """
         user_folder = pjoin(self.user_data_root, user_id)
-        task_file = pjoin(user_folder, task_id + '.json')
         if os.path.exists(user_folder):
+            task_file = pjoin(user_folder, task_id + '.json')
             if os.path.exists(task_file):
                 task = Task(task_id=task_id, user_id=user_id)
                 task.load_task_from_json(self.load_json(task_file))
