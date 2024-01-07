@@ -1,3 +1,4 @@
+import os
 from os.path import join as pjoin
 import json
 from datetime import datetime
@@ -25,18 +26,22 @@ class UTA:
         self.task_executor = TaskExecutor(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
 
-    def init_user(self, user_id):
-        user = User(user_id=user_id)
-        self.users[user_id] = user
-
-    def init_task(self, user_id, task_description):
-        user = self.users[user_id]
-        task_id = str(len(user.tasks))
-        task = Task(task_id=task_id, task_description=task_description)
-        user.tasks.append(task)
-
-    def retrieve_task(self, user_id, task_id):
-        task = self.system_connector.load_json('uerserId/task+taskid.json')
+    def instantiate_task(self, user_id, task_id, task_description):
+        """
+        Instantiate a Task object by loading an existing one or creating a new one according to the given info
+        Args:
+            user_id (str): User id to identify the folder
+            task_id (str): Task id to identify the file
+            task_description (str): The content description of the task, used to creat a new Task if doesn't exist
+        Returns:
+            Task (Task): Task object
+        """
+        task = self.system_connector.load_task(user_id=user_id, task_id=task_id)
+        # if the task does not exist, creat a new one within the user's folder
+        if not task:
+            self.system_connector.set_user_folder(user_id=user_id)
+            task = Task(task_id=task_id, user_id=user_id, task_description=task_description)
+        return task
 
     '''
     ************************

@@ -1,17 +1,57 @@
 import os
+from os.path import join as pjoin
 
 from SystemConnection._Device import _Device
 from SystemConnection._Local import _Local
 from DataStructures.config import *
+from DataStructures.Task import Task
 
 
 class SystemConnector:
-    def __init__(self):
+    def __init__(self, user_data_root='./data/users'):
         """
         Initializes a SystemConnector instance.
         """
         self.__adb_device = _Device()
         self.__local = _Local()
+
+        self.user_data_root = user_data_root
+
+    '''
+    ***************
+    *** Data IO ***
+    ***************
+    '''
+    def set_user_folder(self, user_id):
+        """
+        Set a user folder associated with the user id, where all the tasks and user info are stored
+        Args:
+            user_id (str): User id
+        """
+        os.makedirs(pjoin(self.user_data_root, user_id), exist_ok=True)
+
+    def load_task(self, user_id, task_id):
+        """
+        Retrieve task if exists or create a new task if not
+        Args:
+            user_id (str): User id, associated to the folder named with the user_id
+            task_id (str): Task id, associated to the json file named with task in the user folder
+        Return:
+            Task (Task) if exists: Retrieved or created Task object
+            None if not exists
+        """
+        user_folder = pjoin(self.user_data_root, user_id)
+        task_file = pjoin(user_folder, task_id + '.json')
+        if os.path.exists(user_folder):
+            if os.path.exists(task_file):
+                task = Task(task_id=task_id, user_id=user_id)
+                task.load_task_from_json(self.load_json(task_file))
+                return task
+        return None
+
+    def save_task(self, user_id, task):
+        os.makedirs(pjoin(WORK_PATH, self.user_data_root, user_id))
+        pass
 
     '''
     ****************
