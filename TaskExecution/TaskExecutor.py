@@ -1,6 +1,5 @@
 import json
-from DataStructures import Action, InquiryStep, AutoModeStep, Relation
-from DataStructures.config import SYSTEM_PROMPT
+from DataStructures import Action, InquiryStep, AutoModeStep, Relation, SYSTEM_PROMPT
 
 
 class TaskExecutor:
@@ -94,7 +93,7 @@ class TaskExecutor:
                 conversations += messages
 
             new_conversation = self.__back_prompt.format(task=task.task_description)
-            conversations.append(new_conversation)
+            conversations.append({'role': 'user', 'content': new_conversation})
 
             go_back_availability = self.__model_manager.send_fm_conversation(conversations,
                                                                              printlog=printlog)['content']
@@ -149,7 +148,7 @@ class TaskExecutor:
             new_conversation = self.__action_prompt.format(task=task.task_description,
                                                            except_elements=except_elements_str,
                                                            action_history=action_history_str)
-            conversations.append(new_conversation)
+            conversations.append({'role': 'user', 'content': new_conversation})
 
             ui_task_action = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)['content']
             conversations.append(ui_task_action)
@@ -206,9 +205,9 @@ class TaskExecutor:
             new_conversation = self.__relation_prompt.format(task=task.task_description,
                                                              except_elements=except_elements_str,
                                                              action_history=action_history_str)
-            conversations.append(new_conversation)
+            conversations.append({'role': 'user', 'content': new_conversation})
 
-            ui_task_relation = self.__model_manager.create_llm_conversation(conversations, printlog=printlog)['content']
+            ui_task_relation = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)['content']
             conversations.append(ui_task_relation)
             task.conversation_automation.append(conversations)
 

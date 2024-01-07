@@ -3,7 +3,7 @@ import time
 import tiktoken
 import json
 import logging
-from DataStructures.config import *
+from DataStructures import WORK_PATH
 
 
 class _OpenAI:

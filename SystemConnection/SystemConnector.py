@@ -1,8 +1,8 @@
 import os
 
-from SystemConnection._Device import _Device
-from SystemConnection._Local import _Local
-from DataStructures.config import *
+from . import _Device
+from . import _Local
+from DataStructures import WORK_PATH
 
 
 class SystemConnector:

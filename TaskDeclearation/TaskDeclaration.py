@@ -1,5 +1,5 @@
 import json
-from DataStructures.config import *
+from DataStructures import SYSTEM_PROMPT
 
 
 class TaskDeclarator:
