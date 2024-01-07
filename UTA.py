@@ -6,7 +6,7 @@ from DataStructures import *
 from ModelManagement import ModelManager
 from SystemConnection import SystemConnector
 from TaskDeclearation import TaskDeclarator
-from TaskExecution import AppTasker, InquiryTasker
+from TaskExecution import TaskExecutor
 from ThirdPartyAppManagement import ThirdPartyAppManager
 from UIProcessing import UIProcessor
 
@@ -22,9 +22,8 @@ class UTA:
         # workers
         self.ui_processor = UIProcessor(self.model_manager)
         self.task_declarator = TaskDeclarator(self.model_manager)
-        self.app_tasker = AppTasker(self.model_manager)
+        self.task_executor = TaskExecutor(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
-        self.inquiry_tasker = InquiryTasker(self.model_manager)
 
     def init_user(self, user_id):
         user = User(user_id=user_id)
@@ -71,7 +70,7 @@ class UTA:
         """
         Clarify task to be clear to complete
         Args:
-            task (string): The user's task
+            task (Task): The user's task
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}

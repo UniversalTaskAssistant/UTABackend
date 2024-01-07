@@ -14,6 +14,75 @@ class SystemConnector:
         self.__local = _Local()
 
     '''
+    ****************
+    *** Local IO ***
+    ****************
+    '''
+    def load_xml(self, file_path, encoding='utf-8'):
+        """
+        Loads and parses an XML file.
+        Args:
+            file_path (str): Path to the XML file.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+        Returns:
+            Parsed XML content.
+        """
+        return self.__local.load_xml(file_path, encoding)
+
+    def load_img(self, file_path):
+        """
+        Loads an image file as a binary stream.
+        Args:
+            file_path (str): Path to the image file.
+        Returns:
+            Binary content of the image file.
+        """
+        return self.__local.load_img(file_path)
+
+    def load_json(self, file_path, encoding='utf-8'):
+        """
+        Loads a JSON file.
+        Args:
+            file_path (str): Path to the JSON file.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+        Returns:
+            Parsed JSON data.
+        """
+        return self.__local.load_json(file_path, encoding)
+
+    def save_xml(self, file, file_path, encoding='utf-8'):
+        """
+        Saves a dictionary as an XML file.
+        Args:
+            file (dict): Dictionary to save as XML.
+            file_path (str): Path where the XML file will be saved.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+        """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        self.__local.save_xml(file, file_path, encoding)
+
+    def save_img(self, img, file_path):
+        """
+        Saves binary image data to a file.
+        Args:
+            img (bytes): Binary image data to save.
+            file_path (str): Path where the image file will be saved.
+        """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        self.__local.save_img(img, file_path)
+
+    def save_json(self, file, file_path, encoding='utf-8'):
+        """
+        Saves a dictionary as a JSON file.
+        Args:
+            file (dict): Dictionary to save as JSON.
+            file_path (str): Path where the JSON file will be saved.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+        """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        self.__local.save_json(file, file_path, encoding)
+
+    '''
     ******************
     *** Adb Device ***
     ******************
@@ -209,75 +278,6 @@ class SystemConnector:
             text (str): The text to input.
         """
         self.__adb_device.input_text(text)
-
-    '''
-    ****************
-    *** Local IO ***
-    ****************
-    '''
-    def load_xml(self, file_path, encoding='utf-8'):
-        """
-        Loads and parses an XML file.
-        Args:
-            file_path (str): Path to the XML file.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
-        Returns:
-            Parsed XML content.
-        """
-        return self.__local.load_xml(file_path, encoding)
-
-    def load_img(self, file_path):
-        """
-        Loads an image file as a binary stream.
-        Args:
-            file_path (str): Path to the image file.
-        Returns:
-            Binary content of the image file.
-        """
-        return self.__local.load_img(file_path)
-
-    def load_json(self, file_path, encoding='utf-8'):
-        """
-        Loads a JSON file.
-        Args:
-            file_path (str): Path to the JSON file.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
-        Returns:
-            Parsed JSON data.
-        """
-        return self.__local.load_json(file_path, encoding)
-
-    def save_xml(self, file, file_path, encoding='utf-8'):
-        """
-        Saves a dictionary as an XML file.
-        Args:
-            file (dict): Dictionary to save as XML.
-            file_path (str): Path where the XML file will be saved.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
-        """
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        self.__local.save_xml(file, file_path, encoding)
-
-    def save_img(self, img, file_path):
-        """
-        Saves binary image data to a file.
-        Args:
-            img (bytes): Binary image data to save.
-            file_path (str): Path where the image file will be saved.
-        """
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        self.__local.save_img(img, file_path)
-
-    def save_json(self, file, file_path, encoding='utf-8'):
-        """
-        Saves a dictionary as a JSON file.
-        Args:
-            file (dict): Dictionary to save as JSON.
-            file_path (str): Path where the JSON file will be saved.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
-        """
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        self.__local.save_json(file, file_path, encoding)
 
 
 if __name__ == '__main__':
