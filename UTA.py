@@ -48,17 +48,34 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
-    def clarify_task(self, task, user_message=None, printlog=False):
+    def declare_task(self, user_id, task_id, task_description):
+        """
+        Declare the task.
+        First, clarify it, if unclear, return response to the frontend for user feedback.
+        Second, if already clear, decompose the task to atomic tasks if necessary
+        Args:
+            user_id (str): User id, associated to the folder named with the user_id
+            task_id (str): Task id, associated to the json file named with task in the user folder
+            task_description (str): Description or details of the task.
+        """
+        task = self.instantiate_task(user_id, task_id, task_description)
+        clarify = self.clarify_task(task)
+        if clarify['Clear']:
+            decompose = self.decompose_task(task)
+            return decompose
+        else:
+            return clarify
+
+    def clarify_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
             task (Task): Task object
-            user_message (string): The user's feedback
             printlog (bool): True to print the intermediate log
         Returns:
-            LLM answer (dict): {"Clear": "True", "Question": "None"}
+            LLM answer (dict): {"Clear": "True", "Question": "None", "Options":[]}
         """
-        return self.task_declarator.clarify_task(task=task, user_message=user_message, printlog=printlog)
+        return self.task_declarator.clarify_task(task=task, printlog=printlog)
 
     def decompose_task(self, task, printlog=False):
         """
@@ -87,6 +104,13 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
+    def automate_task(self, user_id, task_id, ui_img, ui_xml):
+        """
+        Returns:
+            Action (dict): {"Action": }
+        """
+        pass
+
     def execute_inquiry_task(self, conversation):
         """
         Execute an inquiry task using the provided conversation string.
@@ -227,3 +251,8 @@ class UTA:
         """
         json_file = json.loads(str(self.history_manager.get_user()))
         self.system_connector.save_json(json_file, pjoin(file_name, self.output_dir))
+
+
+if __name__ == '__main__':
+    uta = UTA()
+    resp = uta.declare_task()

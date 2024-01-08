@@ -61,12 +61,11 @@ class TaskDeclarator:
                                       'general query that can be resolved through an internet search, without the ' \
                                       'need for system-level access or specific apps."}}'
 
-    def clarify_task(self, task, user_message=None, printlog=False):
+    def clarify_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
             task (Task): Task object
-            user_message (string): The user's feedback
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
@@ -76,9 +75,6 @@ class TaskDeclarator:
             if len(task.conversation_clarification) == 1:
                 task.conversation_clarification.append({'role': 'user', 'content': self.__base_prompt_clarify.
                                                        format(task=task.task_description)})
-            # add user feedback
-            if user_message:
-                task.conversation_clarification.append({'role': 'user', 'content': user_message})
             # send conv to fm
             resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification,
                                                              printlog=printlog)
