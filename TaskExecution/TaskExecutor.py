@@ -1,5 +1,6 @@
 import json
-from DataStructures import Action, InquiryStep, AutoModeStep, Relation, SYSTEM_PROMPT
+from DataStructures import Action, InquiryStep, AutoModeStep, Relation
+from DataStructures.config import *
 
 
 class TaskExecutor:
@@ -56,18 +57,6 @@ class TaskExecutor:
                                  '{{"Relation": "<relation>", "Reason": "<reason>"}}. \n' \
                                  'Previous actions: {action_history}\n' \
                                  'Excluded elements: {except_elements}'
-
-    @staticmethod
-    def load_auto_mode_step(ui_data, task):
-        """
-        Initialize new AutoModeStep.
-        Args:
-            ui_data (UI_Data): Current ui object.
-            task (Task): Parental task object.
-        Returns:
-            AutoModeStep.
-        """
-        return AutoModeStep(step_id=str(len(task.steps)), parent_id=task.task_id, ui_data=ui_data)
 
     def check_go_back_availability(self, step, task, printlog=False):
         """

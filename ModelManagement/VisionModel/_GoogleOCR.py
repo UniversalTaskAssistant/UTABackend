@@ -46,7 +46,8 @@ class _GoogleOCR:
         '''
         Convert ocr result format for easier processing
         Args:
-            ocr_result: [{'description': '5:08', 'boundingPoly': {'vertices': [{'x': 58, 'y': 16}, {'x': 113, 'y': 15}, {'x': 113, 'y': 35}, {'x': 58, 'y': 36}]}}]
+            ocr_result: [{'description': '5:08', 'boundingPoly': {'vertices': [{'x': 58, 'y': 16}, {'x': 113, 'y': 15},
+             {'x': 113, 'y': 35}, {'x': 58, 'y': 36}]}}]
         Returns:
             __texts: [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
         '''
@@ -94,7 +95,8 @@ class _GoogleOCR:
         '''
         valid_texts = []
         for text in self.__texts:
-            if len(text.content) <= 1 and text.content.lower() not in ['a', ',', '.', '!', '?', '$', '%', ':', '&', '+']:
+            if len(text.content) <= 1 and text.content.lower() not in ['a', ',', '.', '!', '?', '$', '%', ':', '&',
+                                                                       '+']:
                 continue
             valid_texts.append(text)
         self.__texts = valid_texts
@@ -164,7 +166,8 @@ class _GoogleOCR:
             text.visualize_element(img, line=2)
         img_resize = img
         if shown_resize_height is not None:
-            img_resize = cv2.resize(img, (int(shown_resize_height * (img.shape[1] / img.shape[0])), shown_resize_height))
+            img_resize = cv2.resize(img, (int(shown_resize_height * (img.shape[1] / img.shape[0])),
+                                          shown_resize_height))
 
         if show:
             cv2.imshow('__texts', img_resize)
@@ -185,8 +188,8 @@ class _GoogleOCR:
         for text in self.__texts:
             c = {'id': text.id, 'content': text.content}
             loc = text.location
-            c['column_min'], c['row_min'], c['column_max'], c['row_max'] = loc['left'], loc['top'], loc['right'], loc[
-                'bottom']
+            c['column_min'], c['row_min'], c['column_max'], c['row_max'] = loc['left'], loc['top'], loc['right'], \
+                                                                           loc['bottom']
             c['width'] = text.width
             c['height'] = text.height
             output['__texts'].append(c)
@@ -236,7 +239,8 @@ class _GoogleOCR:
         self.org_img = cv2.imread(img_path)
         if shrink_size:
             shrink_rate = 0.75
-            img_re = cv2.resize(self.org_img, (int(self.org_img.shape[1] * shrink_rate), int(self.org_img.shape[0] * shrink_rate)))
+            img_re = cv2.resize(self.org_img, (int(self.org_img.shape[1] * shrink_rate), int(self.org_img.shape[0]
+                                                                                             * shrink_rate)))
             img_path = img_path[:-4] + '_resize.jpg'
             cv2.imwrite(img_path, img_re)
 
@@ -249,7 +253,8 @@ class _GoogleOCR:
             self.__resize_label(shrink_rate)
         if show:
             self.visualize_texts(show=True)
-            print("[Text Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, img_path, pjoin(output_dir, name + '.json')))
+            print("[Text Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, img_path,
+                                                                                 pjoin(output_dir, name + '.json')))
         return self.__wrap_up_texts()
 
 

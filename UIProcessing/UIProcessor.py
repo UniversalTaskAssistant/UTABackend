@@ -1,7 +1,6 @@
-from DataStructures import UIData
 from DataStructures.config import *
-from UIProcessing._UIPreProcessor import _UIPreProcessor
-from UIProcessing._UIAnalyser import _UIAnalyser
+from ._UIPreProcessor import _UIPreProcessor
+from ._UIAnalyser import _UIAnalyser
 
 
 class UIProcessor:
@@ -10,20 +9,6 @@ class UIProcessor:
 
         self.__ui_preprocessor = _UIPreProcessor()
         self.__ui_analyser = _UIAnalyser(self.__model_manager)
-
-    @staticmethod
-    def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/'):
-        """
-        Load UI to UIData
-        Args:
-            screenshot_file (path): Path to screenshot image
-            xml_file (path): Path to xml file if any
-            ui_resize (tuple): Specify the size/resolution of the UI
-            output_dir (path): Directory to store all processing result for the UI
-        Returns:
-            self.ui_data (UIData)
-        """
-        return UIData(screenshot_file, xml_file, ui_resize, output_dir)
 
     def ui_vh_xml_cvt_to_json(self, ui_data):
         """

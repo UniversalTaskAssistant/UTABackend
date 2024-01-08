@@ -63,13 +63,15 @@ class ModelManager:
         Returns:
             message (dict): {'role':'assistant', 'content': '...'}
         """
-        return self.__fm_model.send_openai_prompt(prompt=prompt, system_prompt=system_prompt, printlog=printlog, runtime=runtime)
+        return self.__fm_model.send_openai_prompt(prompt=prompt, system_prompt=system_prompt, printlog=printlog,
+                                                  runtime=runtime)
 
     def send_fm_conversation(self, conversation, printlog=False, runtime=False):
         """
         Send conversation to the llm Model.
         Args:
-            conversation (list): llm conversation [{'role': 'user', 'content': '...'}, {'role': 'assistant', 'content':'...'}]
+            conversation (list): llm conversation [{'role': 'user', 'content': '...'}, {'role': 'assistant',
+            'content':'...'}]
             printlog (bool): True to printout detailed intermediate result of llm
             runtime (bool): True to record the runtime of llm
         Returns:

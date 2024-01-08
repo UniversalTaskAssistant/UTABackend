@@ -1,6 +1,6 @@
 import time
 import json
-from DataStructures import SYSTEM_PROMPT, Task
+from DataStructures.config import *
 from . import _GooglePlay
 
 
@@ -124,10 +124,11 @@ class ThirdPartyAppManager:
         except Exception as e:
             raise e
 
-    def check_related_apps(self, task, app_list, except_apps=None, printlog=False):
+    def check_related_apps(self, step, task, app_list, except_apps=None, printlog=False):
         """
         Checks for apps related to a given task.
         Args:
+            step (AutoModeStep): AutoModeStep object containing current relation.
             task (Task): The task for which related apps are to be found.
             app_list (list, optional): A list of apps to consider. If None, fetches from the device.
             except_apps (list, optional): Apps to exclude from consideration.
@@ -143,14 +144,47 @@ class ThirdPartyAppManager:
             except_apps_str = '; '.join(except_apps) if except_apps else ''
 
             # Format the prompt with specific task and app list
-            conversation = self.__availability_check_prompt.format(task=task.task_description,
-                                                                   app_list='; '.join(app_list),
-                                                                   exp_apps=except_apps_str)
+            new_conversation = self.__availability_check_prompt.format(task=task.task_description,
+                                                                       app_list='; '.join(app_list),
+                                                                       exp_apps=except_apps_str)
+            conversations.append({'role': 'user', 'content': new_conversation})
 
-            related_apps = self.__model_manager.create_llm_conversation(self.__model_identifier, conversation,
-                                                                        printlog=printlog)['content']
+            related_apps = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)['content']
+            step.related_app_check_result = related_apps
+
             related_apps = json.loads(related_apps)
             print(related_apps)
             return related_apps
         except Exception as e:
             raise e
+
+    def recommend_apps(self, step, search_tar, fuzzy=False, max_return=5):
+        """
+        Recommends apps based on a search term and summarizes their functionalities.
+        Args:
+            step (AutoModeStep): AutoModeStep object containing current relation.
+            search_tar (str): The search term or target app name.
+            fuzzy (bool): If True, performs a fuzzy search, returning multiple related apps.
+            max_return (int): The maximum number of apps to return in a fuzzy search.
+
+        Returns:
+            A list of dictionaries with app titles and their summarized functionalities.
+        """
+        try:
+            if fuzzy:
+                app_list = self.search_apps_fuzzy(search_tar)[:max_return]
+                app_functions = self.conclude_multi_apps_functionalities(app_list)
+                result = [{'title': app_list[idx]['title'], 'function': one_func} for idx, one_func in
+                          enumerate(app_functions)]
+            else:
+                tar_app = self.search_app_by_name(search_tar)
+                app_function = self.conclude_app_functionality(tar_app)
+                result = [{'title': tar_app['title'], 'function': app_function}]
+            step.app_recommendation_result = result
+            return result
+        except Exception as e:
+            raise e
+
+    def download_app(self, app_link):
+        # need further discussion
+        pass

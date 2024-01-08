@@ -3,7 +3,7 @@ import time
 import tiktoken
 import json
 import logging
-from DataStructures import WORK_PATH
+from DataStructures.config import *
 
 
 class _OpenAI:
@@ -48,7 +48,8 @@ class _OpenAI:
         """
         Send conversation to the llm Model
         Args:
-            conversation (list): llm conversation [{'role': 'user', 'content': '...'}, {'role': 'assistant', 'content':'...'}]
+            conversation (list): llm conversation [{'role': 'user', 'content': '...'}, {'role': 'assistant',
+            'content':'...'}]
             printlog (bool): True to printout detailed intermediate result of llm
             runtime (bool): True to record the runtime of llm
         Returns:

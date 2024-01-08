@@ -1,17 +1,173 @@
 import os
+from os.path import join as pjoin
 
-from . import _Device
-from . import _Local
-from DataStructures import WORK_PATH
+from ._Device import _Device
+from ._Local import _Local
+from DataStructures import *
 
 
 class SystemConnector:
-    def __init__(self):
+    def __init__(self, user_data_root='./data/users'):
         """
         Initializes a SystemConnector instance.
         """
         self.__adb_device = _Device()
         self.__local = _Local()
+
+        self.user_data_root = user_data_root
+
+    '''
+    ***************
+    *** Data IO ***
+    ***************
+    '''
+    def set_user_folder(self, user_id):
+        """
+        Set a user folder associated with the user id, where all the tasks and user info are stored
+        Args:
+            user_id (str): User id
+        """
+        os.makedirs(pjoin(self.user_data_root, user_id), exist_ok=True)
+
+    def import_task(self, user_id, task_id):
+        """
+        Retrieve task if exists or create a new task if not
+        Args:
+            user_id (str): User id, associated to the folder named with the user_id
+            task_id (str): Task id, associated to the json file named with task in the user folder
+        Return:
+            Task (Task) if exists: Retrieved or created Task object
+            None if not exists
+        """
+        user_folder = pjoin(self.user_data_root, user_id)
+        if os.path.exists(user_folder):
+            task_file = pjoin(user_folder, task_id + '.json')
+            if os.path.exists(task_file):
+                task = Task(task_id=task_id, user_id=user_id)
+                task.load_task_from_json(self.load_json(task_file))
+                print('Import task from file', task_file)
+                return task
+        return None
+
+    def export_task(self, task):
+        """
+        Save Task object to json file under the associated user folder, and with the file name of task id
+        Args:
+            task (Task): Task object
+        """
+        user_folder = pjoin(self.user_data_root, task.user_id)
+        os.makedirs(user_folder, exist_ok=True)
+        task_file = pjoin(user_folder, task.task_id + '.json')
+        task_dict = task.wrap_task_to_json()
+        self.save_json(task_dict, task_file)
+        print('Export task to file', task_file)
+
+    @staticmethod
+    def instantiate_auto_mode_step(ui_data, task):
+        """
+        instantiate a new AutoModeStep.
+        Args:
+            ui_data (UI_Data): Current ui object.
+            task (Task): Parental task object.
+        Returns:
+            AutoModeStep.
+        """
+        return AutoModeStep(step_id=str(len(task.steps)), parent_id=task.task_id, ui_data=ui_data)
+
+    @staticmethod
+    def instantiate_inquiry_step(task):
+        """
+        instantiate a new InquiryStep.
+        Args:
+            task (Task): Parental task object.
+        Returns:
+            InquiryStep.
+        """
+        return InquiryStep(step_id=str(len(task.steps)), parent_id=task.task_id,
+                           user_conversation=task.task_description)
+
+    @staticmethod
+    def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/'):
+        """
+        Load UI to UIData
+        Args:
+            screenshot_file (path): Path to screenshot image
+            xml_file (path): Path to xml file if any
+            ui_resize (tuple): Specify the size/resolution of the UI
+            output_dir (path): Directory to store all processing result for the UI
+        Returns:
+            self.ui_data (UIData)
+        """
+        return UIData(screenshot_file, xml_file, ui_resize, output_dir)
+
+    '''
+    ****************
+    *** Local IO ***
+    ****************
+    '''
+    def load_xml(self, file_path, encoding='utf-8'):
+        """
+        Loads and parses an XML file.
+        Args:
+            file_path (str): Path to the XML file.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+        Returns:
+            Parsed XML content.
+        """
+        return self.__local.load_xml(file_path, encoding)
+
+    def load_img(self, file_path):
+        """
+        Loads an image file as a binary stream.
+        Args:
+            file_path (str): Path to the image file.
+        Returns:
+            Binary content of the image file.
+        """
+        return self.__local.load_img(file_path)
+
+    def load_json(self, file_path, encoding='utf-8'):
+        """
+        Loads a JSON file.
+        Args:
+            file_path (str): Path to the JSON file.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+        Returns:
+            Parsed JSON data.
+        """
+        return self.__local.load_json(file_path, encoding)
+
+    def save_xml(self, file, file_path, encoding='utf-8'):
+        """
+        Saves a dictionary as an XML file.
+        Args:
+            file (dict): Dictionary to save as XML.
+            file_path (str): Path where the XML file will be saved.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+        """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        self.__local.save_xml(file, file_path, encoding)
+
+    def save_img(self, img, file_path):
+        """
+        Saves binary image data to a file.
+        Args:
+            img (bytes): Binary image data to save.
+            file_path (str): Path where the image file will be saved.
+        """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        self.__local.save_img(img, file_path)
+
+    def save_json(self, json_obj, file_path, encoding='utf-8'):
+        """
+        Saves a dictionary as a JSON file.
+        Args:
+            json_obj (dict): Dictionary to save as JSON.
+            file_path (str): Path where the JSON file will be saved.
+            encoding (str, optional): File encoding. Defaults to 'utf-8'.
+        """
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        self.__local.save_json(json_obj, file_path, encoding)
 
     '''
     ******************
@@ -209,75 +365,6 @@ class SystemConnector:
             text (str): The text to input.
         """
         self.__adb_device.input_text(text)
-
-    '''
-    ****************
-    *** Local IO ***
-    ****************
-    '''
-    def load_xml(self, file_path, encoding='utf-8'):
-        """
-        Loads and parses an XML file.
-        Args:
-            file_path (str): Path to the XML file.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
-        Returns:
-            Parsed XML content.
-        """
-        return self.__local.load_xml(file_path, encoding)
-
-    def load_img(self, file_path):
-        """
-        Loads an image file as a binary stream.
-        Args:
-            file_path (str): Path to the image file.
-        Returns:
-            Binary content of the image file.
-        """
-        return self.__local.load_img(file_path)
-
-    def load_json(self, file_path, encoding='utf-8'):
-        """
-        Loads a JSON file.
-        Args:
-            file_path (str): Path to the JSON file.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
-        Returns:
-            Parsed JSON data.
-        """
-        return self.__local.load_json(file_path, encoding)
-
-    def save_xml(self, file, file_path, encoding='utf-8'):
-        """
-        Saves a dictionary as an XML file.
-        Args:
-            file (dict): Dictionary to save as XML.
-            file_path (str): Path where the XML file will be saved.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
-        """
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        self.__local.save_xml(file, file_path, encoding)
-
-    def save_img(self, img, file_path):
-        """
-        Saves binary image data to a file.
-        Args:
-            img (bytes): Binary image data to save.
-            file_path (str): Path where the image file will be saved.
-        """
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        self.__local.save_img(img, file_path)
-
-    def save_json(self, file, file_path, encoding='utf-8'):
-        """
-        Saves a dictionary as a JSON file.
-        Args:
-            file (dict): Dictionary to save as JSON.
-            file_path (str): Path where the JSON file will be saved.
-            encoding (str, optional): File encoding. Defaults to 'utf-8'.
-        """
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        self.__local.save_json(file, file_path, encoding)
 
 
 if __name__ == '__main__':
