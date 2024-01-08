@@ -1,7 +1,7 @@
 import time
 import json
 from DataStructures.config import *
-from . import _GooglePlay
+from ._GooglePlay import _GooglePlay
 
 
 class ThirdPartyAppManager:

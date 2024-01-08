@@ -1,5 +1,5 @@
-from . import _GoogleOCR
-from . import _IconClassifier
+from ._GoogleOCR import _GoogleOCR
+from ._IconClassifier import _IconClassifier
 
 
 class _VisionModel:
