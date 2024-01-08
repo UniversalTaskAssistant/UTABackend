@@ -255,4 +255,4 @@ class UTA:
 
 if __name__ == '__main__':
     uta = UTA()
-    resp = uta.declare_task()
+    resp = uta.declare_task(user_id='1', task_id='1', task_description='Send a message to my mom')
