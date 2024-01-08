@@ -2,17 +2,46 @@
     "task_id": "1",
     "user_id": "1",
     "parent_task_id": null,
-    "task_description": null,
+    "task_description": "Send \"hello\" to my mom",
     "task_type": null,
     "children_ids": [],
     "conversation_clarification": [
         {
             "role": "system",
             "content": "You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task."
+        },
+        {
+            "role": "user",
+            "content": "Assess the user task \"Send \"hello\" to my mom\" to determine if it is sufficiently clear for execution on a smartphone. Given that seniors often provide vague or incomplete task descriptions, identify the most crucial piece of missing information. Ask a single, focused question that is most likely to clarify the task effectively. Return your analysis in JSON format, comprising: 1. \"Clear\": a boolean indicating if the task is clear enough as is, 2. \"Question\": a single question to obtain the most essential missing detail for task clarification. Example response for a clear task: {\"Clear\": \"True\", \"Question\": \"\"} Example response for an unclear task: {\"Clear\": \"False\", \"Question\": \"What is the full name of the person you want to contact?\"} or {\"Clear\": \"False\", \"Question\": \"Which app would you prefer to use for this communication?\"}"
+        },
+        {
+            "role": "assistant",
+            "content": "{\"Clear\": \"False\", \"Question\": \"Which communication app or service do you want to use to send 'hello' to your mom?\"}"
+        },
+        {
+            "role": "user",
+            "content": "Send it in whats app"
+        },
+        {
+            "role": "assistant",
+            "content": "{\"Clear\": \"True\", \"Task\": \"Send 'hello' to mom via WhatsApp\", \"Question\": \"\"}"
         }
     ],
-    "res_clarification": {},
-    "res_decomposition": {},
+    "res_clarification": {
+        "Clear": "True",
+        "Task": "Send 'hello' to mom via WhatsApp",
+        "Question": ""
+    },
+    "res_decomposition": {
+        "Decompose": "True",
+        "Sub-tasks": [
+            "Access the contact information of the user's mother",
+            "Open the appropriate messaging app",
+            "Draft a message saying 'hello'",
+            "Send the message"
+        ],
+        "Explanation": "The task involves several distinct steps: finding and selecting the user's mother's contact information, choosing the correct messaging application, drafting the message, and then sending it. These actions need to be executed in a specific order and thus, the task needs to be decomposed."
+    },
     "res_classification": {},
     "conversation_automation": [
         {

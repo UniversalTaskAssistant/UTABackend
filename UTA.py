@@ -25,14 +25,16 @@ class UTA:
         self.task_declarator = TaskDeclarator(self.model_manager)
         self.task_executor = TaskExecutor(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
+        # for debugging
+        self.cur_task = None  # current task, for testing and debugging
 
-    def instantiate_task(self, user_id, task_id, task_description):
+    def instantiate_task(self, user_id, task_id, user_msg):
         """
         Instantiate a Task object by loading an existing one or creating a new one according to the given info
         Args:
             user_id (str): User id to identify the folder
             task_id (str): Task id to identify the file
-            task_description (str): The content description of the task, used to creat a new Task if doesn't exist
+            user_msg (str): User's input message. For new task, it is the task description. For existing task, append it to conversation.
         Returns:
             Task (Task): Task object
         """
@@ -40,7 +42,10 @@ class UTA:
         # if the task does not exist, creat a new one within the user's folder
         if not task:
             self.system_connector.set_user_folder(user_id=user_id)
-            task = Task(task_id=task_id, user_id=user_id, task_description=task_description)
+            task = Task(task_id=task_id, user_id=user_id, task_description=user_msg)
+        else:
+            task.conversation_clarification.append({'role': 'user', 'content': user_msg})
+        self.cur_task = task
         return task
 
     '''
@@ -48,7 +53,7 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
-    def declare_task(self, user_id, task_id, task_description):
+    def declare_task(self, user_id, task_id, user_msg):
         """
         Declare the task.
         First, clarify it, if unclear, return response to the frontend for user feedback.
@@ -56,14 +61,16 @@ class UTA:
         Args:
             user_id (str): User id, associated to the folder named with the user_id
             task_id (str): Task id, associated to the json file named with task in the user folder
-            task_description (str): Description or details of the task.
+            user_msg (str): User's input message.
         """
-        task = self.instantiate_task(user_id, task_id, task_description)
+        task = self.instantiate_task(user_id, task_id, user_msg)
         clarify = self.clarify_task(task)
         if clarify['Clear'] == 'True':
             decompose = self.decompose_task(task)
+            self.system_connector.save_task(task)
             return decompose
         else:
+            self.system_connector.save_task(task)
             return clarify
 
     def clarify_task(self, task, printlog=False):
@@ -255,4 +262,6 @@ class UTA:
 
 if __name__ == '__main__':
     uta = UTA()
-    resp = uta.declare_task(user_id='1', task_id='1', task_description='Send a message to my mom')
+    resp = uta.declare_task(user_id='1', task_id='1', user_msg='Send a message to my mom')
+    resp = uta.declare_task(user_id='1', task_id='1', user_msg='Send it in whats app')
+    
