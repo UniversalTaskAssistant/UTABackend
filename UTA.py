@@ -60,7 +60,7 @@ class UTA:
         """
         task = self.instantiate_task(user_id, task_id, task_description)
         clarify = self.clarify_task(task)
-        if clarify['Clear']:
+        if clarify['Clear'] == 'True':
             decompose = self.decompose_task(task)
             return decompose
         else:
