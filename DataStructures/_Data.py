@@ -6,14 +6,23 @@ class _Data:
         """
         String format of str()
         """
-        return f"{self.__class__.__name__}(" + ", ".join([f"{key}={value}" for key, value in self.__dict__.items()]) \
-               + ")"
+        return f"{self.__class__.__name__}(" + ", ".join([f"{key}={value}" for key, value in self.__dict__.items()]) + ")"
 
     def to_dict(self):
         """
         Returns a dictionary representation of the AutonomicTask instance.
         """
         return {k: v for k, v in self.__dict__.items()}
+
+    def load_from_dict(self, dict_data):
+        """
+        Set attributes values by the given dict_obj
+        Args:
+            dict_data (dict): The dict with attributes and values
+        """
+        for key, value in dict_data.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
 
     def set_attributes(self, **kwargs):
         """

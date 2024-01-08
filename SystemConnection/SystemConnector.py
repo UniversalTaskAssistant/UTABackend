@@ -29,7 +29,7 @@ class SystemConnector:
         """
         os.makedirs(pjoin(self.user_data_root, user_id), exist_ok=True)
 
-    def import_task(self, user_id, task_id):
+    def load_task(self, user_id, task_id):
         """
         Retrieve task if exists or create a new task if not
         Args:
@@ -49,7 +49,7 @@ class SystemConnector:
                 return task
         return None
 
-    def export_task(self, task):
+    def save_task(self, task):
         """
         Save Task object to json file under the associated user folder, and with the file name of task id
         Args:

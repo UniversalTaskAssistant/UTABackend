@@ -42,7 +42,7 @@ class Task(_Data):
         Returns:
             self with attributes set
         """
-        pass
+        self.load_from_dict(task_json)
 
     def wrap_task_to_json(self):
         """
