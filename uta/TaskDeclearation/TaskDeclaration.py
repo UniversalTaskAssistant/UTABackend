@@ -16,8 +16,7 @@ class TaskDeclarator:
                                      'incomplete task descriptions, identify the most crucial piece of missing ' \
                                      'information. If the task is clear, indicate so. If not, provide a focused ' \
                                      'question with up to 4 selectable options to clarify the task effectively. ' \
-                                     'These options should be drawn from the list of apps the user has installed: ' \
-                                     '{app_list}. Return your analysis in JSON format, comprising: ' \
+                                     'Return your analysis in JSON format, comprising: ' \
                                      '1. "Clear": a boolean indicating if the task is clear enough as is, ' \
                                      '2. "Question": a single question for further task clarification, ' \
                                      '3. "Selections": a list of up to 4 selections that answer the question. ' \
@@ -63,7 +62,7 @@ class TaskDeclarator:
                                       'general query that can be resolved through an internet search, without the ' \
                                       'need for system-level access or specific apps."}}'
 
-    def clarify_task(self, task, app_list, printlog=False):
+    def clarify_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
@@ -76,11 +75,9 @@ class TaskDeclarator:
         try:
             # set base prompt for new conv
             if len(task.conversation_clarification) == 1:
-                task.conversation_clarification.append({'role': 'user', 'content': self.__base_prompt_clarify
-                                                       .format(task=task.task_description, app_list=app_list)})
+                task.conversation_clarification.append({'role': 'user', 'content': self.__base_prompt_clarify.format(task=task.task_description)})
             # send conv to fm
-            resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification,
-                                                             printlog=printlog)
+            resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
             task.res_clarification = json.loads(resp['content'])
             task.conversation_clarification.append(resp)
             return task.res_clarification

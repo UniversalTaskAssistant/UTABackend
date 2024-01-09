@@ -1,0 +1,42 @@
+{
+    "task_id": "1",
+    "user_id": "1",
+    "parent_task_id": null,
+    "task_description": "Send \"hello\" to my mom",
+    "task_type": null,
+    "children_ids": [],
+    "conversation_clarification": [
+        {
+            "role": "system",
+            "content": "You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task."
+        },
+        {
+            "role": "user",
+            "content": "Assess the user task \"Send \"hello\" to my mom\" to determine if it is sufficiently clear for execution on a smartphone. Given that seniors often provide vague or incomplete task descriptions, identify the most crucial piece of missing information. If the task is clear, indicate so. If not, provide a focused question with up to 4 selectable options to clarify the task effectively. Return your analysis in JSON format, comprising: 1. \"Clear\": a boolean indicating if the task is clear enough as is, 2. \"Question\": a single question for further task clarification, 3. \"Selections\": a list of up to 4 selections that answer the question. Example response for a clear task: {\"Clear\": true, \"Question\": \"\", \"Selections\": []} Example response for an unclear task: {\"Clear\": false, \"Question\": \"Which app would you prefer to use for this communication?\", \"Selections\": [\"Message\", \"WhatsApp\", \"Meta\", \"Phone Call\"]}"
+        },
+        {
+            "role": "assistant",
+            "content": "{\"Clear\": false, \"Question\": \"Which application would you like to use to send 'hello' to your mom?\", \"Selections\": [\"SMS\", \"WhatsApp\", \"Email\", \"Facebook Messenger\"]}"
+        }
+    ],
+    "res_clarification": {
+        "Clear": false,
+        "Question": "Which application would you like to use to send 'hello' to your mom?",
+        "Selections": [
+            "SMS",
+            "WhatsApp",
+            "Email",
+            "Facebook Messenger"
+        ]
+    },
+    "res_decomposition": {},
+    "res_classification": {},
+    "conversation_automation": [
+        {
+            "role": "system",
+            "content": "You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task."
+        }
+    ],
+    "steps": [],
+    "task_execution_result": null
+}

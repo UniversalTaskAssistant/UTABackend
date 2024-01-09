@@ -4,34 +4,38 @@ from os.path import join as pjoin
 from ._Device import _Device
 from ._Local import _Local
 from uta.DataStructures import *
+from uta.config import *
 
 
 class SystemConnector:
-    def __init__(self, user_data_root='./data/users'):
+    def __init__(self):
         """
         Initializes a SystemConnector instance.
         """
         self.__adb_device = _Device()
         self.__local = _Local()
 
-        self.user_data_root = user_data_root
+        self.user_data_root = DATA_PATH
 
     '''
     ***************
     *** Data IO ***
     ***************
     '''
-    def set_user_folder(self, user_id):
+    def set_user_task_folder(self, user_id, task_id):
         """
-        Set a user folder associated with the user id, where all the tasks and user info are stored
+        Set a user folder associated with the user and task, where all the tasks and user info are stored
+        'data/user_id/task_id/'
         Args:
             user_id (str): User id
+            task_id (str): task id to store all uis and task info
         """
-        os.makedirs(pjoin(self.user_data_root, user_id), exist_ok=True)
+        os.makedirs(pjoin(self.user_data_root, user_id, task_id), exist_ok=True)
 
     def load_task(self, user_id, task_id):
         """
         Retrieve task if exists or create a new task if not
+        'data/user_id/task_id/'
         Args:
             user_id (str): User id, associated to the folder named with the user_id
             task_id (str): Task id, associated to the json file named with task in the user folder
@@ -39,25 +43,26 @@ class SystemConnector:
             Task (Task) if exists: Retrieved or created Task object
             None if not exists
         """
-        user_folder = pjoin(self.user_data_root, user_id)
-        if os.path.exists(user_folder):
-            task_file = pjoin(user_folder, task_id + '.json')
-            if os.path.exists(task_file):
-                task = Task(task_id=task_id, user_id=user_id)
-                task.load_task_from_json(self.load_json(task_file))
-                print('Import task from file', task_file)
-                return task
-        return None
+        user_folder = pjoin(self.user_data_root, user_id)           # 'data/user_id'
+        task_file = pjoin(user_folder, task_id, task_id + '.json')  # 'data/user_id/task_id/task_id.json'
+        if os.path.exists(task_file):
+            task = Task(task_id=task_id, user_id=user_id)
+            task.load_task_from_json(self.load_json(task_file))
+            print('Import task from file', task_file)
+            return task
+        else:
+            return None
 
     def save_task(self, task):
         """
         Save Task object to json file under the associated user folder, and with the file name of task id
+        'data/user_id/task_id/'
         Args:
             task (Task): Task object
         """
-        user_folder = pjoin(self.user_data_root, task.user_id)
-        os.makedirs(user_folder, exist_ok=True)
-        task_file = pjoin(user_folder, task.task_id + '.json')
+        task_folder = pjoin(self.user_data_root, task.user_id, task.task_id)
+        os.makedirs(task_folder, exist_ok=True)
+        task_file = pjoin(task_folder, task.task_id + '.json')
         task_dict = task.wrap_task_to_json()
         self.save_json(task_dict, task_file)
         print('Export task to file', task_file)

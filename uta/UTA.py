@@ -41,7 +41,7 @@ class UTA:
         task = self.system_connector.load_task(user_id=user_id, task_id=task_id)
         # if the task does not exist, creat a new one within the user's folder
         if not task:
-            self.system_connector.set_user_folder(user_id=user_id)
+            self.system_connector.set_user_task_folder(user_id=user_id, task_id=task_id)
             task = Task(task_id=task_id, user_id=user_id)
             # set the user message as the task description for a new task
             if user_msg:
