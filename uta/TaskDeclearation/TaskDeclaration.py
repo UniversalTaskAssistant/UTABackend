@@ -14,15 +14,17 @@ class TaskDeclarator:
         self.__base_prompt_clarify = 'Assess the user task "{task}" to determine if it is sufficiently clear for ' \
                                      'execution on a smartphone. Given that seniors often provide vague or ' \
                                      'incomplete task descriptions, identify the most crucial piece of missing ' \
-                                     'information. Ask a single, focused question that is most likely to clarify the ' \
-                                     'task effectively. Return your analysis in JSON format, comprising: ' \
+                                     'information. If the task is clear, indicate so. If not, provide a focused ' \
+                                     'question with up to 4 selectable options to clarify the task effectively. ' \
+                                     'These options should be drawn from the list of apps the user has installed: ' \
+                                     '{app_list}. Return your analysis in JSON format, comprising: ' \
                                      '1. "Clear": a boolean indicating if the task is clear enough as is, ' \
-                                     '2. "Question": a single question to obtain the most essential missing detail ' \
-                                     'for task clarification. ' \
-                                     'Example response for a clear task: {{"Clear": "True", "Question": ""}} ' \
-                                     'Example response for an unclear task: {{"Clear": "False", "Question": "What is ' \
-                                     'the full name of the person you want to contact?"}} or {{"Clear": "False", ' \
-                                     '"Question": "Which app would you prefer to use for this communication?"}}'
+                                     '2. "Question": a single question for further task clarification, ' \
+                                     '3. "Selections": a list of up to 4 selections that answer the question. ' \
+                                     'Example response for a clear task: {{"Clear": true, "Question": "", ' \
+                                     '"Selections": []}} Example response for an unclear task: {{"Clear": false, ' \
+                                     '"Question": "Which app would you prefer to use for this communication?", ' \
+                                     '"Selections": ["Message", "WhatsApp", "Meta", "Phone Call"]}}'
 
         self.__base_prompt_decompose = 'Analyze the user task "{task}" to determine if it comprises multiple, ' \
                                        'distinct sub-tasks. Complex tasks often consist of several steps that need ' \
@@ -61,11 +63,12 @@ class TaskDeclarator:
                                       'general query that can be resolved through an internet search, without the ' \
                                       'need for system-level access or specific apps."}}'
 
-    def clarify_task(self, task, printlog=False):
+    def clarify_task(self, task, app_list, printlog=False):
         """
         Clarify task to be clear to complete
         Args:
             task (Task): Task object
+            app_list (list): List of available apps/functions in user's mobile
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None"}
@@ -73,9 +76,11 @@ class TaskDeclarator:
         try:
             # set base prompt for new conv
             if len(task.conversation_clarification) == 1:
-                task.conversation_clarification.append({'role': 'user', 'content': self.__base_prompt_clarify.format(task=task.task_description)})
+                task.conversation_clarification.append({'role': 'user', 'content': self.__base_prompt_clarify
+                                                       .format(task=task.task_description, app_list=app_list)})
             # send conv to fm
-            resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
+            resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification,
+                                                             printlog=printlog)
             task.res_clarification = json.loads(resp['content'])
             task.conversation_clarification.append(resp)
             return task.res_clarification
