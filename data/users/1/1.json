@@ -25,12 +25,19 @@
         {
             "role": "assistant",
             "content": "{\"Clear\": \"True\", \"Task\": \"Send 'hello' to mom via WhatsApp\", \"Question\": \"\"}"
+        },
+        {
+            "role": "user",
+            "content": "Send \"hello\" to my mom"
+        },
+        {
+            "role": "assistant",
+            "content": "{\"Clear\": \"False\", \"Question\": \"Which communication app or service do you want to use to send 'hello' to your mom?\"}"
         }
     ],
     "res_clarification": {
-        "Clear": "True",
-        "Task": "Send 'hello' to mom via WhatsApp",
-        "Question": ""
+        "Clear": "False",
+        "Question": "Which communication app or service do you want to use to send 'hello' to your mom?"
     },
     "res_decomposition": {
         "Decompose": "True",

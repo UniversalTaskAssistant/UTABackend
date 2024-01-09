@@ -1,5 +1,4 @@
-from UTA import UTA
-from DataStructures import *
+from uta.DataStructures import *
 
 import json
 import time

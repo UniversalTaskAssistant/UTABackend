@@ -1,9 +1,9 @@
-from DataStructures.config import *
+from config import *
 
 # initiate infrastructure agents
-from ModelManagement import ModelManager
+from uta.ModelManagement import ModelManager
 model_mg = ModelManager()
-from SystemConnection import SystemConnector
+from uta.SystemConnection import SystemConnector
 system_connector = SystemConnector()
 
 test_section = 3
@@ -19,7 +19,7 @@ if test_section == 1:
     screen_path, xml_path = system_connector.cap_and_save_ui_screenshot_and_xml(ui_id=1, output_dir=WORK_PATH + 'data/device')
 
     # process ui data
-    from UIProcessing.UIProcessor import UIProcessor
+    from uta.UIProcessing import UIProcessor
     ui = UIProcessor(model_manager=model_mg)
     ui_data = ui.load_ui_data(screenshot_file=screen_path, xml_file=xml_path, ui_resize=sys_connector.get_device_resolution())
     ui_data = ui.process_ui(ui_data=ui_data, show=True)
@@ -35,7 +35,7 @@ elif test_section == 2:
     ************************************
     '''
     # declare task
-    from TaskDeclearation.TaskDeclaration import TaskDeclarator
+    from uta.TaskDeclearation import TaskDeclarator
     task = 'Open wechat and send my mom a message'
     task_declarator = TaskDeclarator(model_manager=model_mg)
     task_declarator.initialize_task_clarifier('task_clarifier1')
@@ -52,13 +52,13 @@ elif test_section == 3:
     **********************************
     '''
     # load testing ui
-    from DataStructures import UIData
-    ui_data = UIData('./data/device/1.png')
+    from uta.DataStructures import UIData
+    ui_data = UIData('../data/device/1.png')
     ui_data.elements = system_connector.load_json('./data/ui/1_elements.json')
     ui_data.element_tree = system_connector.load_json('./data/ui/1_tree.json')
 
     # check ui action
-    from TaskExecution import AppTasker
+    from uta.TaskExecution import AppTasker
     task = 'Open the youtube'
     app_tasker = AppTasker(model_manager=model_mg)
     app_tasker.initialize_relation_checker('ui_relation_checker')
@@ -74,6 +74,6 @@ elif test_section == 4:
     ***********************************
     '''
     # check third party apps
-    from ThirdPartyAppManagement import ThirdPartyAppManager
+    from uta.ThirdPartyAppManagement import ThirdPartyAppManager
     app_mg = ThirdPartyAppManager(model_manager=model_mg)
     apps = app_mg.search_apps_fuzzy('chinese food')

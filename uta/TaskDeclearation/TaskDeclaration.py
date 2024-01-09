@@ -1,5 +1,5 @@
 import json
-from DataStructures.config import *
+from config import *
 
 
 class TaskDeclarator:
@@ -121,9 +121,9 @@ class TaskDeclarator:
 
 
 if __name__ == '__main__':
-    from ModelManagement import ModelManager
+    from uta.ModelManagement import ModelManager
     model_mg = ModelManager()
-    from DataStructures.Task import Task
+    from uta.DataStructures.Task import Task
     tsk = Task(task_id="1", task_description='Open wechat and send my mom a message')
 
     task_declarer = TaskDeclarator(model_manager=model_mg)

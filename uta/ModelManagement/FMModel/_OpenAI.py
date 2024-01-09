@@ -3,7 +3,7 @@ import time
 import tiktoken
 import json
 import logging
-from DataStructures.config import *
+from config import *
 
 
 class _OpenAI:
@@ -11,7 +11,7 @@ class _OpenAI:
         """
         Initialize the Model with default settings.
         """
-        openai.api_key = open(WORK_PATH + 'ModelManagement/FMModel/openaikey.txt', 'r').readline()
+        openai.api_key = open(WORK_PATH + 'uta/ModelManagement/FMModel/openaikey.txt', 'r').readline()
         self._model = model
 
     @staticmethod

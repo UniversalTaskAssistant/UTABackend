@@ -6,12 +6,12 @@ from torchvision import transforms
 import time
 import json
 from PIL import Image
-from DataStructures.config import *
+from config import *
 
 
 class _IconClassifier:
-    def __init__(self, model_path=WORK_PATH + 'ModelManagement/VisionModel/icon_classifier_model_results/best-0.93.pt',
-                 class_path=WORK_PATH + 'ModelManagement/VisionModel/icon_classifier_model_results/iconModel_labels.json'):
+    def __init__(self, model_path=WORK_PATH + 'uta/ModelManagement/VisionModel/icon_classifier_model_results/best-0.93.pt',
+                 class_path=WORK_PATH + 'uta/ModelManagement/VisionModel/icon_classifier_model_results/iconModel_labels.json'):
         # Setting the device to GPU if available, else CPU
         self.__device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 

@@ -5,14 +5,14 @@ import time
 import cv2
 from os.path import join as pjoin
 
-from DataStructures.Text import Text
-from DataStructures.config import *
+from uta.DataStructures.Text import Text
+from config import *
 
 
 class _GoogleOCR:
     def __init__(self):
         self.__url = 'https://vision.googleapis.com/v1/images:annotate'
-        self.__api_key = open(WORK_PATH + 'ModelManagement/VisionModel/googleapikey.txt', 'r').readline()
+        self.__api_key = open(WORK_PATH + 'uta/ModelManagement/VisionModel/googleapikey.txt', 'r').readline()
 
         self.org_img = None     # cv2.img, original image
         self.ocr_result = None  # original results from google ocr

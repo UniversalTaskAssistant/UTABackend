@@ -1,4 +1,4 @@
-from DataStructures.config import *
+from config import *
 from ._UIPreProcessor import _UIPreProcessor
 from ._UIAnalyser import _UIAnalyser
 
@@ -75,7 +75,7 @@ class UIProcessor:
 
 
 if __name__ == '__main__':
-    from ModelManagement import ModelManager
+    from uta.ModelManagement import ModelManager
     model_mg = ModelManager()
     model_mg.initialize_vision_model()
 

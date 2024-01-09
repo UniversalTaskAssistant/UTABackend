@@ -1,6 +1,6 @@
 import time
 import json
-from DataStructures.config import *
+from config import *
 from ._GooglePlay import _GooglePlay
 
 

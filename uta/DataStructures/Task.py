@@ -1,5 +1,5 @@
 from ._Data import _Data
-from .config import SYSTEM_PROMPT
+from config import SYSTEM_PROMPT
 
 
 class Task(_Data):

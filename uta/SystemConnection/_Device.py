@@ -3,7 +3,7 @@ import time
 import cv2
 from os.path import join as pjoin
 import os
-from DataStructures.config import *
+from config import *
 
 
 class _Device:

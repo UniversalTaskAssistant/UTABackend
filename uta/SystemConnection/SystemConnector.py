@@ -3,7 +3,7 @@ from os.path import join as pjoin
 
 from ._Device import _Device
 from ._Local import _Local
-from DataStructures import *
+from uta.DataStructures import *
 
 
 class SystemConnector:

@@ -3,13 +3,13 @@ from os.path import join as pjoin
 import json
 from datetime import datetime
 
-from DataStructures import *
-from ModelManagement import ModelManager
-from SystemConnection import SystemConnector
-from TaskDeclearation import TaskDeclarator
-from TaskExecution import TaskExecutor
-from ThirdPartyAppManagement import ThirdPartyAppManager
-from UIProcessing import UIProcessor
+from uta.DataStructures import *
+from uta.ModelManagement import ModelManager
+from uta.SystemConnection import SystemConnector
+from uta.TaskDeclearation import TaskDeclarator
+from uta.TaskExecution import TaskExecutor
+from uta.ThirdPartyAppManagement import ThirdPartyAppManager
+from uta.UIProcessing import UIProcessor
 
 
 class UTA:
