@@ -63,30 +63,6 @@ class SystemConnector:
         print('Export task to file', task_file)
 
     @staticmethod
-    def instantiate_auto_mode_step(ui_data, task):
-        """
-        instantiate a new AutoModeStep.
-        Args:
-            ui_data (UI_Data): Current ui object.
-            task (Task): Parental task object.
-        Returns:
-            AutoModeStep.
-        """
-        return AutoModeStep(step_id=str(len(task.steps)), parent_id=task.task_id, ui_data=ui_data)
-
-    @staticmethod
-    def instantiate_inquiry_step(task):
-        """
-        instantiate a new InquiryStep.
-        Args:
-            task (Task): Parental task object.
-        Returns:
-            InquiryStep.
-        """
-        return InquiryStep(step_id=str(len(task.steps)), parent_id=task.task_id,
-                           user_conversation=task.task_description)
-
-    @staticmethod
     def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/'):
         """
         Load UI to UIData
@@ -99,6 +75,9 @@ class SystemConnector:
             self.ui_data (UIData)
         """
         return UIData(screenshot_file, xml_file, ui_resize, output_dir)
+
+    def save_ui_data(self):
+        pass
 
     '''
     ****************

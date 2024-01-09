@@ -28,7 +28,7 @@ class UTA:
         # for debugging
         self.cur_task = None  # current task, for testing and debugging
 
-    def instantiate_task(self, user_id, task_id, user_msg):
+    def instantiate_task(self, user_id, task_id, user_msg=None):
         """
         Instantiate a Task object by loading an existing one or creating a new one according to the given info
         Args:
@@ -42,11 +42,18 @@ class UTA:
         # if the task does not exist, creat a new one within the user's folder
         if not task:
             self.system_connector.set_user_folder(user_id=user_id)
-            task = Task(task_id=task_id, user_id=user_id, task_description=user_msg)
+            task = Task(task_id=task_id, user_id=user_id)
+            # set the user message as the task description for a new task
+            if user_msg:
+                task.task_description = user_msg
         else:
-            task.conversation_clarification.append({'role': 'user', 'content': user_msg})
+            if user_msg:
+                task.conversation_clarification.append({'role': 'user', 'content': user_msg})
         self.cur_task = task
         return task
+
+    def instantiate_ui(self):
+        pass
 
     '''
     ************************
@@ -116,6 +123,8 @@ class UTA:
         Returns:
             Action (dict): {"Action": }
         """
+        task = self.instantiate_task(user_id, task_id)
+        ui = self.instantiate_ui()
         pass
 
     def execute_inquiry_task(self, conversation):
@@ -264,4 +273,3 @@ if __name__ == '__main__':
     uta = UTA()
     resp = uta.declare_task(user_id='1', task_id='1', user_msg='Send a message to my mom')
     resp = uta.declare_task(user_id='1', task_id='1', user_msg='Send it in whats app')
-    
