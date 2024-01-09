@@ -1,5 +1,5 @@
 import json
-from config import *
+from uta.config import *
 
 
 class TaskDeclarator:

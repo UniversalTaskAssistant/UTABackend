@@ -3,7 +3,7 @@ import time
 import tiktoken
 import json
 import logging
-from config import *
+from uta.config import *
 
 
 class _OpenAI:

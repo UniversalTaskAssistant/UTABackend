@@ -1,4 +1,4 @@
-from config import *
+from uta.config import *
 
 # initiate infrastructure agents
 from uta.ModelManagement import ModelManager

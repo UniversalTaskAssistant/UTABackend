@@ -1,6 +1,6 @@
 import json
 from uta.DataStructures import InquiryStep, AutoModeStep
-from config import *
+from uta.config import *
 
 
 class TaskExecutor:

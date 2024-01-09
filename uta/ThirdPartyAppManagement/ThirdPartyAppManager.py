@@ -1,6 +1,6 @@
 import time
 import json
-from config import *
+from uta.config import *
 from ._GooglePlay import _GooglePlay
 
 

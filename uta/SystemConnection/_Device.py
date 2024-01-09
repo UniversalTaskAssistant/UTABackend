@@ -3,7 +3,7 @@ import time
 import cv2
 from os.path import join as pjoin
 import os
-from config import *
+from uta.config import *
 
 
 class _Device:

@@ -6,7 +6,7 @@ from torchvision import transforms
 import time
 import json
 from PIL import Image
-from config import *
+from uta.config import *
 
 
 class _IconClassifier:

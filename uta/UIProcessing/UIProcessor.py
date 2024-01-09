@@ -1,4 +1,4 @@
-from config import *
+from uta.config import *
 from ._UIPreProcessor import _UIPreProcessor
 from ._UIAnalyser import _UIAnalyser
 
