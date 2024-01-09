@@ -33,6 +33,14 @@
         {
             "role": "assistant",
             "content": "{\"Clear\": \"False\", \"Question\": \"Which communication app or service do you want to use to send 'hello' to your mom?\"}"
+        },
+        {
+            "role": "user",
+            "content": "Send \"hello\" to my mom"
+        },
+        {
+            "role": "assistant",
+            "content": "{\"Clear\": \"False\", \"Question\": \"Which communication app or service do you want to use to send 'hello' to your mom?\"}"
         }
     ],
     "res_clarification": {
