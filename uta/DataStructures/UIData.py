@@ -5,12 +5,17 @@ from ._Data import _Data
 
 
 class UIData(_Data):
-    def __init__(self, screenshot_file, xml_file=None,
-                 ui_resize=(1080, 2280), output_dir='data'):
+    def __init__(self, screenshot_file, xml_file=None, ui_resize=(1080, 2280)):
+        """
+        Args:
+            screenshot_file (path): .png or .jpg file path of the UI screenshot
+            xml_file (path): .xml file path of the UI vh
+            ui_resize (tuple): Specify the size/resolution of the UI
+        """
         super().__init__()
         self.screenshot_file = screenshot_file
         self.xml_file = xml_file
-        self.ui_no = screenshot_file.replace('/', '\\').split('\\')[-1].split('.')[0]
+        self.ui_id = screenshot_file.replace('/', '\\').split('\\')[-1].split('.')[0]
 
         # UI info
         self.ui_screenshot = cv2.resize(cv2.imread(screenshot_file), ui_resize)   # ui screenshot
@@ -23,11 +28,6 @@ class UIData(_Data):
         self.element_tree = None    # structural element tree, dict type
         self.blocks = []            # list of blocks from element tree
         self.ocr_text = []          # UI ocr detection result, list of __texts {}
-
-        # output file paths
-        self.output_dir = pjoin(output_dir, 'ui')
-        self.output_file_path_elements = pjoin(self.output_dir, self.ui_no + '_elements.json')
-        self.output_file_path_element_tree = pjoin(self.output_dir, self.ui_no + '_tree.json')
 
     def get_ui_element_node_by_id(self, ele_id):
         """
