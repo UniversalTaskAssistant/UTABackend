@@ -16,15 +16,20 @@ class TaskDeclarator:
                                      'incomplete task descriptions, identify the most crucial piece of missing ' \
                                      'information. If the task is clear, indicate so. If not, provide a focused ' \
                                      'question with up to 4 selectable options to clarify the task effectively. ' \
-                                     'These options should be drawn from the list of apps the user has installed: ' \
-                                     '{app_list}. Return your analysis in JSON format, comprising: ' \
+                                     'The selections should be designed to extract the most essential missing detail ' \
+                                     'for task clarification. Return your analysis in JSON format, comprising: ' \
                                      '1. "Clear": a boolean indicating if the task is clear enough as is, ' \
                                      '2. "Question": a single question for further task clarification, ' \
                                      '3. "Selections": a list of up to 4 selections that answer the question. ' \
                                      'Example response for a clear task: {{"Clear": true, "Question": "", ' \
-                                     '"Selections": []}} Example response for an unclear task: {{"Clear": false, ' \
-                                     '"Question": "Which app would you prefer to use for this communication?", ' \
-                                     '"Selections": ["Message", "WhatsApp", "Meta", "Phone Call"]}}'
+                                     '"Selections": []}} Example response for an unclear task (related to app ' \
+                                     'choice): {{"Clear": false, "Question": "Which app would you prefer to use ' \
+                                     'for this communication?", "Selections": ["Message", "WhatsApp", "Meta", ' \
+                                     '"Phone Call"]}} ' \
+                                     'Example response for an unclear task (related to message content): ' \
+                                     '{{"Clear": false, "Question": "What is the content of the message you want to ' \
+                                     'send?", "Selections": ["Greetings", "Appointment request", "Quick catch-up", ' \
+                                     '"Share a photo or video"]}}'
 
         self.__base_prompt_decompose = 'Analyze the user task "{task}" to determine if it comprises multiple, ' \
                                        'distinct sub-tasks. Complex tasks often consist of several steps that need ' \
