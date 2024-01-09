@@ -20,15 +20,15 @@ class TaskDeclarator:
                                      'for task clarification. Return your analysis in JSON format, comprising: ' \
                                      '1. "Clear": a boolean indicating if the task is clear enough as is, ' \
                                      '2. "Question": a single question for further task clarification, ' \
-                                     '3. "Selections": a list of up to 4 selections that answer the question. ' \
+                                     '3. "Options": a list of up to 4 example options that may answers the question. ' \
                                      'Example response for a clear task: {{"Clear": true, "Question": "", ' \
                                      '"Selections": []}} Example response for an unclear task (related to app ' \
                                      'choice): {{"Clear": false, "Question": "Which app would you prefer to use ' \
-                                     'for this communication?", "Selections": ["Message", "WhatsApp", "Meta", ' \
+                                     'for this communication?", "Options": ["Message", "WhatsApp", "Meta", ' \
                                      '"Phone Call"]}} ' \
                                      'Example response for an unclear task (related to message content): ' \
                                      '{{"Clear": false, "Question": "What is the content of the message you want to ' \
-                                     'send?", "Selections": ["Greetings", "Appointment request", "Quick catch-up", ' \
+                                     'send?", "Options": ["Greetings", "Appointment request", "Quick catch-up", ' \
                                      '"Share a photo or video"]}}'
 
         self.__base_prompt_decompose = 'Analyze the user task "{task}" to determine if it comprises multiple, ' \
