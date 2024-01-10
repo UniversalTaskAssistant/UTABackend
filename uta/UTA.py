@@ -25,8 +25,21 @@ class UTA:
         self.task_declarator = TaskDeclarator(self.model_manager)
         self.task_executor = TaskExecutor(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
-        # for debugging
-        self.cur_task = None  # current task, for testing and debugging
+        # current data
+        self.cur_user = None  # User object, current user
+        self.cur_task = None  # Task object, current task
+
+    def set_up_user(self, user_id, device_resolution, app_list):
+        """
+        Set up folders for user, and store user info into the user.json
+        'data/user_id/user.json
+        Args:
+            user_id (str): Identifier for the user.
+            device_resolution (tuple): Specify the size/resolution of the UI
+            app_list (list): List of the names of installed apps
+        """
+        user = User(user_id=user_id, device_resolution=device_resolution, app_list=app_list)
+        self.system_connector.set_user_folder(user)
 
     def instantiate_task(self, user_id, task_id, user_msg=None):
         """
@@ -41,7 +54,7 @@ class UTA:
         task = self.system_connector.load_task(user_id=user_id, task_id=task_id)
         # if the task does not exist, creat a new one within the user's folder
         if not task:
-            self.system_connector.set_user_task_folder(user_id=user_id, task_id=task_id)
+            self.system_connector.set_task_folder(user_id=user_id, task_id=task_id)
             task = Task(task_id=task_id, user_id=user_id)
             # set the user message as the task description for a new task
             if user_msg:
@@ -52,7 +65,8 @@ class UTA:
         self.cur_task = task
         return task
 
-    def instantiate_ui(self):
+    def instantiate_ui(self, ui_img, ui_xml, ui_resolution):
+        self.system_connector.load_ui_data(screenshot_file=ui_img, xml_file=ui_xml, ui_resize=ui_resolution)
         pass
 
     '''
@@ -124,8 +138,7 @@ class UTA:
             Action (dict): {"Action": }
         """
         task = self.instantiate_task(user_id, task_id)
-        ui = self.instantiate_ui()
-        pass
+        ui = self.instantiate_ui(ui_img, ui_xml)
 
     def execute_inquiry_task(self, conversation):
         """

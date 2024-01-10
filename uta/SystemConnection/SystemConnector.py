@@ -22,7 +22,20 @@ class SystemConnector:
     *** Data IO ***
     ***************
     '''
-    def set_user_task_folder(self, user_id, task_id):
+    def set_user_folder(self, user):
+        """
+        Set up folders for user, and store user info into the user.json
+        'data/user_id/user.json
+        Args:
+            user (User): User info
+        """
+        user_folder = pjoin(self.user_data_root, user.user_id)
+        user_file = pjoin(user_folder, 'user.json')
+        os.makedirs(user_folder, exist_ok=True)
+        self.save_json(user.to_dict(), user_file)
+        print('Save user info to', user_file)
+
+    def set_task_folder(self, user_id, task_id):
         """
         Set a user folder associated with the user and task, where all the tasks and user info are stored
         'data/user_id/task_id/'
@@ -44,10 +57,10 @@ class SystemConnector:
             None if not exists
         """
         user_folder = pjoin(self.user_data_root, user_id)           # 'data/user_id'
-        task_file = pjoin(user_folder, task_id, task_id + '.json')  # 'data/user_id/task_id/task_id.json'
+        task_file = pjoin(user_folder, task_id, 'task.json')  # 'data/user_id/task_id/task_id.json'
         if os.path.exists(task_file):
             task = Task(task_id=task_id, user_id=user_id)
-            task.load_task_from_json(self.load_json(task_file))
+            task.load_from_dict(self.load_json(task_file))
             print('Import task from file', task_file)
             return task
         else:
@@ -63,26 +76,36 @@ class SystemConnector:
         task_folder = pjoin(self.user_data_root, task.user_id, task.task_id)
         os.makedirs(task_folder, exist_ok=True)
         task_file = pjoin(task_folder, task.task_id + '.json')
-        task_dict = task.wrap_task_to_json()
+        task_dict = task.to_dict()
         self.save_json(task_dict, task_file)
         print('Export task to file', task_file)
 
     @staticmethod
-    def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280), output_dir='data/'):
+    def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280)):
         """
         Load UI to UIData
         Args:
             screenshot_file (path): Path to screenshot image
             xml_file (path): Path to xml file if any
             ui_resize (tuple): Specify the size/resolution of the UI
-            output_dir (path): Directory to store all processing result for the UI
         Returns:
             self.ui_data (UIData)
         """
-        return UIData(screenshot_file, xml_file, ui_resize, output_dir)
+        return UIData(screenshot_file, xml_file, ui_resize)
 
-    def save_ui_data(self):
-        pass
+    def save_ui_data(self, ui_data, output_dir):
+        """
+        Save UIData to files, including elements and tree
+        Save to 'data/user_id/task_id/ui_id_element.json', 'data/user_id/task_id/ui_id_tree.json'
+        Args:
+            ui_data (UIData): UIData object to save
+            output_dir (str): The output directory, usually under 'data/user_id/task_id/'
+        """
+        output_file_path_elements = pjoin(output_dir, ui_data.ui_id + '_elements.json')
+        output_file_path_element_tree = pjoin(output_dir, ui_data.ui_id + '_tree.json')
+        self.save_json(ui_data.elements, output_file_path_elements)
+        self.save_json(ui_data.element_tree, output_file_path_element_tree)
+        print('Export task to file', output_file_path_elements, output_file_path_element_tree)
 
     '''
     ****************

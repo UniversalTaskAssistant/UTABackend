@@ -17,8 +17,7 @@ class Task(_Data):
         self.user_id = user_id
         self.parent_task_id = parent_task_id
         self.task_description = task_description
-        self.task_type = None   # Type of the task, can be either Original Task, General Inquiry,
-        # System Function, or App-Related Task.
+        self.task_type = None   # Type of the task, can be either Original Task, General Inquiry, system Function, or App-Related Task.
         self.children_ids = []  # List of identifiers of the sub-tasks or steps.
 
         # Only used when task declaration
@@ -33,21 +32,3 @@ class Task(_Data):
         # that occurred during multiple turns of task automation.
         self.steps = []                     # List of step objects associated with this task.
         self.task_execution_result = None   # The result of executing the task.
-
-    def load_task_from_json(self, task_json):
-        """
-        Load and set attribute from dict
-        Args:
-            task_json (dict): json dict data with task attributes stored
-        Returns:
-            self with attributes set
-        """
-        self.load_from_dict(task_json)
-
-    def wrap_task_to_json(self):
-        """
-        Wrap all attributes to store as a dict
-        Returns:
-            dict with all attributes
-        """
-        return self.to_dict()
