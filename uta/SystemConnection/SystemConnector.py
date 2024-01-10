@@ -69,7 +69,7 @@ class SystemConnector:
     def load_task(self, user_id, task_id):
         """
         Retrieve task if exists or create a new task if not
-        'data/user_id/task_id/'
+        'data/user_id/task_id/task.json'
         Args:
             user_id (str): User id, associated to the folder named with the user_id
             task_id (str): Task id, associated to the json file named with task in the user folder
@@ -78,7 +78,7 @@ class SystemConnector:
             None if not exists
         """
         user_folder = pjoin(self.user_data_root, user_id)       # 'data/user_id'
-        task_file = pjoin(user_folder, task_id, 'task.json')    # 'data/user_id/task_id/task_id.json'
+        task_file = pjoin(user_folder, task_id, 'task.json')    # 'data/user_id/task_id/task.json'
         if os.path.exists(task_file):
             task = Task(task_id=task_id, user_id=user_id)
             task.load_from_dict(self.load_json(task_file))
@@ -90,7 +90,7 @@ class SystemConnector:
     def save_task(self, task):
         """
         Save Task object to json file under the associated user folder, and with the file name of task id
-        'data/user_id/task_id/'
+        'data/user_id/task_id/task.json'
         Args:
             task (Task): Task object
         """
