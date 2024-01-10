@@ -54,7 +54,7 @@ class SystemConnector:
         user_folder = pjoin(self.user_data_root, user.user_id)
         user_file = pjoin(user_folder, 'user.json')
         self.save_json(user.to_dict(), user_file)
-        print('Export user info to', user_file)
+        print('* Export user info to', user_file, '*')
 
     def set_task_folder(self, user_id, task_id):
         """
@@ -82,7 +82,7 @@ class SystemConnector:
         if os.path.exists(task_file):
             task = Task(task_id=task_id, user_id=user_id)
             task.load_from_dict(self.load_json(task_file))
-            print('Import task from file', task_file)
+            print('* Import task from file', task_file, '*')
             return task
         else:
             return None
@@ -99,7 +99,7 @@ class SystemConnector:
         task_file = pjoin(task_folder, 'task.json')
         task_dict = task.to_dict()
         self.save_json(task_dict, task_file)
-        print('Export task to file', task_file)
+        print('* Export task to file', task_file, '*')
 
     @staticmethod
     def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280)):
@@ -126,7 +126,7 @@ class SystemConnector:
         output_file_path_element_tree = pjoin(output_dir, ui_data.ui_id + '_tree.json')
         self.save_json(ui_data.elements, output_file_path_elements)
         self.save_json(ui_data.element_tree, output_file_path_element_tree)
-        print('Export task to file', output_file_path_elements, output_file_path_element_tree)
+        print('* Export task to file', output_file_path_elements, output_file_path_element_tree, '*')
 
     '''
     ****************

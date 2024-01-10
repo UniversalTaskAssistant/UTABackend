@@ -22,10 +22,10 @@ class _IconClassifier:
             transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
 
         # Load the trained model
-        s = time.time()
+        # s = time.time()
         self.__model = torch.load(model_path, map_location=self.__device).to(self.__device)
         self.__class_names = json.load(open(class_path, "r"))
-        print("Load Classifier Model: %.3fs" % (time.time() - s))
+        # print("Load Classifier Model: %.3fs" % (time.time() - s))
 
     def classify_icons(self, imgs):
         """

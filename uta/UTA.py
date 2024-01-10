@@ -41,6 +41,8 @@ class UTA:
         user = User(user_id=user_id, device_resolution=device_resolution, app_list=app_list)
         self.system_connector.set_user_folder(user_id)
         self.system_connector.save_user(user)
+        self.cur_user = user
+        return user
 
     def instantiate_user_task(self, user_id, task_id, user_msg=None):
         """
@@ -66,6 +68,7 @@ class UTA:
         else:
             if user_msg:
                 task.conversation_clarification.append({'role': 'user', 'content': user_msg})
+        self.cur_user = user
         self.cur_task = task
         return user, task
 
