@@ -21,14 +21,14 @@ class Task(_Data):
         self.children_ids = []  # List of identifiers of the sub-tasks or steps.
 
         # Only used when task declaration
-        self.conversation_clarification = [{'role': 'system', 'content': SYSTEM_PROMPT}]    # List of conversations
+        self.conversation_clarification = [{"role": "system", "content": SYSTEM_PROMPT}]    # List of conversations
         # that occurred during multiple turns of task clarification.
         self.res_clarification = dict()     # Final json result of task clarification.
         self.res_decomposition = dict()     # Final json result of task decomposition.
         self.res_classification = dict()    # Final json result of task classification.
 
         # Only used when task automation
-        self.conversation_automation = [{'role': 'system', 'content': SYSTEM_PROMPT}]       # List of conversations
+        self.conversation_automation = [{"role": "system", "content": SYSTEM_PROMPT}]       # List of conversations
         # that occurred during multiple turns of task automation.
         self.steps = []                     # List of step objects associated with this task.
         self.task_execution_result = None   # The result of executing the task.

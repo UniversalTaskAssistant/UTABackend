@@ -87,6 +87,7 @@ class UTA:
             task_id (str): Task id, associated to the json file named with task in the user folder
             user_msg (str): User's input message.
         """
+        print('*** Declare task ***')
         user, task = self.instantiate_user_task(user_id, task_id, user_msg)
         clarify = self.clarify_task(task)
         if clarify['Clear'] == 'True':
@@ -106,6 +107,7 @@ class UTA:
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None", "Options":[]}
         """
+        print('* Clarify task *')
         return self.task_declarator.clarify_task(task=task, printlog=printlog)
 
     def decompose_task(self, task, printlog=False):
@@ -117,6 +119,7 @@ class UTA:
         Returns:
             LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
         """
+        print('* Decompose task *')
         return self.task_declarator.decompose_task(task=task, printlog=printlog)
 
     def classify_task(self, task, printlog=False):
@@ -128,6 +131,7 @@ class UTA:
         Returns:
             LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
         """
+        print('* Classify task *')
         return self.task_declarator.classify_task(task=task, printlog=printlog)
 
     '''
