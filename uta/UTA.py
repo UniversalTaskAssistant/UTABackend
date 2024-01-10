@@ -146,8 +146,11 @@ class UTA:
         Returns:
             Action (dict): {"Action": }
         """
+        # 0. retrieve task info
         user, task = self.instantiate_user_task(user_id, task_id)
+        # 1. process ui
         ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=user.device_resolution)
+        self.ui_processor.process_ui(ui)
 
     def execute_inquiry_task(self, conversation):
         """
@@ -164,19 +167,6 @@ class UTA:
         # Store inquiry step
         self.step_id += 1
         return llm_response
-
-    def process_ui(self, screenshot, vh, ui_resize):
-        """
-        Process UI data.
-        Returns:
-            UI data.
-        """
-        self.system_connector.save_xml(vh, self.xml_path)
-        self.system_connector.save_img(screenshot, self.img_path)
-
-        ui_data = self.ui_processor.load_ui_data(self.img_path, self.xml_path, ui_resize, self.output_dir)
-        ui = self.ui_processor.process_ui(ui_data)
-        return ui
 
     def handle_unrelated_ui(self, task, ui_data, relation, app_list, except_apps, printlog):
         """

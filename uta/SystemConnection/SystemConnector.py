@@ -42,6 +42,7 @@ class SystemConnector:
         user_file = pjoin(self.user_data_root, user_id, 'user.json')
         user = User(user_id=user_id)
         user.load_from_dict(self.load_json(user_file))
+        print('* Import user info from file', user_file, '*')
         return user
 
     def save_user(self, user):
@@ -117,16 +118,16 @@ class SystemConnector:
     def save_ui_data(self, ui_data, output_dir):
         """
         Save UIData to files, including elements and tree
-        Save to 'data/user_id/task_id/ui_id_element.json', 'data/user_id/task_id/ui_id_tree.json'
+        Save to 'data/user_id/task_id/ui_id_element.json', 'data/user_id/task_id/ui_id_uitree.json'
         Args:
             ui_data (UIData): UIData object to save
             output_dir (str): The output directory, usually under 'data/user_id/task_id/'
         """
-        output_file_path_elements = pjoin(output_dir, ui_data.ui_id + '_elements.json')
-        output_file_path_element_tree = pjoin(output_dir, ui_data.ui_id + '_tree.json')
-        self.save_json(ui_data.elements, output_file_path_elements)
+        # output_file_path_elements = pjoin(output_dir, ui_data.ui_id + '_elements.json')
+        # self.save_json(ui_data.elements, output_file_path_elements)
+        output_file_path_element_tree = pjoin(output_dir, ui_data.ui_id + '_uitree.json')
         self.save_json(ui_data.element_tree, output_file_path_element_tree)
-        print('* Export task to file', output_file_path_elements, output_file_path_element_tree, '*')
+        print('* Export task to file', output_file_path_element_tree, '*')
 
     '''
     ****************
