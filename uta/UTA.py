@@ -39,18 +39,22 @@ class UTA:
             app_list (list): List of the names of installed apps
         """
         user = User(user_id=user_id, device_resolution=device_resolution, app_list=app_list)
-        self.system_connector.set_user_folder(user)
+        self.system_connector.set_user_folder(user_id)
+        self.system_connector.save_user(user)
 
-    def instantiate_task(self, user_id, task_id, user_msg=None):
+    def instantiate_user_task(self, user_id, task_id, user_msg=None):
         """
+        Instantiate a User object to get the user info
         Instantiate a Task object by loading an existing one or creating a new one according to the given info
         Args:
             user_id (str): User id to identify the folder
             task_id (str): Task id to identify the file
             user_msg (str): User's input message. For new task, it is the task description. For existing task, append it to conversation.
         Returns:
-            Task (Task): Task object
+            user (User): User object to store user info
+            task (Task): Task object
         """
+        user = self.system_connector.load_user(user_id=user_id)
         task = self.system_connector.load_task(user_id=user_id, task_id=task_id)
         # if the task does not exist, creat a new one within the user's folder
         if not task:
@@ -63,11 +67,7 @@ class UTA:
             if user_msg:
                 task.conversation_clarification.append({'role': 'user', 'content': user_msg})
         self.cur_task = task
-        return task
-
-    def instantiate_ui(self, ui_img, ui_xml, ui_resolution):
-        self.system_connector.load_ui_data(screenshot_file=ui_img, xml_file=ui_xml, ui_resize=ui_resolution)
-        pass
+        return user, task
 
     '''
     ************************
@@ -84,7 +84,7 @@ class UTA:
             task_id (str): Task id, associated to the json file named with task in the user folder
             user_msg (str): User's input message.
         """
-        task = self.instantiate_task(user_id, task_id, user_msg)
+        user, task = self.instantiate_user_task(user_id, task_id, user_msg)
         clarify = self.clarify_task(task)
         if clarify['Clear'] == 'True':
             decompose = self.decompose_task(task)
@@ -132,13 +132,19 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
-    def automate_task(self, user_id, task_id, ui_img, ui_xml):
+    def automate_task(self, user_id, task_id, ui_img_file, ui_xml_file):
         """
+        Identify the action on the current ui to automate the task
+        Args:
+            user_id (str): ui id
+            task_id (str): task id
+            ui_img_file (path): Screenshot image path
+            ui_xml_file (path): VH xml file path
         Returns:
             Action (dict): {"Action": }
         """
-        task = self.instantiate_task(user_id, task_id)
-        ui = self.instantiate_ui(ui_img, ui_xml)
+        user, task = self.instantiate_user_task(user_id, task_id)
+        ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=user.device_resolution)
 
     def execute_inquiry_task(self, conversation):
         """

@@ -22,16 +22,37 @@ class SystemConnector:
     *** Data IO ***
     ***************
     '''
-    def set_user_folder(self, user):
+    def set_user_folder(self, user_id):
         """
         Set up folders for user, and store user info into the user.json
-        'data/user_id/user.json
+        'data/user_id/'
         Args:
-            user (User): User info
+            user_id (str): User id
+        """
+        os.makedirs(pjoin(self.user_data_root, user_id), exist_ok=True)
+
+    def load_user(self, user_id):
+        """
+        Load user info from 'data/user_id/user.json'
+        Args:
+            user_id (str)
+        Returns:
+            user (User)
+        """
+        user_file = pjoin(self.user_data_root, user_id, 'user.json')
+        user = User(user_id=user_id)
+        user.load_from_dict(self.load_json(user_file))
+        return user
+
+    def save_user(self, user):
+        """
+        Save user info under the user folder
+        'data/user_id/user.json'
+        Args:
+            user (User)
         """
         user_folder = pjoin(self.user_data_root, user.user_id)
         user_file = pjoin(user_folder, 'user.json')
-        os.makedirs(user_folder, exist_ok=True)
         self.save_json(user.to_dict(), user_file)
         print('Save user info to', user_file)
 
