@@ -1,0 +1,11 @@
+{
+    "user_id": "user2",
+    "device_resolution": [
+        1080,
+        2280
+    ],
+    "app_list": [
+        "whatsapp",
+        "facebook"
+    ]
+}

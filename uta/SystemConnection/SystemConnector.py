@@ -54,7 +54,7 @@ class SystemConnector:
         user_folder = pjoin(self.user_data_root, user.user_id)
         user_file = pjoin(user_folder, 'user.json')
         self.save_json(user.to_dict(), user_file)
-        print('Save user info to', user_file)
+        print('Export user info to', user_file)
 
     def set_task_folder(self, user_id, task_id):
         """
@@ -77,8 +77,8 @@ class SystemConnector:
             Task (Task) if exists: Retrieved or created Task object
             None if not exists
         """
-        user_folder = pjoin(self.user_data_root, user_id)           # 'data/user_id'
-        task_file = pjoin(user_folder, task_id, 'task.json')  # 'data/user_id/task_id/task_id.json'
+        user_folder = pjoin(self.user_data_root, user_id)       # 'data/user_id'
+        task_file = pjoin(user_folder, task_id, 'task.json')    # 'data/user_id/task_id/task_id.json'
         if os.path.exists(task_file):
             task = Task(task_id=task_id, user_id=user_id)
             task.load_from_dict(self.load_json(task_file))
@@ -96,7 +96,7 @@ class SystemConnector:
         """
         task_folder = pjoin(self.user_data_root, task.user_id, task.task_id)
         os.makedirs(task_folder, exist_ok=True)
-        task_file = pjoin(task_folder, task.task_id + '.json')
+        task_file = pjoin(task_folder, 'task.json')
         task_dict = task.to_dict()
         self.save_json(task_dict, task_file)
         print('Export task to file', task_file)
