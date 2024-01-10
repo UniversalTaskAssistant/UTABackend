@@ -90,7 +90,8 @@ class UTA:
         print('*** Declare task ***')
         user, task = self.instantiate_user_task(user_id, task_id, user_msg)
         clarify = self.clarify_task(task)
-        if clarify['Clear'] == 'True':
+        if clarify['Clear'] == 'True' or clarify['Clear'] == True:
+            self.classify_task(task)
             decompose = self.decompose_task(task)
             self.system_connector.save_task(task)
             return decompose
@@ -110,18 +111,6 @@ class UTA:
         print('* Clarify task *')
         return self.task_declarator.clarify_task(task=task, printlog=printlog)
 
-    def decompose_task(self, task, printlog=False):
-        """
-        Clarify task to be clear to complete
-        Args:
-            task (Task): The user's task
-            printlog (bool): True to print the intermediate log
-        Returns:
-            LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
-        """
-        print('* Decompose task *')
-        return self.task_declarator.decompose_task(task=task, printlog=printlog)
-
     def classify_task(self, task, printlog=False):
         """
         Clarify task to be clear to complete
@@ -133,6 +122,18 @@ class UTA:
         """
         print('* Classify task *')
         return self.task_declarator.classify_task(task=task, printlog=printlog)
+
+    def decompose_task(self, task, printlog=False):
+        """
+        Clarify task to be clear to complete
+        Args:
+            task (Task): The user's task
+            printlog (bool): True to print the intermediate log
+        Returns:
+            LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
+        """
+        print('* Decompose task *')
+        return self.task_declarator.decompose_task(task=task, printlog=printlog)
 
     '''
     ***********************

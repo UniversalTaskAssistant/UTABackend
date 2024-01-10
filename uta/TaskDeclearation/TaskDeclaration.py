@@ -75,7 +75,7 @@ class TaskDeclarator:
             app_list (list): List of available apps/functions in user's mobile
             printlog (bool): True to print the intermediate log
         Returns:
-            LLM answer (dict): {"Clear": "True", "Question": "None"}
+            LLM answer (dict): {"Clear": "True", "Question": "None", "Options":[]}
         """
         try:
             # set base prompt for new conv
@@ -85,6 +85,7 @@ class TaskDeclarator:
             resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
             task.res_clarification = json.loads(resp['content'])
             task.conversation_clarification.append(resp)
+            print(task.res_clarification)
             return task.res_clarification
         except Exception as e:
             raise e
@@ -103,6 +104,7 @@ class TaskDeclarator:
                             {"role": "user", "content": self.__base_prompt_decompose.format(task=task.task_description)}]
             resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
             task.res_decomposition = json.loads(resp['content'])
+            print(task.res_decomposition)
             return task.res_decomposition
         except Exception as e:
             raise e
@@ -121,6 +123,8 @@ class TaskDeclarator:
                             {"role": "user", "content": self.__base_prompt_classify.format(task=task.task_description)}]
             resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
             task.res_classification = json.loads(resp['content'])
+            task.task_type = task.res_classification["Task Type"]
+            print(task.res_classification)
             return task.res_classification
         except Exception as e:
             raise e

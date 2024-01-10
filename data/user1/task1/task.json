@@ -3,7 +3,7 @@
     "user_id": "user1",
     "parent_task_id": null,
     "task_description": "Send \"hello\" to my mom",
-    "task_type": null,
+    "task_type": "App-Related Task",
     "children_ids": [],
     "conversation_clarification": [
         {
@@ -16,7 +16,7 @@
         },
         {
             "role": "assistant",
-            "content": "{\"Clear\": false, \"Question\": \"How would you like to send 'hello' to your mom?\", \"Options\": [\"Text Message\", \"WhatsApp\", \"Email\", \"Voice Call\"]}"
+            "content": "{\"Clear\": false, \"Question\": \"Which app should I use to send the message?\", \"Options\": [\"SMS Messaging\", \"WhatsApp\", \"Email\", \"Facebook Messenger\"]}"
         },
         {
             "role": "user",
@@ -24,17 +24,28 @@
         },
         {
             "role": "assistant",
-            "content": "{\"Clear\": true, \"Task\": \"The user wants to send 'hello' to their mom through WhatsApp.\", \"Question\": \"\", \"Options\": []}"
+            "content": "{\"Clear\": true, \"Question\": \"\", \"Options\": []}"
         }
     ],
     "res_clarification": {
         "Clear": true,
-        "Task": "The user wants to send 'hello' to their mom through WhatsApp.",
         "Question": "",
         "Options": []
     },
-    "res_decomposition": {},
-    "res_classification": {},
+    "res_classification": {
+        "Task Type": "App-Related Task",
+        "Explanation": "This task requires the use of a specific messaging or communication applications to send the message 'hello' to the user's mom."
+    },
+    "res_decomposition": {
+        "Decompose": "True",
+        "Sub-tasks": [
+            "Open messaging app on the phone",
+            "Select mom's contact",
+            "Compose the message 'hello'",
+            "Send the message"
+        ],
+        "Explanation": "This task involves multiple steps that need to be performed independently and sequentially, from launching the messaging app to sending the message itself."
+    },
     "conversation_automation": [
         {
             "role": "system",

@@ -23,9 +23,9 @@ class Task(_Data):
         # Only used when task declaration
         self.conversation_clarification = [{"role": "system", "content": SYSTEM_PROMPT}]    # List of conversations
         # that occurred during multiple turns of task clarification.
-        self.res_clarification = dict()     # Final json result of task clarification.
-        self.res_decomposition = dict()     # Final json result of task decomposition.
-        self.res_classification = dict()    # Final json result of task classification.
+        self.res_clarification = dict()     # {"Clear": "True", "Question": "None", "Options":[]}
+        self.res_classification = dict()    # {"Task Type": "1. General Inquiry", "Explanation":}
+        self.res_decomposition = dict()     # {"Decompose": "True", "Sub-tasks":[], "Explanation": }
 
         # Only used when task automation
         self.conversation_automation = [{"role": "system", "content": SYSTEM_PROMPT}]       # List of conversations
