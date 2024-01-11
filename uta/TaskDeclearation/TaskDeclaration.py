@@ -72,7 +72,6 @@ class TaskDeclarator:
         Clarify task to be clear to complete
         Args:
             task (Task): Task object
-            app_list (list): List of available apps/functions in user's mobile
             printlog (bool): True to print the intermediate log
         Returns:
             LLM answer (dict): {"Clear": "True", "Question": "None", "Options":[]}

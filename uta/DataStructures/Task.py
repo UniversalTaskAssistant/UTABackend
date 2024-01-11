@@ -17,7 +17,7 @@ class Task(_Data):
         self.user_id = user_id
         self.parent_task_id = parent_task_id
         self.task_description = task_description
-        self.task_type = None   # Type of the task, can be either Original Task, General Inquiry, system Function, or App-Related Task.
+        self.task_type = None   # Type of the task, can be General Inquiry, System Function, or App-Related Task.
         self.children_ids = []  # List of identifiers of the sub-tasks or steps.
 
         # Only used when task declaration

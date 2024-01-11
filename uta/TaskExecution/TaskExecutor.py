@@ -1,5 +1,5 @@
 import json
-from uta.DataStructures import InquiryStep, AutoModeStep
+from uta.DataStructures import *
 from uta.config import *
 
 
