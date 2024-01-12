@@ -60,7 +60,7 @@ class TaskExecutor:
             user_message (str): User's question.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            LLM's response.
+            FM's response.
         """
         try:
             step.user_conversation = {'role': 'user', 'content': user_message}
@@ -80,50 +80,20 @@ class TaskExecutor:
     def execute_app_system_task(self, task):
         pass
 
-    def check_go_back_availability(self, ui_data, task, printlog=False):
+    def ui_task_checker(self, ui_data, task, prompt, printlog=False):
         """
-        Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
-        Args:
-           step (AutoModeStep): AutoModeStep object containing current ui object.
-           task (Task): Task object containing task description for which back navigation is being checked.
-           printlog (bool): If True, enables logging of outputs.
-        Returns:
-           Action indicating back navigation availability.
+        Check UI and Task by prompt through foundation model
         """
         try:
-            print('* Check Any Action to Go Back to Related UI *')
-            # Format base prompt
-            except_elements = ','.join(task.except_elements_ids)
-            action_history = ';'.join(task.actions)
-            prompt = self.__back_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
-            # Ask FM
-            resp = self.ui_task_checker(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-            task.res_go_back_check = json.loads(resp['content'])
-            print(task.res_go_back_check)
-            return task.res_go_back_check
+            task.conversation_automation = [{'role': 'system', 'content': SYSTEM_PROMPT},
+                                            {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
+                                            {'role': 'user', 'content': ui_data.element_tree},
+                                            {'role': 'user', 'content': prompt}]
+            resp = self.__model_manager.send_fm_conversation(task.conversation_automation, printlog=printlog)
+            task.conversation_automation.append(resp)
+            return resp
         except Exception as e:
             raise e
-
-    def check_action(self, ui_data, task, printlog=False):
-        """
-        Determines the appropriate action and target element in the UI for a given task.
-        Args:
-            ui_data (UIData): UI data
-            task (Task): Task object containing task description for which back navigation is being checked.
-            printlog (bool): If True, enables logging of outputs.
-        Returns:
-            Action with the determined action and target element.
-        """
-        print('* Check UI Action and Target Element *')
-        # Format base prompt
-        except_elements = ','.join(task.except_elements_ids)
-        action_history = ';'.join(task.actions)
-        prompt = self.__action_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
-        # Ask FM
-        resp = self.ui_task_checker(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-        task.res_action_check = json.loads(resp['content'])
-        print(task.res_action_check)
-        return task.res_action_check
 
     def check_relation(self, ui_data, task, printlog=False):
         """
@@ -146,17 +116,45 @@ class TaskExecutor:
         print(task.res_relation_check)
         return task.res_relation_check
 
-    def ui_task_checker(self, ui_data, task, prompt, printlog=False):
+    def check_action(self, ui_data, task, printlog=False):
         """
-        Check UI and Task by prompt through foundation model
+        Determines the appropriate action and target element in the UI for a given task.
+        Args:
+            ui_data (UIData): UI data
+            task (Task): Task object containing task description for which back navigation is being checked.
+            printlog (bool): If True, enables logging of outputs.
+        Returns:
+            Action with the determined action and target element.
         """
-        try:
-            task.conversation_automation = [{'role': 'system', 'content': SYSTEM_PROMPT},
-                                            {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
-                                            {'role': 'user', 'content': ui_data.element_tree},
-                                            {'role': 'user', 'content': prompt}]
-            resp = self.__model_manager.send_fm_conversation(task.conversation_automation, printlog=printlog)
-            task.conversation_automation.append(resp)
-            return resp
-        except Exception as e:
-            raise e
+        print('* Check UI Action and Target Element *')
+        # Format base prompt
+        except_elements = ','.join(task.except_elements_ids)
+        action_history = ';'.join(task.actions)
+        prompt = self.__action_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
+        # Ask FM
+        resp = self.ui_task_checker(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+        task.res_action_check = json.loads(resp['content'])
+        print(task.res_action_check)
+        return task.res_action_check
+
+    def check_go_back_availability(self, ui_data, task, printlog=False):
+        """
+        Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
+        Args:
+            ui_data (UIData): UI data
+            task (Task): Task object containing task description for which back navigation is being checked.
+            printlog (bool): If True, enables logging of outputs.
+        Returns:
+            Action indicating back navigation availability.
+        """
+        print('* Check Any Action to Go Back to Related UI *')
+        # Format base prompt
+        except_elements = ','.join(task.except_elements_ids)
+        action_history = ';'.join(task.actions)
+        prompt = self.__back_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
+        # Ask FM
+        resp = self.ui_task_checker(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+        task.res_go_back_check = json.loads(resp['content'])
+        print(task.res_go_back_check)
+        return task.res_go_back_check
+
