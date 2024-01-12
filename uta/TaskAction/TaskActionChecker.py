@@ -1,13 +1,13 @@
 import json
 from uta.DataStructures import *
 from uta.config import *
-from uta.TaskExecution import _TaskUIChecker
+from uta.TaskAction import _TaskUIChecker
 
 
-class TaskExecutor:
+class TaskActionChecker:
     def __init__(self, model_manager):
         """
-        Initialize TaskExecutor object.
+        Initialize TaskActionChecker object.
         """
         self.__model_manager = model_manager
         self.__task_ui_checker = _TaskUIChecker(model_manager)
