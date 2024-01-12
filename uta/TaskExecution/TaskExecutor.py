@@ -77,10 +77,32 @@ class TaskExecutor:
             print('error:', e)
             raise e
 
-    def execute_app_system_task(self, task):
-        pass
+    def execute_app_system_task(self, ui_data, task, printlog=False):
+        # Check ui task relation
+        self.check_relation(ui_data, task, printlog)
+        # [Complete] => Finish
+        if 'complete' in task.res_relation_check['Relation'].lower():
+            action = {"Action": "Complete", "Reason": task.res_relation_check['Relation']['Reason']}
+            task.actions.append(action)
+        # [Unrelated UI] => check go back for related app, or find related app
+        elif 'unrelated' in task.res_relation_check['Relation'].lower():
+            # 1. Check if it can go back to a related gui
+            go_back = self.check_go_back_availability(ui_data, task, printlog)
+            if 'yes' in go_back['Can'].lower():
+                action = {"Action": "Click", "Element": go_back['Element'], "Description": go_back['Description']}
+            # 2. Check if it can find another related app
+            else:
+                find_app = self.find_related_app()
+                if find_app:
+                    action = {"Action": "Launch", "App": find_app['App'], "Description": "Launch app"}
+                else:
+                    action = {"Action": "Infeasible", "Description": "Infeasible task"}
+        # [Related UI] => fulfil task
+        else:
+            action = self.check_action(ui_data, task, printlog)
+        return action
 
-    def ui_task_checker(self, ui_data, task, prompt, printlog=False):
+    def check_ui_task(self, ui_data, task, prompt, printlog=False):
         """
         Check UI and Task by prompt through foundation model
         """
@@ -103,7 +125,7 @@ class TaskExecutor:
             task (Task): Task object containing task description for which back navigation is being checked.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            Relation between the ui and the task.
+            FM response (dict): {"Relation":, "Reason":}
         """
         print('* Check UI and Task Relation *')
         # Format base prompt
@@ -111,7 +133,7 @@ class TaskExecutor:
         action_history = ';'.join(task.actions)
         prompt = self.__relation_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
         # Ask FM
-        resp = self.ui_task_checker(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+        resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_relation_check = json.loads(resp['content'])
         print(task.res_relation_check)
         return task.res_relation_check
@@ -124,7 +146,7 @@ class TaskExecutor:
             task (Task): Task object containing task description for which back navigation is being checked.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            Action with the determined action and target element.
+            FM response (dict): {"Action":"Input", "Element":3, "Description":, "Reason":, "Input Text": "Download Trump"}
         """
         print('* Check UI Action and Target Element *')
         # Format base prompt
@@ -132,7 +154,7 @@ class TaskExecutor:
         action_history = ';'.join(task.actions)
         prompt = self.__action_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
         # Ask FM
-        resp = self.ui_task_checker(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+        resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_action_check = json.loads(resp['content'])
         print(task.res_action_check)
         return task.res_action_check
@@ -145,7 +167,7 @@ class TaskExecutor:
             task (Task): Task object containing task description for which back navigation is being checked.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            Action indicating back navigation availability.
+            FM response (dict): {"Can":"Yes", "Element": 2, "Reason":, "Description":"Click on the "go back" element"}
         """
         print('* Check Any Action to Go Back to Related UI *')
         # Format base prompt
@@ -153,8 +175,10 @@ class TaskExecutor:
         action_history = ';'.join(task.actions)
         prompt = self.__back_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
         # Ask FM
-        resp = self.ui_task_checker(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+        resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_go_back_check = json.loads(resp['content'])
         print(task.res_go_back_check)
         return task.res_go_back_check
 
+    def find_related_app(self):
+        pass

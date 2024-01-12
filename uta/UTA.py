@@ -156,6 +156,12 @@ class UTA:
         # 1. process ui
         ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=user.device_resolution)
         self.ui_processor.process_ui(ui)
+        # 2. act based on task type
+        task_type = task.task_type.lower()
+        if 'general' in task_type:
+            self.task_executor.execute_inquiry_task(ui, task)
+        elif 'system' in task_type or 'app' in task_type:
+            self.task_executor.execute_app_system_task(ui, task)
 
     def execute_inquiry_task(self, conversation):
         """

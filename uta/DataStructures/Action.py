@@ -2,7 +2,7 @@ from ._Data import _Data
 
 
 class Action(_Data):
-    def __init__(self, action, element_id, description, input_text, reason):
+    def __init__(self, action, element_id=None, description=None, input_text=None, reason=None):
         super().__init__()
         self.action = action
         self.element_id = element_id
