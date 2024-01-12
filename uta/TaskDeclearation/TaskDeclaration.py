@@ -78,8 +78,9 @@ class TaskDeclarator:
         """
         try:
             # set base prompt for new conv
-            if len(task.conversation_clarification) == 1:
-                task.conversation_clarification.append({"role": "user", "content": self.__base_prompt_clarify.format(task=task.task_description)})
+            if len(task.conversation_clarification) == 0:
+                task.conversation_clarification = [{'role': 'system', 'content': SYSTEM_PROMPT},
+                                                   {"role": "user", "content": self.__base_prompt_clarify.format(task=task.task_description)}]
             # send conv to fm
             resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
             task.res_clarification = json.loads(resp['content'])
