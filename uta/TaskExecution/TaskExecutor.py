@@ -12,7 +12,7 @@ class TaskExecutor:
         self.__model_manager = model_manager
         self.__task_ui_checker = _TaskUIChecker(model_manager)
 
-    def execute_inquiry_task(self, task, user_message, printlog=False):
+    def action_inquiry(self, task, user_message, printlog=False):
         """
         Execute inquiry type task.
         Args:
@@ -37,32 +37,37 @@ class TaskExecutor:
             print('error:', e)
             raise e
 
-    def execute_app_system_task(self, ui_data, task, printlog=False):
+    def action_on_ui(self, ui_data, task, printlog=False):
+        """
+        Check the action in the UI to complete the task
+        Args:
+            ui_data (UIData): UI data
+            task (Task): Task object containing task description for which back navigation is being checked.
+            printlog (bool): If True, enables logging of outputs.
+        Returns:
+            Action (dict): {"Action":, "Element":, "Reason":, "Description":, "Input Text":}
+        """
         # Check ui task relation
-        self.check_relation(ui_data, task, printlog)
+        self.check_ui_relation(ui_data, task, printlog)
         # [Complete] => Finish
         if 'complete' in task.res_relation_check['Relation'].lower():
             action = {"Action": "Complete", "Reason": task.res_relation_check['Relation']['Reason']}
             task.actions.append(action)
-        # [Unrelated UI] => check go back for related app, or find related app
+        # [Unrelated UI] => Check whether the ui can go back or check other app
         elif 'unrelated' in task.res_relation_check['Relation'].lower():
             # 1. Check if it can go back to a related gui
-            go_back = self.check_go_back_availability(ui_data, task, printlog)
+            go_back = self.check_ui_go_back_availability(ui_data, task, printlog)
             if 'yes' in go_back['Can'].lower():
                 action = {"Action": "Click", "Element": go_back['Element'], "Description": go_back['Description']}
             # 2. Check if it can find another related app
             else:
-                find_app = self.find_related_app()
-                if find_app:
-                    action = {"Action": "Launch", "App": find_app['App'], "Description": "Launch app"}
-                else:
-                    action = {"Action": "Infeasible", "Description": "Infeasible task"}
-        # [Related UI] => fulfil task
+                action = {"Action": "Other App"}
+        # [Related UI] => Check action
         else:
-            action = self.check_action(ui_data, task, printlog)
+            action = self.check_element_action(ui_data, task, printlog)
         return action
 
-    def check_relation(self, ui_data, task, printlog=False):
+    def check_ui_relation(self, ui_data, task, printlog=False):
         """
         Checks the relation between a given ui and a task.
         Args:
@@ -72,9 +77,9 @@ class TaskExecutor:
         Returns:
             FM response (dict): {"Relation":, "Reason":}
         """
-        return self.__task_ui_checker.check_relation(ui_data, task, printlog)
+        return self.__task_ui_checker.check_ui_relation(ui_data, task, printlog)
 
-    def check_action(self, ui_data, task, printlog=False):
+    def check_element_action(self, ui_data, task, printlog=False):
         """
         Determines the appropriate action and target element in the UI for a given task.
         Args:
@@ -84,9 +89,9 @@ class TaskExecutor:
         Returns:
             FM response (dict): {"Action":"Input", "Element":3, "Description":, "Reason":, "Input Text": "Download Trump"}
         """
-        return self.__task_ui_checker.check_action(ui_data, task, printlog)
+        return self.__task_ui_checker.check_element_action(ui_data, task, printlog)
 
-    def check_go_back_availability(self, ui_data, task, printlog=False):
+    def check_ui_go_back_availability(self, ui_data, task, printlog=False):
         """
         Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
         Args:
@@ -96,4 +101,4 @@ class TaskExecutor:
         Returns:
             FM response (dict): {"Can":"Yes", "Element": 2, "Reason":, "Description":"Click on the "go back" element"}
         """
-        return self.__task_ui_checker.check_go_back_availability(ui_data, task, printlog)
+        return self.__task_ui_checker.check_ui_go_back_availability(ui_data, task, printlog)

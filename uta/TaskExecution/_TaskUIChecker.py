@@ -64,7 +64,7 @@ class _TaskUIChecker:
         except Exception as e:
             raise e
 
-    def check_relation(self, ui_data, task, printlog=False):
+    def check_ui_relation(self, ui_data, task, printlog=False):
         """
         Checks the relation between a given ui and a task.
         Args:
@@ -85,7 +85,7 @@ class _TaskUIChecker:
         print(task.res_relation_check)
         return task.res_relation_check
 
-    def check_action(self, ui_data, task, printlog=False):
+    def check_element_action(self, ui_data, task, printlog=False):
         """
         Determines the appropriate action and target element in the UI for a given task.
         Args:
@@ -106,7 +106,7 @@ class _TaskUIChecker:
         print(task.res_action_check)
         return task.res_action_check
 
-    def check_go_back_availability(self, ui_data, task, printlog=False):
+    def check_ui_go_back_availability(self, ui_data, task, printlog=False):
         """
         Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
         Args:
