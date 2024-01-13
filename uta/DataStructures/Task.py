@@ -34,3 +34,8 @@ class Task(_Data):
         self.except_elements_ids = []       # List of except elements that have been tried and proved to be not related to the task
         self.actions = []                   # List of step objects associated with this task.
         self.task_execution_result = None   # The result of executing the task.
+
+        # App recommendation
+        self.related_app = None             # Related app to complete the task
+        self.res_related_app_check = dict()
+        self.except_apps = []               # List of except apps that have been proved to be unrelated to the task

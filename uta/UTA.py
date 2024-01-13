@@ -7,7 +7,7 @@ from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
 from uta.SystemConnection import SystemConnector
 from uta.TaskDeclearation import TaskDeclarator
-from uta.TaskExecution import TaskExecutor
+from uta.TaskAction import TaskActionChecker
 from uta.ThirdPartyAppManagement import ThirdPartyAppManager
 from uta.UIProcessing import UIProcessor
 
@@ -23,7 +23,7 @@ class UTA:
         # workers
         self.ui_processor = UIProcessor(self.model_manager)
         self.task_declarator = TaskDeclarator(self.model_manager)
-        self.task_executor = TaskExecutor(self.model_manager)
+        self.task_action_checker = TaskActionChecker(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
         # current data
         self.cur_user = None  # User object, current user
@@ -159,9 +159,17 @@ class UTA:
         # 2. act based on task type
         task_type = task.task_type.lower()
         if 'general' in task_type:
-            self.task_executor.execute_inquiry_task(ui, task)
+            self.task_action_checker.action_inquiry(ui, task)
         elif 'system' in task_type or 'app' in task_type:
-            self.task_executor.execute_app_system_task(ui, task)
+            action = self.task_action_checker.action_on_ui(ui, task)
+            if action['Action'] == 'Other App':
+                related_app = self.app_recommender.check_related_apps(task=task, app_list=user.app_list)
+                if 'None' not in related_app['App']:
+                    task.related_app = related_app['App']
+                    action = {"Action": "Launch", "App": related_app['App'], "Description": "Launch app"}
+                else:
+                    action = {"Action": "Infeasible", "Description": "Infeasible task"}
+            return action
 
     def execute_inquiry_task(self, conversation):
         """

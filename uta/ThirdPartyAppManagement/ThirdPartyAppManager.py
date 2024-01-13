@@ -124,37 +124,29 @@ class ThirdPartyAppManager:
         except Exception as e:
             raise e
 
-    def check_related_apps(self, step, task, app_list, except_apps=None, printlog=False):
+    def check_related_apps(self, task, app_list, printlog=False):
         """
         Checks for apps related to a given task.
         Args:
-            step (AutoModeStep): AutoModeStep object containing current relation.
             task (Task): The task for which related apps are to be found.
             app_list (list, optional): A list of apps to consider. If None, fetches from the device.
-            except_apps (list, optional): Apps to exclude from consideration.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            JSON data with related app information.
+            Related app (dict): {"App": "com.example.app", "Reason": "Directly performs the task"} or
+                                {"App": "None", "Reason": "No app is related"}
         """
         try:
-            print('--- Check Related App ---')
-            conversations = [{'role': 'system', 'content': SYSTEM_PROMPT}]
-
+            print('* Check Related App *')
             # Provide a default empty list if except_apps is None
-            except_apps_str = '; '.join(except_apps) if except_apps else ''
-
-            # Format the prompt with specific task and app list
-            new_conversation = self.__availability_check_prompt.format(task=task.task_description,
-                                                                       app_list='; '.join(app_list),
-                                                                       exp_apps=except_apps_str)
-            conversations.append({'role': 'user', 'content': new_conversation})
-
-            related_apps = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)['content']
-            step.related_app_check_result = related_apps
-
-            related_apps = json.loads(related_apps)
-            print(related_apps)
-            return related_apps
+            except_apps_str = '; '.join(task.except_apps)
+            # Format base prompt
+            prompt = self.__availability_check_prompt.format(task=task.task_description, app_list='; '.join(app_list), exp_apps=except_apps_str)
+            conversations = [{'role': 'system', 'content': SYSTEM_PROMPT}, {'role': 'user', 'content': prompt}]
+            # Ask FM
+            resp = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)
+            task.res_related_app_check = json.loads(resp['content'])
+            print(task.res_related_app_check)
+            return task.res_related_app_check
         except Exception as e:
             raise e
 
