@@ -171,6 +171,7 @@ class UTA:
                     action = {"Action": "Infeasible", "Description": "Infeasible task"}
             return action
 
+
 if __name__ == '__main__':
     uta = UTA()
     resp = uta.declare_task(user_id='1', task_id='1', user_msg='Send a message to my mom')
