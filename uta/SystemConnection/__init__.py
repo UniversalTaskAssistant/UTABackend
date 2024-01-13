@@ -1,3 +1,3 @@
-from ._Local import _Local
-from ._Device import _Device
-from .SystemConnector import SystemConnector
+from uta.SystemConnection._Local import _Local
+from uta.SystemConnection._Device import _Device
+from uta.SystemConnection.SystemConnector import SystemConnector

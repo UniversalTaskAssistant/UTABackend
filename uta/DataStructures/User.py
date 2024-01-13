@@ -1,4 +1,4 @@
-from ._Data import _Data
+from uta.DataStructures._Data import _Data
 
 
 class User(_Data):

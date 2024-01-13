@@ -1,1 +1,1 @@
-from .ModelManager import ModelManager
+from uta.ModelManagement.ModelManager import ModelManager

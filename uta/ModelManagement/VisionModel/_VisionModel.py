@@ -1,5 +1,5 @@
-from ._GoogleOCR import _GoogleOCR
-from ._IconClassifier import _IconClassifier
+from uta.ModelManagement.VisionModel._GoogleOCR import _GoogleOCR
+from uta.ModelManagement.VisionModel._IconClassifier import _IconClassifier
 
 
 class _VisionModel:

@@ -1,2 +1,2 @@
-from .TaskActionChecker import TaskActionChecker
-from ._TaskUIChecker import _TaskUIChecker
+from uta.TaskAction.TaskActionChecker import TaskActionChecker
+from uta.TaskAction._TaskUIChecker import _TaskUIChecker

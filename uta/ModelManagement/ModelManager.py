@@ -1,5 +1,5 @@
-from .FMModel import _OpenAI
-from .VisionModel import _VisionModel
+from uta.ModelManagement.FMModel import _OpenAI
+from uta.ModelManagement.VisionModel import _VisionModel
 
 
 class ModelManager:

@@ -1,7 +1,6 @@
 import cv2
-from os.path import join as pjoin
 from difflib import SequenceMatcher
-from ._Data import _Data
+from uta.DataStructures._Data import _Data
 
 
 class UIData(_Data):
@@ -129,13 +128,13 @@ class UIData(_Data):
         """
         element = self.elements[ele_id]
         board = self.ui_screenshot.copy()
-        color = (0,255,0) if not element['clickable'] else (0,0,255)
+        color = (0, 255, 0) if not element['clickable'] else (0, 0, 255)
         bounds = element['bounds']
         cv2.rectangle(board, (bounds[0], bounds[1]), (bounds[2], bounds[3]), color, 3)
         if show_children and 'children-id' in element:
             for c_id in element['children-id']:
                 bounds = self.elements[c_id]['bounds']
-                cv2.rectangle(board, (bounds[0], bounds[1]), (bounds[2], bounds[3]), (255,0,255), 3)
+                cv2.rectangle(board, (bounds[0], bounds[1]), (bounds[2], bounds[3]), (255, 0, 255), 3)
         cv2.imshow('element', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
         cv2.waitKey()
         cv2.destroyWindow('element')
