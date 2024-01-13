@@ -1,8 +1,8 @@
 import os
 from os.path import join as pjoin
 
-from ._Device import _Device
-from ._Local import _Local
+from uta.SystemConnection._Device import _Device
+from uta.SystemConnection._Local import _Local
 from uta.DataStructures import *
 from uta.config import *
 

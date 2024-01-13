@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from ._Data import _Data
+from uta.DataStructures._Data import _Data
 
 
 class Text(_Data):

@@ -1,7 +1,7 @@
 import time
 import json
 from uta.config import *
-from ._GooglePlay import _GooglePlay
+from uta.ThirdPartyAppManagement._GooglePlay import _GooglePlay
 
 
 class ThirdPartyAppManager:
@@ -28,9 +28,9 @@ class ThirdPartyAppManager:
                                       'perform for senior users who are not familiar with them. Review each app\'s ' \
                                       'description and focus on specific functionality, presenting them as simple, ' \
                                       'user-friendly tasks. For each app, list its tasks in a format accessible to ' \
-                                      'seniors, using clear examples where possible. Each task should be distinct and ' \
-                                      'cover only one aspect of the app. List the tasks with a dash and end with a ' \
-                                      'semicolon. Structure the output as a list of lists, where each inner list ' \
+                                      'seniors, using clear examples where possible. Each task should be distinct ' \
+                                      'and cover only one aspect of the app. List the tasks with a dash and end with ' \
+                                      'a semicolon. Structure the output as a list of lists, where each inner list ' \
                                       'corresponds to the tasks of one app. \n' \
                                       'Example for a single app: \n' \
                                       '- Watch music videos and stay updated with trends; \n' \

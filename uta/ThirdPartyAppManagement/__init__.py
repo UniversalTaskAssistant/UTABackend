@@ -1,2 +1,2 @@
-from .ThirdPartyAppManager import ThirdPartyAppManager
-from ._GooglePlay import _GooglePlay
+from uta.ThirdPartyAppManagement.ThirdPartyAppManager import ThirdPartyAppManager
+from uta.ThirdPartyAppManagement._GooglePlay import _GooglePlay

@@ -2,12 +2,6 @@ class _Data:
     def __init__(self):
         pass
 
-    def __str__(self):
-        """
-        String format of str()
-        """
-        return f"{self.__class__.__name__}(" + ", ".join([f"{key}={value}" for key, value in self.__dict__.items()]) + ")"
-
     def to_dict(self):
         """
         Returns a dictionary representation of the AutonomicTask instance.

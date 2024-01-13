@@ -7,12 +7,19 @@ class _TaskUIChecker:
         self.__model_manager = model_manager
 
         # Initialize the base prompt template
-        self.__action_prompt = 'Determine the appropriate action for completing the task "{task}" using the current UI. \n' \
-                               'Consider the following action types: Click, Scroll Up, Scroll Down, Swipe Right, Swipe Left, Long Press, Input. \n' \
-                               'Note: Use "Input" only if the keyboard is active; activate the keyboard by clicking a relevant element if necessary. Ensure the chosen element supports the intended action. \n' \
-                               'Provide a single, most effective action. Avoid repeating actions listed in {action_history}. \n' \
-                               'Exclude elements with IDs {except_elements} as they have been tried and proved to be unrelated to the task. \n' \
-                               'Respond in JSON format: {{"Action": "<type>", "Element": "<id>", "Description": "<desc>", "Input Text": "<text>", "Reason": "<why>"}}. \n' \
+        self.__action_prompt = 'Determine the appropriate action for completing the task "{task}" using the current ' \
+                               'UI. \n' \
+                               'Consider the following action types: Click, Scroll Up, Scroll Down, Swipe ' \
+                               'Right, Swipe Left, Long Press, Input. \n' \
+                               'Note: Use "Input" only if the keyboard is active; activate the keyboard by clicking ' \
+                               'a relevant element if necessary. Ensure the chosen element supports the intended' \
+                               ' action. \n' \
+                               'Provide a single, most effective action. Avoid repeating actions listed in ' \
+                               '{action_history}. \n' \
+                               'Exclude elements with IDs {except_elements} as they have been tried and proved to ' \
+                               'be unrelated to the task. \n' \
+                               'Respond in JSON format: {{"Action": "<type>", "Element": "<id>", "Description": ' \
+                               '"<desc>", "Input Text": "<text>", "Reason": "<why>"}}. \n' \
                                'Example: {{"Action": "Click", "Element": "3", "Description": "Open Settings", ' \
                                '"Input Text": "N/A", "Reason": "Access task settings"}}. \n' \
                                'Previous actions: {action_history}, Excluded elements: {except_elements}. \n' \
@@ -55,7 +62,8 @@ class _TaskUIChecker:
         try:
             if len(task.conversation_automation) == 0:
                 task.conversation_automation = [{'role': 'system', 'content': SYSTEM_PROMPT},
-                                                {'role': 'user', 'content': 'This is a view hierarchy of a UI containing various UI blocks and elements.'},
+                                                {'role': 'user', 'content': 'This is a view hierarchy of a UI '
+                                                                            'containing various UI blocks and elements.'},
                                                 {'role': 'user', 'content': ui_data.element_tree}]
             task.append({'role': 'user', 'content': prompt})
             resp = self.__model_manager.send_fm_conversation(task.conversation_automation, printlog=printlog)
@@ -78,7 +86,8 @@ class _TaskUIChecker:
         # Format base prompt
         except_elements = ','.join(task.except_elements_ids)
         action_history = ';'.join(task.actions)
-        prompt = self.__relation_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
+        prompt = self.__relation_prompt.format(task=task.task_description, except_elements=except_elements,
+                                               action_history=action_history)
         # Ask FM
         resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_relation_check = json.loads(resp['content'])
@@ -99,7 +108,8 @@ class _TaskUIChecker:
         # Format base prompt
         except_elements = ','.join(task.except_elements_ids)
         action_history = ';'.join(task.actions)
-        prompt = self.__action_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
+        prompt = self.__action_prompt.format(task=task.task_description, except_elements=except_elements,
+                                             action_history=action_history)
         # Ask FM
         resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_action_check = json.loads(resp['content'])
@@ -120,7 +130,8 @@ class _TaskUIChecker:
         # Format base prompt
         except_elements = ','.join(task.except_elements_ids)
         action_history = ';'.join(task.actions)
-        prompt = self.__back_prompt.format(task=task.task_description, except_elements=except_elements, action_history=action_history)
+        prompt = self.__back_prompt.format(task=task.task_description, except_elements=except_elements,
+                                           action_history=action_history)
         # Ask FM
         resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_go_back_check = json.loads(resp['content'])

@@ -1,5 +1,4 @@
-from ._Data import _Data
-from uta.config import SYSTEM_PROMPT
+from uta.DataStructures._Data import _Data
 
 
 class Task(_Data):
@@ -21,16 +20,19 @@ class Task(_Data):
         self.children_ids = []  # List of identifiers of the sub-tasks or steps.
 
         # Only used when task declaration
-        self.conversation_clarification = []  # List of conversations that occurred during multiple turns of task clarification.
+        self.conversation_clarification = []  # List of conversations that occurred during multiple turns of task
+        # clarification.
         self.res_clarification = dict()     # {"Clear": "True", "Question": "None", "Options":[]}
         self.res_classification = dict()    # {"Task Type": "1. General Inquiry", "Explanation":}
         self.res_decomposition = dict()     # {"Decompose": "True", "Sub-tasks":[], "Explanation": }
 
         # Only used when task automation
-        self.conversation_automation = []   # List of conversations that occurred during multiple turns of task automation.
+        self.conversation_automation = []   # List of conversations that occurred during multiple turns of task
+        # automation.
         self.res_relation_check = dict()
         self.res_action_check = dict()
         self.res_go_back_check = dict()
-        self.except_elements_ids = []       # List of except elements that have been tried and proved to be not related to the task
+        self.except_elements_ids = []       # List of except elements that have been tried and proved to be not
+        # related to the task
         self.actions = []                   # List of step objects associated with this task.
         self.task_execution_result = None   # The result of executing the task.

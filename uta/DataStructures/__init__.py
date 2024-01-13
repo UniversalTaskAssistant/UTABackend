@@ -1,7 +1,4 @@
-from .Action import Action
-from .Relation import Relation
-from .Step import AutoModeStep, InquiryStep
-from .Task import Task
-from .UIData import UIData
-from .User import User
-from ._Data import _Data
+from uta.DataStructures.Task import Task
+from uta.DataStructures.UIData import UIData
+from uta.DataStructures.User import User
+from uta.DataStructures._Data import _Data

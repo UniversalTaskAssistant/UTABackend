@@ -1,3 +1,3 @@
-from ._VisionModel import _VisionModel
-from ._IconClassifier import _IconClassifier
-from ._GoogleOCR import _GoogleOCR
+from uta.ModelManagement.VisionModel._VisionModel import _VisionModel
+from uta.ModelManagement.VisionModel._IconClassifier import _IconClassifier
+from uta.ModelManagement.VisionModel._GoogleOCR import _GoogleOCR
