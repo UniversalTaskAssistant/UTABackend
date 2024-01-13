@@ -1,7 +1,7 @@
 import json
 from uta.DataStructures import *
 from uta.config import *
-from uta.TaskAction import _TaskUIChecker
+from uta.TaskAction._TaskUIChecker import _TaskUIChecker
 
 
 class TaskActionChecker:
@@ -47,6 +47,7 @@ class TaskActionChecker:
         Returns:
             Action (dict): {"Action":, "Element":, "Reason":, "Description":, "Input Text":}
         """
+        print('\n*** Check Action on UI *** ')
         # Check ui task relation
         self.check_ui_relation(ui_data, task, printlog)
         # [Complete] => Finish

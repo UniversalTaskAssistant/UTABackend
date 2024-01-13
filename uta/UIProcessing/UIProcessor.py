@@ -69,7 +69,7 @@ class UIProcessor:
         Returns:
              ui_data (UIData): UI data after processing
         """
-        print('*** Process UI ***')
+        print('\n *** Process UI ***')
         self.ui_vh_xml_cvt_to_json(ui_data)
         self.ui_info_extraction(ui_data)
         self.ui_analysis_elements_description(ui_data)

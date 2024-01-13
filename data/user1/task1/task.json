@@ -16,7 +16,7 @@
         },
         {
             "role": "assistant",
-            "content": "{\"Clear\": false, \"Question\": \"Which app should I use to send the message?\", \"Options\": [\"SMS Messaging\", \"WhatsApp\", \"Email\", \"Facebook Messenger\"]}"
+            "content": "{\"Clear\": false, \"Question\": \"How would you like to send the message?\",  \"Options\": [\"Text Message\", \"WhatsApp\", \"Email\", \"Facebook Messenger\"]}"
         },
         {
             "role": "user",
@@ -34,24 +34,27 @@
     },
     "res_classification": {
         "Task Type": "App-Related Task",
-        "Explanation": "This task requires the use of a specific messaging or communication applications to send the message 'hello' to the user's mom."
+        "Explanation": "This task requires using a specific app for communication, such as a messaging or email app, to send a message to the user's mom."
     },
     "res_decomposition": {
         "Decompose": "True",
         "Sub-tasks": [
-            "Open messaging app on the phone",
-            "Select mom's contact",
-            "Compose the message 'hello'",
-            "Send the message"
+            "Fetch Contact details of 'mom' from contact list",
+            "Open messaging app",
+            "Select 'mom' contact",
+            "Type 'hello' as message",
+            "Send message"
         ],
-        "Explanation": "This task involves multiple steps that need to be performed independently and sequentially, from launching the messaging app to sending the message itself."
+        "Explanation": "The task involves several independent and sequential actions such as fetching contact details, opening the messaging app, choosing the contact, typing the message, and finally, sending the message."
     },
-    "conversation_automation": [
-        {
-            "role": "system",
-            "content": "You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task."
-        }
-    ],
-    "steps": [],
-    "task_execution_result": null
+    "conversation_automation": [],
+    "res_relation_check": {},
+    "res_action_check": {},
+    "res_go_back_check": {},
+    "except_elements_ids": [],
+    "actions": [],
+    "task_execution_result": null,
+    "related_app": null,
+    "res_related_app_check": {},
+    "except_apps": []
 }

@@ -83,11 +83,12 @@ class TaskDeclarator:
                                                    {"role": "user", "content": self.__base_prompt_clarify.format(task=task.task_description)}]
             # send conv to fm
             resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
-            task.res_clarification = json.loads(resp['content'])
             task.conversation_clarification.append(resp)
+            task.res_clarification = json.loads(resp['content'])
             print(task.res_clarification)
             return task.res_clarification
         except Exception as e:
+            print(resp)
             raise e
 
     def decompose_task(self, task, printlog=False):
@@ -107,6 +108,7 @@ class TaskDeclarator:
             print(task.res_decomposition)
             return task.res_decomposition
         except Exception as e:
+            print(resp)
             raise e
 
     def classify_task(self, task, printlog=False):
@@ -127,6 +129,7 @@ class TaskDeclarator:
             print(task.res_classification)
             return task.res_classification
         except Exception as e:
+            print(resp)
             raise e
 
 

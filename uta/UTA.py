@@ -87,7 +87,7 @@ class UTA:
             task_id (str): Task id, associated to the json file named with task in the user folder
             user_msg (str): User's input message.
         """
-        print('*** Declare task ***')
+        print('\n*** Declare task ***')
         user, task = self.instantiate_user_task(user_id, task_id, user_msg)
         clarify = self.clarify_task(task)
         if clarify['Clear'] == 'True' or clarify['Clear'] == True:
@@ -140,7 +140,7 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
-    def automate_task(self, user_id, task_id, ui_img_file, ui_xml_file):
+    def automate_task(self, user_id, task_id, ui_img_file, ui_xml_file, printlog=False):
         """
         Identify the action on the current ui to automate the task
         Args:
@@ -148,6 +148,7 @@ class UTA:
             task_id (str): task id
             ui_img_file (path): Screenshot image path
             ui_xml_file (path): VH xml file path
+            printlog (bool): If True, enables logging of outputs.
         Returns:
             Action (dict): {"Action": }
         """
@@ -161,7 +162,7 @@ class UTA:
         if 'general' in task_type:
             self.task_action_checker.action_inquiry(ui, task)
         elif 'system' in task_type or 'app' in task_type:
-            action = self.task_action_checker.action_on_ui(ui, task)
+            action = self.task_action_checker.action_on_ui(ui, task, printlog)
             if action['Action'] == 'Other App':
                 related_app = self.app_recommender.check_related_apps(task=task, app_list=user.app_list)
                 if 'None' not in related_app['App']:
