@@ -6,7 +6,7 @@ import os
 from uta.config import *
 
 
-class _Device:
+class Device:
     def __init__(self, host='127.0.0.1', port=5037):
         self.__host = host
         self.__port = port
@@ -327,7 +327,7 @@ class _Device:
 
 
 if __name__ == '__main__':
-    device = _Device()
+    device = Device()
     device.connect()
     device.get_app_list_on_the_device()
     device.cap_and_save_ui_screenshot_and_xml(1, WORK_PATH + 'data/device')
