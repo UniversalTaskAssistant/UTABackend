@@ -148,6 +148,7 @@ class ThirdPartyAppManager:
             print(task.res_related_app_check)
             return task.res_related_app_check
         except Exception as e:
+            print(resp)
             raise e
 
     def recommend_apps(self, step, search_tar, fuzzy=False, max_return=5):
