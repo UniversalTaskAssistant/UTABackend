@@ -151,6 +151,7 @@ class UTA:
             ui_xml_file (path): VH xml file path
             printlog (bool): If True, enables logging of outputs.
         Returns:
+            ui (UIData)
             Action (dict): {"Action": }
         """
         # 0. retrieve task info

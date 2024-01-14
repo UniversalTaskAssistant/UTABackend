@@ -1,15 +1,38 @@
+from os.path import join as pjoin
+from testing.Device import Device
 from uta.UTA import UTA
+from uta.config import *
 
+# set up user task
+task = 'Check my contacts'
+user_id = 'user1'
+task_id = 'task3'
+# init device
+device = Device()
+device.connect()
+app_list = device.get_app_list_on_the_device()
+resolution = device.get_device_resolution()
+# init uta
 uta = UTA()
-# 0. Setup user
-uta.setup_user('user1', (1080, 2280), ['whatsapp', 'facebook'])
+uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
-# 1. Declare task
-print(uta.declare_task(user_id='user2', task_id='task1', user_msg='Send "hello" to my mom'))
-print(uta.declare_task(user_id='user2', task_id='task1', user_msg='Use whatsapp'))
+# task declaration
+msg = task
+while True:
+    dec = uta.declare_task(user_id=user_id, task_id=task_id, user_msg=msg)
+    if dec['Proc'] == 'Clarify':
+        print(dec['Question'], '\n', dec['Options'])
+        msg = input('Input your answer:')
+    else:
+        break
 
-# 2. Check action on the UI for the task
-uta.automate_task(user_id='user1', task_id='task1', ui_img_file='data/user1/task1/1.png',
-                  ui_xml_file='data/user1/task1/1.xml',
-                  printlog=False)
-
+# task automation
+ui_id = 0
+while True:
+    ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id, output_dir=pjoin(DATA_PATH, user_id, task_id))
+    ui_data, action = uta.automate_task(user_id=user_id, task_id=task_id,
+                                        ui_img_file=ui_img, ui_xml_file=ui_xml, printlog=False)
+    if 'complete' in action['Action'].lower():
+        break
+    device.take_action(action=action, ui_data=ui_data, show=True)
+    ui_id += 1
