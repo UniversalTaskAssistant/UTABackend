@@ -171,7 +171,9 @@ class UTA:
             self.task_action_checker.action_inquiry(ui, task)
         elif 'system' in task_type or 'app' in task_type:
             task.conversation_automation = []   # clear up the conversation of previous ui
+            # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui(ui, task, printlog)
+            # if the current UI is unrelated, search for other apps
             if action['Action'] == 'Other App':
                 related_app = self.app_recommender.check_related_apps(task=task, app_list=user.app_list)
                 if 'None' not in related_app['App']:
