@@ -127,7 +127,7 @@ class SystemConnector:
         # self.save_json(ui_data.elements, output_file_path_elements)
         output_file_path_element_tree = pjoin(output_dir, ui_data.ui_id + '_uitree.json')
         self.save_json(ui_data.element_tree, output_file_path_element_tree)
-        print('- Export task to file', output_file_path_element_tree, '-')
+        print('- Export ui elements to file', output_file_path_element_tree, '-')
 
     '''
     ****************

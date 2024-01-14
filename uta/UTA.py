@@ -10,6 +10,7 @@ from uta.TaskDeclearation import TaskDeclarator
 from uta.TaskAction import TaskActionChecker
 from uta.ThirdPartyAppManagement import ThirdPartyAppManager
 from uta.UIProcessing import UIProcessor
+from uta.config import *
 
 
 class UTA:
@@ -157,12 +158,13 @@ class UTA:
         # 1. process ui
         ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=user.device_resolution)
         self.ui_processor.process_ui(ui)
-        self.system_connector.save_ui_data(ui, output_dir=pjoin('data', user_id, task_id))
+        self.system_connector.save_ui_data(ui, output_dir=pjoin(DATA_PATH, user_id, task_id))
         # 2. act based on task type
         task_type = task.task_type.lower()
         if 'general' in task_type:
             self.task_action_checker.action_inquiry(ui, task)
         elif 'system' in task_type or 'app' in task_type:
+            task.conversation_automation = []   # clear up the conversation of previous ui
             action = self.task_action_checker.action_on_ui(ui, task, printlog)
             if action['Action'] == 'Other App':
                 related_app = self.app_recommender.check_related_apps(task=task, app_list=user.app_list)
