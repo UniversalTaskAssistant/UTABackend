@@ -12,16 +12,13 @@ class Device:
         self.__port = port
         self.__adb_device = None
 
-    def connect(self, printlog=False):
+    def connect(self):
         """
         Connects to the first device found on the ADB server.
-        Args:
-            printlog (bool): If True, prints the device information on connection.
-        """
+aa        """
         if self.__adb_device is None:
             self.__adb_device = AdbClient(host=self.__host, port=self.__port).devices()[0]
-            if printlog:
-                print('=== Load Device - ' + self.get_device_name() + '-' + str(self.get_device_resolution()) + ' ===')
+            print('=== Load Device - ' + self.get_device_name() + '-' + str(self.get_device_resolution()) + ' ===')
         else:
             # Raise an error if a device connection already exists
             raise Exception("Device has already been connected.")
@@ -65,6 +62,7 @@ class Device:
         xml = self.cap_current_ui_hierarchy_xml()
         with open(xml_path, 'w') as fp:
             fp.write(xml)
+        print('- Export UI image and xml to ', screen_path, xml_path, '-')
         return screen_path, xml_path
 
     def cap_screenshot(self, recur_time=0):
@@ -180,13 +178,37 @@ class Device:
         Returns:
             The screen resolution as a tuple (width, height).
         """
-        return self.__adb_device.wm_size()
+        return tuple(self.__adb_device.wm_size())
 
     '''
     ***************
     *** Actions ***
     ***************
     '''
+    def take_action(self, action, ui_data, show=False):
+        """
+        Take action on the device
+        Args:
+            action (dict): {"Action":, "Element":, "Input Text":, "Description":, "Reason":}
+            ui_data (UIData): UI data containing the element coordinates
+            show (bool): If True, displays the annotated action
+        """
+        print('*** Perform Action ***')
+        print(action)
+        action_type = action['Action'].lower()
+        if 'click' in action_type:
+            self.click_screen(ui_data, action['Element'], show)
+        elif 'scroll' in action_type:
+            self.down_scroll_screen(ui_data, action['Element'], show)
+        elif 'swipe' in action_type:
+            self.left_swipe_screen(ui_data, action['Element'], show)
+        elif 'input' in action_type:
+            self.input_text(action['Input Text'])
+        elif 'launch' in action_type:
+            self.launch_app(action['App'])
+        else:
+            print('No action performed')
+
     def click_screen(self, ui, element, show=False):
         """
         Simulates a tap on a specified element of the UI.

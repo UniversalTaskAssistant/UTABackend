@@ -1,0 +1,121 @@
+{
+    "class": "root(container)(container)(container)",
+    "clickable": false,
+    "scrollable": false,
+    "id": 0,
+    "children": [
+        {
+            "class": ".view.View",
+            "clickable": true,
+            "id": 1,
+            "description": "9:13QGoogleGallery"
+        },
+        {
+            "resource-id": ".launcher3:id/workspace",
+            "class": ".widget.ScrollView(container)(container)(container)",
+            "clickable": false,
+            "scrollable": true,
+            "id": 2,
+            "children": [
+                {
+                    "class": ".view.ViewGroup(container)(container)(container)",
+                    "clickable": false,
+                    "scrollable": false,
+                    "id": 3,
+                    "children": [
+                        {
+                            "class": ".view.ViewGroup(container)(container)(container)",
+                            "clickable": false,
+                            "scrollable": false,
+                            "id": 4,
+                            "children": [
+                                {
+                                    "resource-id": ".launcher3:id/qsb_widget",
+                                    "class": ".appwidget.AppWidgetHostView(container)(container)(container)",
+                                    "clickable": false,
+                                    "scrollable": false,
+                                    "id": 5,
+                                    "children": [
+                                        {
+                                            "resource-id": ".quicksearchbox:id/search_icon",
+                                            "class": ".widget.ImageView",
+                                            "clickable": true,
+                                            "id": 6,
+                                            "description": "QGoogle"
+                                        },
+                                        {
+                                            "resource-id": ".quicksearchbox:id/search_widget_text",
+                                            "class": ".widget.TextView",
+                                            "clickable": true,
+                                            "id": 7,
+                                            "description": "QGoogle"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "class": ".widget.TextView",
+                                    "clickable": true,
+                                    "id": 8,
+                                    "description": "Gallery"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "resource-id": ".launcher3:id/page_indicator",
+            "class": ".view.View",
+            "clickable": false,
+            "id": 9
+        },
+        {
+            "resource-id": ".launcher3:id/hotseat",
+            "class": ".view.ViewGroup(container)(container)(container)",
+            "clickable": false,
+            "scrollable": false,
+            "id": 10,
+            "children": [
+                {
+                    "class": ".view.ViewGroup(container)(container)(container)",
+                    "clickable": false,
+                    "scrollable": false,
+                    "id": 11,
+                    "children": [
+                        {
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 12,
+                            "description": "Phone"
+                        },
+                        {
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 13,
+                            "description": "Messaging"
+                        },
+                        {
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 14,
+                            "description": "Maps"
+                        },
+                        {
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 15,
+                            "description": "WebView Browser Tester"
+                        },
+                        {
+                            "class": ".widget.TextView",
+                            "clickable": true,
+                            "id": 16,
+                            "description": "Camera"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
