@@ -138,7 +138,8 @@ aa        """
         dumpsys_output = self.__adb_device.shell('dumpsys window displays | grep mCurrentFocus')
         package_and_activity = dumpsys_output.split('u0 ')[1].split('}')[0]
         package_name, activity_name = package_and_activity.split('/')
-        return {'package_name': package_name, 'activity_name': activity_name}
+        print('Package name:', package_name, 'Activity name:', activity_name)
+        return package_name, activity_name
 
     '''
     ***********************

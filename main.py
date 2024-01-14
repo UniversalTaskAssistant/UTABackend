@@ -30,8 +30,9 @@ while True:
 ui_id = 0
 while True:
     ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id, output_dir=pjoin(DATA_PATH, user_id, task_id))
-    ui_data, action = uta.automate_task(user_id=user_id, task_id=task_id,
-                                        ui_img_file=ui_img, ui_xml_file=ui_xml, printlog=False)
+    package, activity = device.get_current_package_and_activity_name()
+    ui_data, action = uta.automate_task(user_id=user_id, task_id=task_id, ui_img_file=ui_img, ui_xml_file=ui_xml,
+                                        package_name=package, activity_name=activity, printlog=False)
     if 'complete' in action['Action'].lower():
         break
     device.take_action(action=action, ui_data=ui_data, show=True)

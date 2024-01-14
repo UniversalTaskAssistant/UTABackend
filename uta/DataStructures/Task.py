@@ -2,22 +2,21 @@ from uta.DataStructures._Data import _Data
 
 
 class Task(_Data):
-    def __init__(self, task_id, user_id, parent_task_id=None, task_description=None):
+    def __init__(self, task_id, user_id, task_description=None):
         """
         Initializes a Task instance.
         Args:
             task_id (str): Unique identifier for the task.
             user_id (str): User id associated with the task.
-            parent_task_id (str): Identifier of the parent task.
             task_description (str): Description or details of the task.
         """
         super().__init__()
         self.task_id = task_id
         self.user_id = user_id
-        self.parent_task_id = parent_task_id
         self.task_description = task_description
-        self.task_type = None   # Type of the task, can be General Inquiry, System Function, or App-Related Task.
-        self.children_ids = []  # List of identifiers of the sub-tasks or steps.
+        self.task_type = None       # Type of the task, can be General Inquiry, System Function, or App-Related Task.
+        self.cur_package = None     # Current package name (app)
+        self.cur_activity = None    # Current activity name (page)
 
         # Only used when task declaration
         self.conversation_clarification = []  # List of conversations that occurred during multiple turns of task clarification.
