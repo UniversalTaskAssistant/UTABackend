@@ -63,7 +63,9 @@ class SystemConnector:
             user_id (str): User id
             task_id (str): task id to store all uis and task info
         """
-        os.makedirs(pjoin(self.user_data_root, user_id, task_id), exist_ok=True)
+        task_folder = pjoin(self.user_data_root, user_id, task_id)
+        os.makedirs(task_folder, exist_ok=True)
+        print('- Creat task folder', task_folder, '-')
 
     def load_task(self, user_id, task_id):
         """

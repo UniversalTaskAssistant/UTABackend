@@ -85,6 +85,7 @@ class TaskDeclarator:
             resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
             task.conversation_clarification.append(resp)
             task.res_clarification = json.loads(resp['content'])
+            task.res_clarification['Proc'] = 'Clarify'
             print(task.res_clarification)
             return task.res_clarification
         except Exception as e:
@@ -105,6 +106,7 @@ class TaskDeclarator:
                             {"role": "user", "content": self.__base_prompt_decompose.format(task=task.task_description)}]
             resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
             task.res_decomposition = json.loads(resp['content'])
+            task.res_decomposition['Proc'] = 'Decompose'
             print(task.res_decomposition)
             return task.res_decomposition
         except Exception as e:
@@ -125,6 +127,7 @@ class TaskDeclarator:
                             {"role": "user", "content": self.__base_prompt_classify.format(task=task.task_description)}]
             resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
             task.res_classification = json.loads(resp['content'])
+            task.res_classification['Proc'] = 'Classify'
             task.task_type = task.res_classification["Task Type"]
             print(task.res_classification)
             return task.res_classification
