@@ -157,6 +157,7 @@ class UTA:
         # 1. process ui
         ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=user.device_resolution)
         self.ui_processor.process_ui(ui)
+        self.system_connector.save_ui_data(ui, output_dir=pjoin('data', user_id, task_id))
         # 2. act based on task type
         task_type = task.task_type.lower()
         if 'general' in task_type:
@@ -170,7 +171,8 @@ class UTA:
                     action = {"Action": "Launch", "App": related_app['App'], "Description": "Launch app"}
                 else:
                     action = {"Action": "Infeasible", "Description": "Infeasible task"}
-            return action
+            self.system_connector.save_task(task)
+            return ui, action
 
 
 if __name__ == '__main__':
