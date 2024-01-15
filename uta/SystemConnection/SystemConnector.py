@@ -20,7 +20,6 @@ class SystemConnector:
     *** Data IO ***
     ***************
     '''
-
     def load_user(self, user_id):
         """
         Load user info from 'data/user_id/user.json'
