@@ -55,6 +55,26 @@ class _TaskUIChecker:
                                  'Previous actions: {action_history}\n' \
                                  'Excluded elements: {except_elements}'
 
+    @staticmethod
+    def wrap_task_info(task):
+        """
+        Wrap up task info to put in the fm prompt
+        Args:
+            task (Task)
+        Return:
+            prompt (str): The wrapped prompt
+        """
+        prompt = ''
+        if len(task.subtasks) > 0:
+            prompt += '(Potential steps and subtasks to complete the task: ' + str(task.subtasks) + '.)\n'
+        if len(task.actions) > 0:
+            prompt += '(You have already done the following actions before: ' + str(task.actions) + \
+                      'use them as context and avoid repeating any previous action.)\n'
+        if len(task.except_elements_ids) > 0:
+            prompt += '(The elements with ID ' + str(task.except_elements_ids) + \
+                      ' are proved to be unrelated to this task, except them in selection.)\n'
+        return prompt
+
     def check_ui_task(self, ui_data, task, prompt, printlog=False):
         """
         Check UI and Task by prompt through foundation model
@@ -71,7 +91,7 @@ class _TaskUIChecker:
             task.conversation_automation.append(resp)
             return resp
         except Exception as e:
-
+            print(resp)
             raise e
 
     def check_ui_relation(self, ui_data, task, printlog=False):
