@@ -15,7 +15,7 @@ class Device:
     def connect(self):
         """
         Connects to the first device found on the ADB server.
-aa        """
+        """
         if self.__adb_device is None:
             self.__adb_device = AdbClient(host=self.__host, port=self.__port).devices()[0]
             print('=== Load Device - ' + self.get_device_name() + '-' + str(self.get_device_resolution()) + ' ===')
