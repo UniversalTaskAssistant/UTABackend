@@ -1,8 +1,6 @@
 import openai
 import time
 import tiktoken
-import json
-import logging
 from uta.config import *
 
 
@@ -63,14 +61,13 @@ class _OpenAI:
         msg = {'role': resp['role'], 'content': resp['content']}
         try:
             if runtime:
-                msg['content'] = json.loads(msg['content'])
-                msg['content']['Runtime'] = '{:.3f}s'.format(time.time() - start)
-                msg['content'] = json.dumps(msg['content'])
+                # as we directly add msg to task.conversation, we cannot add attributes, so just print here
+                print('Runtime: ', '{:.3f}s'.format(time.time() - start))
             if printlog:
                 print('\n*** Answer ***\n', msg, '\n')
             return msg
         except Exception as e:
-            logging.error('The return message content is not in JSON format')
+            print('The return message content is not in JSON format')
             raise e
 
 

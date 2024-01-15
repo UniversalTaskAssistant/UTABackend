@@ -71,7 +71,6 @@ class _TaskUIChecker:
             task.conversation_automation.append(resp)
             return resp
         except Exception as e:
-
             raise e
 
     def check_ui_relation(self, ui_data, task, printlog=False):
