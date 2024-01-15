@@ -1,5 +1,5 @@
 {
-    "class": "root(container)(container)(container)",
+    "class": "root(container)",
     "clickable": false,
     "scrollable": false,
     "id": 0,
@@ -8,30 +8,30 @@
             "class": ".view.View",
             "clickable": true,
             "id": 1,
-            "description": "9:13QGoogleGallery"
+            "description": "11:16QGoogleGallery"
         },
         {
             "resource-id": ".launcher3:id/workspace",
-            "class": ".widget.ScrollView(container)(container)(container)",
+            "class": ".widget.ScrollView(container)",
             "clickable": false,
             "scrollable": true,
             "id": 2,
             "children": [
                 {
-                    "class": ".view.ViewGroup(container)(container)(container)",
+                    "class": ".view.ViewGroup(container)",
                     "clickable": false,
                     "scrollable": false,
                     "id": 3,
                     "children": [
                         {
-                            "class": ".view.ViewGroup(container)(container)(container)",
+                            "class": ".view.ViewGroup(container)",
                             "clickable": false,
                             "scrollable": false,
                             "id": 4,
                             "children": [
                                 {
                                     "resource-id": ".launcher3:id/qsb_widget",
-                                    "class": ".appwidget.AppWidgetHostView(container)(container)(container)",
+                                    "class": ".appwidget.AppWidgetHostView(container)",
                                     "clickable": false,
                                     "scrollable": false,
                                     "id": 5,
@@ -72,13 +72,13 @@
         },
         {
             "resource-id": ".launcher3:id/hotseat",
-            "class": ".view.ViewGroup(container)(container)(container)",
+            "class": ".view.ViewGroup(container)",
             "clickable": false,
             "scrollable": false,
             "id": 10,
             "children": [
                 {
-                    "class": ".view.ViewGroup(container)(container)(container)",
+                    "class": ".view.ViewGroup(container)",
                     "clickable": false,
                     "scrollable": false,
                     "id": 11,

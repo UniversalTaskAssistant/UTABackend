@@ -53,7 +53,6 @@ class TaskActionChecker:
         # [Complete] => Finish
         if 'complete' in task.res_relation_check['Relation'].lower():
             action = {"Action": "Complete", "Reason": task.res_relation_check['Relation']['Reason']}
-            task.actions.append(action)
         # [Unrelated UI] => Check whether the ui can go back or check other app
         elif 'unrelated' in task.res_relation_check['Relation'].lower():
             # 1. Check if it can go back to a related gui
@@ -66,6 +65,7 @@ class TaskActionChecker:
         # [Related UI] => Check action
         else:
             action = self.check_element_action(ui_data, task, printlog)
+        task.actions.append(action)
         return action
 
     def check_ui_relation(self, ui_data, task, printlog=False):

@@ -6,7 +6,7 @@ from uta.config import *
 # set up user task
 task = 'Check my contacts'
 user_id = 'user1'
-task_id = 'task3'
+task_id = 'task1'
 # init device
 device = Device()
 device.connect()
