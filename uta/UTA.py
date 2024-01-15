@@ -63,7 +63,8 @@ class UTA:
                 task.task_description = user_msg
         else:
             if user_msg:
-                task.conversation_clarification.append({'role': 'user', 'content': user_msg})
+                task.conversation_clarification.append({'role': 'user', 'content': "Response to the Question: " + user_msg})
+                task.user_clarify.append(user_msg)
         self.cur_user = user
         self.cur_task = task
         return user, task

@@ -23,16 +23,17 @@ class Task(_Data):
         self.res_clarification = dict()     # {"Clear": "True", "Question": "None", "Options":[]}
         self.res_classification = dict()    # {"Task Type": "1. General Inquiry", "Explanation":}
         self.res_decomposition = dict()     # {"Decompose": "True", "Sub-tasks":[], "Explanation": }
+        self.user_clarify = []              # List of string from the user message to further clarify the task
+        self.subtasks = []                  # List of string to describe the subtask
 
         # Only used when task automation
         self.conversation_automation = []   # List of conversations that occurred during multiple turns of task automation.
         self.res_relation_check = dict()
         self.res_action_check = dict()
         self.res_go_back_check = dict()
-        self.except_elements_ids = []       # List of except elements that have been tried and proved to be not related to the task
         self.relations = []                 # List of relations associated with this task.
+        self.except_elements_ids = []       # List of except elements that have been tried and proved to be not related to the task
         self.actions = []                   # List of step objects associated with this task.
-        self.task_execution_result = None   # The result of executing the task.
 
         # App recommendation
         self.related_app = None             # Related app to complete the task

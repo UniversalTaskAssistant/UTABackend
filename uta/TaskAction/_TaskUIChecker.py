@@ -55,6 +55,28 @@ class _TaskUIChecker:
                                  'Previous actions: {action_history}\n' \
                                  'Excluded elements: {except_elements}'
 
+    @staticmethod
+    def wrap_task_info(task):
+        """
+        Wrap up task info to put in the fm prompt
+        Args:
+            task (Task)
+        Return:
+            prompt (str): The wrapped prompt
+        """
+        prompt = ''
+        if len(task.user_clarify) > 0:
+            prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + ')\n'
+        if len(task.subtasks) > 0:
+            prompt += '(Potential steps and subtasks to complete the task: ' + str(task.subtasks) + '.)\n'
+        if len(task.actions) > 0:
+            prompt += '(You have already done the following actions before: ' + str(task.actions) + \
+                      'use them as context and avoid repeating any previous action.)\n'
+        if len(task.except_elements_ids) > 0:
+            prompt += '(The elements with ID ' + str(task.except_elements_ids) + \
+                      ' are proved to be unrelated to this task, except them in selection.)\n'
+        return prompt
+
     def check_ui_task(self, ui_data, task, prompt, printlog=False):
         """
         Check UI and Task by prompt through foundation model
@@ -63,14 +85,15 @@ class _TaskUIChecker:
             if len(task.conversation_automation) == 0:
                 task.conversation_automation = [{'role': 'system', 'content': SYSTEM_PROMPT},
                                                 {'role': 'user', 'content': f'This is a view hierarchy of a UI '
-                                                f'containing various UI blocks and elements:\n'
-                                                f'{str(ui_data.element_tree)}\n{prompt}'}]
+                                                    f'containing various UI blocks and elements:\n'
+                                                    f'{str(ui_data.element_tree)}\n{prompt}'}]
             else:
                 task.conversation_automation.append({'role': 'user', 'content': prompt})
             resp = self.__model_manager.send_fm_conversation(task.conversation_automation, printlog=printlog)
             task.conversation_automation.append(resp)
             return resp
         except Exception as e:
+            print(resp)
             raise e
 
     def check_ui_relation(self, ui_data, task, printlog=False):

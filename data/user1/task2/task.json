@@ -1,0 +1,68 @@
+{
+    "task_id": "task2",
+    "user_id": "user1",
+    "task_description": "Send message to my mom",
+    "task_type": "App-Related Task",
+    "cur_package": null,
+    "cur_activity": null,
+    "conversation_clarification": [
+        {
+            "role": "system",
+            "content": "You are a mobile virtual assistant that understands and interacts with the user interface to complete a given task."
+        },
+        {
+            "role": "user",
+            "content": "Assess the user task \"Send message to my mom\" to determine if it is sufficiently clear for execution on a smartphone. Given that seniors often provide vague or incomplete task descriptions, identify the most crucial piece of missing information. If the task is clear, indicate so. If not, provide a focused question with up to 4 selectable options to clarify the task effectively. The Options should be designed to extract the most essential missing detail for task clarification. Return your analysis in JSON format, comprising: 1. \"Clear\": a boolean indicating if the task is clear enough. 2. \"Question\": a single question for further task clarification. 3. \"Options\": a list of up to 4 example options that may answers the question. Response for a clear task: {\"Clear\": true, \"Question\": \"\", \"Options\": []}.Example response for an unclear task (related to app choice): {\"Clear\": false, \"Question\": \"Which app would you prefer to use for this communication?\", \"Options\": [\"Message\", \"WhatsApp\", \"Meta\", \"Phone Call\"]}. Example response for an unclear task (related to message content): {\"Clear\": false, \"Question\": \"What is the content of the message you want to send?\", \"Options\": [\"Greetings\", \"Appointment request\", \"Quick catch-up\", \"Share a photo or video\"]}."
+        },
+        {
+            "role": "assistant",
+            "content": "{\"Clear\": false, \"Question\": \"What is the content of the message you want to send?\", \"Options\": [\"Greetings\", \"Appointment request\", \"Quick catch-up\", \"Share a photo or video\"]}"
+        },
+        {
+            "role": "user",
+            "content": "Response to the Question: What is for diner?"
+        },
+        {
+            "role": "assistant",
+            "content": "{\"Clear\": true, \"Question\": \"\", \"Options\": []}"
+        }
+    ],
+    "res_clarification": {
+        "Clear": true,
+        "Question": "",
+        "Options": [],
+        "Proc": "Clarify"
+    },
+    "res_classification": {
+        "Task Type": "App-Related Task",
+        "Explanation": "This task requires the use of a specific application (such as the Messages app, WhatsApp, or any other messaging app) installed on the smartphone to accomplish its objective.",
+        "Proc": "Classify"
+    },
+    "res_decomposition": {
+        "Decompose": "True",
+        "Sub-tasks": [
+            "Access the contact list",
+            "Identify 'Mom' in the contact list",
+            "Compose message",
+            "Send message"
+        ],
+        "Explanation": "The task 'Send message to my mom' requires the completion of several independent steps sequentially: accessing the contact list, locating 'Mom' among the contacts, composing the message, and finally sending it.",
+        "Proc": "Decompose"
+    },
+    "subtasks": [
+        "Access the contact list",
+        "Identify 'Mom' in the contact list",
+        "Compose message",
+        "Send message"
+    ],
+    "conversation_automation": [],
+    "res_relation_check": {},
+    "res_action_check": {},
+    "res_go_back_check": {},
+    "relations": [],
+    "except_elements_ids": [],
+    "actions": [],
+    "related_app": null,
+    "res_related_app_check": {},
+    "except_apps": []
+}

@@ -106,6 +106,7 @@ class TaskDeclarator:
                             {"role": "user", "content": self.__base_prompt_decompose.format(task=task.task_description)}]
             resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
             task.res_decomposition = json.loads(resp['content'])
+            task.subtasks = task.res_decomposition['Sub-tasks']
             task.res_decomposition['Proc'] = 'Decompose'
             print(task.res_decomposition)
             return task.res_decomposition
