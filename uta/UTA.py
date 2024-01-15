@@ -180,7 +180,7 @@ class UTA:
                     task.related_app = related_app['App']
                     action = {"Action": "Launch", "App": related_app['App'], "Description": "Launch app"}
                 else:
-                    action = {"Action": "Infeasible", "Description": "Infeasible task"}
+                    action = {"Action": "Infeasible", "Description": "No related app installed."}
             self.system_connector.save_task(task)
             return ui, action
 
