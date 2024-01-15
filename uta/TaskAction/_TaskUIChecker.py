@@ -65,6 +65,8 @@ class _TaskUIChecker:
             prompt (str): The wrapped prompt
         """
         prompt = ''
+        if len(task.user_clarify) > 0:
+            prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + ')\n'
         if len(task.subtasks) > 0:
             prompt += '(Potential steps and subtasks to complete the task: ' + str(task.subtasks) + '.)\n'
         if len(task.actions) > 0:
@@ -83,8 +85,8 @@ class _TaskUIChecker:
             if len(task.conversation_automation) == 0:
                 task.conversation_automation = [{'role': 'system', 'content': SYSTEM_PROMPT},
                                                 {'role': 'user', 'content': f'This is a view hierarchy of a UI '
-                                                f'containing various UI blocks and elements:\n'
-                                                f'{str(ui_data.element_tree)}\n{prompt}'}]
+                                                    f'containing various UI blocks and elements:\n'
+                                                    f'{str(ui_data.element_tree)}\n{prompt}'}]
             else:
                 task.conversation_automation.append({'role': 'user', 'content': prompt})
             resp = self.__model_manager.send_fm_conversation(task.conversation_automation, printlog=printlog)

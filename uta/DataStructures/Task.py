@@ -23,6 +23,7 @@ class Task(_Data):
         self.res_clarification = dict()     # {"Clear": "True", "Question": "None", "Options":[]}
         self.res_classification = dict()    # {"Task Type": "1. General Inquiry", "Explanation":}
         self.res_decomposition = dict()     # {"Decompose": "True", "Sub-tasks":[], "Explanation": }
+        self.user_clarify = []              # List of string from the user message to further clarify the task
         self.subtasks = []                  # List of string to describe the subtask
 
         # Only used when task automation
