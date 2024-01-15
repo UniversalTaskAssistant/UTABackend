@@ -140,7 +140,8 @@ class ThirdPartyAppManager:
             # Provide a default empty list if except_apps is None
             except_apps_str = '; '.join(task.except_apps)
             # Format base prompt
-            prompt = self.__availability_check_prompt.format(task=task.task_description, app_list='; '.join(app_list), exp_apps=except_apps_str)
+            prompt = self.__availability_check_prompt.format(task=task.task_description, app_list='; '.join(app_list),
+                                                             exp_apps=except_apps_str)
             conversations = [{'role': 'system', 'content': SYSTEM_PROMPT}, {'role': 'user', 'content': prompt}]
             # Ask FM
             resp = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)

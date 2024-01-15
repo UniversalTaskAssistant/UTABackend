@@ -1,7 +1,4 @@
-import os
 from os.path import join as pjoin
-import json
-from datetime import datetime
 
 from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
@@ -40,7 +37,6 @@ class UTA:
             app_list (list): List of the names of installed apps
         """
         user = User(user_id=user_id, device_resolution=device_resolution, app_list=app_list)
-        self.system_connector.set_user_folder(user_id)
         self.system_connector.save_user(user)
         self.cur_user = user
         return user
@@ -61,7 +57,6 @@ class UTA:
         task = self.system_connector.load_task(user_id=user_id, task_id=task_id)
         # if the task does not exist, creat a new one within the user's folder
         if not task:
-            self.system_connector.set_task_folder(user_id=user_id, task_id=task_id)
             task = Task(task_id=task_id, user_id=user_id)
             # set the user message as the task description for a new task
             if user_msg:

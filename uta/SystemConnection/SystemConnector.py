@@ -20,14 +20,6 @@ class SystemConnector:
     *** Data IO ***
     ***************
     '''
-    def set_user_folder(self, user_id):
-        """
-        Set up folders for user, and store user info into the user.json
-        'data/user_id/'
-        Args:
-            user_id (str): User id
-        """
-        os.makedirs(pjoin(self.user_data_root, user_id), exist_ok=True)
 
     def load_user(self, user_id):
         """
@@ -38,10 +30,13 @@ class SystemConnector:
             user (User)
         """
         user_file = pjoin(self.user_data_root, user_id, 'user.json')
-        user = User(user_id=user_id)
-        user.load_from_dict(self.load_json(user_file))
-        print('- Import user info from file', user_file, '-')
-        return user
+        if os.path.exists(user_file):
+            user = User(user_id=user_id)
+            user.load_from_dict(self.load_json(user_file))
+            print('- Import user info from file', user_file, '-')
+            return user
+        else:
+            raise FileNotFoundError(f"The user file {user_file} does not exist.")
 
     def save_user(self, user):
         """
@@ -51,21 +46,12 @@ class SystemConnector:
             user (User)
         """
         user_folder = pjoin(self.user_data_root, user.user_id)
+        if not os.path.exists(user_folder):
+            os.makedirs(user_folder)
+            print('- Create user folder', user_folder, '-')
         user_file = pjoin(user_folder, 'user.json')
         self.save_json(user.to_dict(), user_file)
         print('- Export user info to', user_file, '-')
-
-    def set_task_folder(self, user_id, task_id):
-        """
-        Set a user folder associated with the user and task, where all the tasks and user info are stored
-        'data/user_id/task_id/'
-        Args:
-            user_id (str): User id
-            task_id (str): task id to store all uis and task info
-        """
-        task_folder = pjoin(self.user_data_root, user_id, task_id)
-        os.makedirs(task_folder, exist_ok=True)
-        print('- Creat task folder', task_folder, '-')
 
     def load_task(self, user_id, task_id):
         """
@@ -96,10 +82,11 @@ class SystemConnector:
             task (Task): Task object
         """
         task_folder = pjoin(self.user_data_root, task.user_id, task.task_id)
-        os.makedirs(task_folder, exist_ok=True)
+        if not os.path.exists(task_folder):
+            os.makedirs(task_folder)
+            print('- Create task folder', task_folder, '-')
         task_file = pjoin(task_folder, 'task.json')
-        task_dict = task.to_dict()
-        self.save_json(task_dict, task_file)
+        self.save_json(task.to_dict(), task_file)
         print('- Export task to file', task_file, '-')
 
     @staticmethod

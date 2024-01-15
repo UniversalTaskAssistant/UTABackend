@@ -30,6 +30,7 @@ class Task(_Data):
         self.res_action_check = dict()
         self.res_go_back_check = dict()
         self.except_elements_ids = []       # List of except elements that have been tried and proved to be not related to the task
+        self.relations = []                 # List of relations associated with this task.
         self.actions = []                   # List of step objects associated with this task.
         self.task_execution_result = None   # The result of executing the task.
 

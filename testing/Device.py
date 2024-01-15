@@ -199,16 +199,22 @@ aa        """
         action_type = action['Action'].lower()
         if 'click' in action_type:
             self.click_screen(ui_data, action['Element'], show)
-        elif 'scroll' in action_type:
+        elif 'scroll down' in action_type:
             self.down_scroll_screen(ui_data, action['Element'], show)
-        elif 'swipe' in action_type:
+        elif 'scroll up' in action_type:
+            self.up_scroll_screen(ui_data, action['Element'], show)
+        elif 'swipe left' in action_type:
             self.left_swipe_screen(ui_data, action['Element'], show)
+        elif 'swipe right' in action_type:
+            self.right_swipe_screen(ui_data, action['Element'], show)
+        elif 'press' in action_type:
+            self.long_press_screen(ui_data, action['Element'], show)
         elif 'input' in action_type:
             self.input_text(action['Input Text'])
         elif 'launch' in action_type:
             self.launch_app(action['App'])
         else:
-            print('No action performed')
+            raise ValueError(f"No expected action returned from model, returned action: {action_type}")
 
     def click_screen(self, ui, element, show=False):
         """

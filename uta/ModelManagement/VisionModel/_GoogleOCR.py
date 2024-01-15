@@ -43,14 +43,14 @@ class _GoogleOCR:
         return json.dumps({"requests": img_req}).encode()
 
     def __text_cvt_orc_format(self, ocr_result):
-        '''
+        """
         Convert ocr result format for easier processing
         Args:
             ocr_result: [{'description': '5:08', 'boundingPoly': {'vertices': [{'x': 58, 'y': 16}, {'x': 113, 'y': 15},
              {'x': 113, 'y': 35}, {'x': 58, 'y': 36}]}}]
         Returns:
             __texts: [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
-        '''
+        """
         if ocr_result is not None:
             for i, result in enumerate(ocr_result):
                 error = False
@@ -70,9 +70,9 @@ class _GoogleOCR:
                 self.__texts.append(Text(i, content, location))
 
     def __merge_intersected_texts(self):
-        '''
+        """
         Merge intersected __texts (sentences or words)
-        '''
+        """
         changed = True
         while changed:
             changed = False
@@ -90,9 +90,9 @@ class _GoogleOCR:
             self.__texts = temp_set.copy()
 
     def __text_filter_noise(self):
-        '''
+        """
         Filter out some noise text that is abnormal single character
-        '''
+        """
         valid_texts = []
         for text in self.__texts:
             if len(text.content) <= 1 and text.content.lower() not in ['a', ',', '.', '!', '?', '$', '%', ':', '&',
@@ -102,9 +102,9 @@ class _GoogleOCR:
         self.__texts = valid_texts
 
     def __text_sentences_recognition(self):
-        '''
+        """
         Merge separate words detected by Google ocr into a sentence
-        '''
+        """
         changed = True
         while changed:
             changed = False
@@ -125,23 +125,23 @@ class _GoogleOCR:
             text.id = i
 
     def __resize_label(self, shrink_rate):
-        '''
+        """
         Resize the labels of text by certain ratio
         Args:
             shrink_rate: rate to resize
-        '''
+        """
         for text in self.__texts:
             for key in text.location:
                 text.location[key] = round(text.location[key] / shrink_rate)
 
     def __wrap_up_texts(self):
-        '''
+        """
         Wrap up Text objects to list of dicts
         Args:
             self.__texts (list of _Text)
         Returns:
             texts_dict (list of dict): [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
-        '''
+        """
         texts_dict = []
         for i, text in enumerate(self.__texts):
             loc = text.location
@@ -152,7 +152,7 @@ class _GoogleOCR:
         return texts_dict
 
     def visualize_texts(self, shown_resize_height=800, show=False, write_path=None):
-        '''
+        """
         Visualize the __texts
         Args:
             shown_resize_height: The height of the shown image for better view
@@ -160,7 +160,7 @@ class _GoogleOCR:
             write_path (sting): Path to save the visualized image, None for not saving
         Returns:
 
-        '''
+        """
         img = self.org_img.copy()
         for text in self.__texts:
             text.visualize_element(img, line=2)
@@ -178,11 +178,11 @@ class _GoogleOCR:
         return img_resize
 
     def save_detection_json(self, file_path):
-        '''
+        """
         Save the Text to local as json file
         Args:
             file_path: File to save
-        '''
+        """
         f_out = open(file_path, 'w')
         output = {'img_shape': self.org_img.shape, '__texts': []}
         for text in self.__texts:
@@ -207,9 +207,7 @@ class _GoogleOCR:
             img_data = self.__make_image_data(img_path)  # Prepare the image data
 
             # Post request to the Google Cloud Vision API
-            response = requests.post(self.__url,
-                                     data=img_data,
-                                     params={'key': self.__api_key},
+            response = requests.post(self.__url, data=img_data, params={'key': self.__api_key},
                                      headers={'Content_Type': 'application/json'})
 
             # Handling the API response
@@ -224,7 +222,7 @@ class _GoogleOCR:
             raise e
 
     def detect_text_ocr(self, img_path, output_dir='data/output', show=False, shrink_size=False):
-        '''
+        """
         Detect __texts on the image using google ocr
         Args:
             img_path: The file path of the image
@@ -233,14 +231,14 @@ class _GoogleOCR:
             shrink_size (bool): True to shrink the image before processing for faster speed
         Returns:
             __texts (list of dicts): [{'id': 0, 'bounds': [77, 20, 151, 48], 'content': '5:08'}]
-        '''
+        """
         start = time.time()
         name = img_path.replace('\\', '/').split('/')[-1][:-4]
         self.org_img = cv2.imread(img_path)
         if shrink_size:
             shrink_rate = 0.75
-            img_re = cv2.resize(self.org_img, (int(self.org_img.shape[1] * shrink_rate), int(self.org_img.shape[0]
-                                                                                             * shrink_rate)))
+            img_re = cv2.resize(self.org_img, (int(self.org_img.shape[1] * shrink_rate),
+                                               int(self.org_img.shape[0] * shrink_rate)))
             img_path = img_path[:-4] + '_resize.jpg'
             cv2.imwrite(img_path, img_re)
 
@@ -253,8 +251,8 @@ class _GoogleOCR:
             self.__resize_label(shrink_rate)
         if show:
             self.visualize_texts(show=True)
-            print("[Text Detection Completed in %.3f s] Input: %s Output: %s" % (time.time() - start, img_path,
-                                                                                 pjoin(output_dir, name + '.json')))
+            print("[Text Detection Completed in %.3f s] Input: %s Output: %s"
+                  % (time.time() - start, img_path, pjoin(output_dir, name + '.json')))
         return self.__wrap_up_texts()
 
 

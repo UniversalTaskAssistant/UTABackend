@@ -62,10 +62,9 @@ class _TaskUIChecker:
         try:
             if len(task.conversation_automation) == 0:
                 task.conversation_automation = [{'role': 'system', 'content': SYSTEM_PROMPT},
-                                                {'role': 'user', 'content': 'This is a view hierarchy of a UI containing'
-                                                                            ' various UI blocks and elements:\n'
-                                                                            + str(ui_data.element_tree) + '\n'
-                                                                            + prompt}]
+                                                {'role': 'user', 'content': f'This is a view hierarchy of a UI '
+                                                f'containing various UI blocks and elements:\n'
+                                                f'{str(ui_data.element_tree)}\n{prompt}'}]
             else:
                 task.conversation_automation.append({'role': 'user', 'content': prompt})
             resp = self.__model_manager.send_fm_conversation(task.conversation_automation, printlog=printlog)

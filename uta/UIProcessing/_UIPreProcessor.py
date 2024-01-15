@@ -106,9 +106,9 @@ class _UIPreProcessor:
             """
             Check if the element is valid and should be kept
             """
-            if (ele['bounds'][0] >= ele['bounds'][2] - min_length or ele['bounds'][1] >= ele['bounds'][
-                3] - min_length) or \
-                    ('layout' in ele['class'].lower() and not ele['clickable']):
+            if (ele['bounds'][0] >= ele['bounds'][2] - min_length
+                or ele['bounds'][1] >= ele['bounds'][3] - min_length) \
+                    or ('layout' in ele['class'].lower() and not ele['clickable']):
                 return False
             return True
 

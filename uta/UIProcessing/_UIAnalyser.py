@@ -38,8 +38,7 @@ class _UIAnalyser:
                 description += ele['text']
             # check content description
             if 'content-desc' in ele and len(ele['content-desc']) > 0 and ele['content-desc'] != ele['text']:
-                description = ele['content-desc'] if len(description) == 0 else description + ' / ' + \
-                                                                                ele['content-desc']
+                description = ele['content-desc'] if len(description) == 0 else description + ' / ' + ele['content-desc']
             # if no text and content description, check caption
             if len(description) == 0:
                 if 'icon-cls' in ele and ele['icon-cls']:
@@ -69,8 +68,8 @@ class _UIAnalyser:
             for text in ui_data.ocr_text:
                 t_b, e_b = text['bounds'], ele['bounds']
                 # calculate intersected area between text and element
-                intersected = max(0, min(t_b[2], e_b[2]) - max(t_b[0], e_b[0])) * max(0, min(t_b[3], e_b[3]) -
-                                                                                      max(t_b[1], e_b[1]))
+                intersected = max(0, min(t_b[2], e_b[2]) - max(t_b[0], e_b[0])) \
+                              * max(0, min(t_b[3], e_b[3]) - max(t_b[1], e_b[1]))
                 if intersected > 0:
                     ele['ocr'] += text['content']
                     ele['text'] += text['content']
