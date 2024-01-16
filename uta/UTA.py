@@ -138,7 +138,7 @@ class UTA:
     ***********************
     '''
     def automate_task(self, user_id, task_id, ui_img_file, ui_xml_file,
-                      package_name=None, activity_name=None, printlog=False):
+                      package_name=None, activity_name=None, keyboard_active=False, printlog=False):
         """
         Identify the action on the current ui to automate the task
         Args:
@@ -148,6 +148,7 @@ class UTA:
             ui_xml_file (path): VH xml file path
             package_name (str): Current app name
             activity_name (str): Current page name
+            keyboard_active (bool): If the keyboard is active, can only input text when the keyboard is active
             printlog (bool): If True, enables logging of outputs.
         Returns:
             ui (UIData)
@@ -157,6 +158,7 @@ class UTA:
         user, task = self.instantiate_user_task(user_id, task_id)
         task.cur_package = package_name
         task.cur_activity = activity_name
+        task.keyboard_active = keyboard_active
         # 1. process ui
         ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=user.device_resolution)
         self.ui_processor.process_ui(ui)

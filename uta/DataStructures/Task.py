@@ -17,6 +17,7 @@ class Task(_Data):
         self.task_type = None       # Type of the task, can be General Inquiry, System Function, or App-Related Task.
         self.cur_package = None     # Current package name (app)
         self.cur_activity = None    # Current activity name (page)
+        self.keyboard_active = False  # If the keyboard is active, can only input text when the keyboard is active
 
         # Only used when task declaration
         self.conversation_clarification = []  # List of conversations that occurred during multiple turns of task clarification.
