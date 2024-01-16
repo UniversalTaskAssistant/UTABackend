@@ -43,9 +43,9 @@ class ThirdPartyAppManager:
                                            '!!!Note:\n ' \
                                            '1. ONLY use this JSON format to provide your answer: {{"App": "<app_package_or_None>", "Reason": "<explanation>"}}.\n' \
                                            '2. If no related found, answer "None" for the "App" in the answer JSON.\n' \
-                                           '!!!Example\n:' \
-                                           '{{"App": "com.whatsapp.com", "Reason": "To send message in whatsapp, open the whatsapp app."}}.\n ' \
-                                           '{{"App": "None", "Reason": "No app is related to the task."}}.\n'
+                                           '!!!Examples\n:' \
+                                           '1. {{"App": "com.whatsapp.com", "Reason": "To send message in whatsapp, open the whatsapp app."}}.\n ' \
+                                           '2. {{"App": "None", "Reason": "No app is related to the task."}}.\n'
 
     def search_app_by_name(self, app_name):
         """

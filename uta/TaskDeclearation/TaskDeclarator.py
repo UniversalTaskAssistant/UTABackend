@@ -11,41 +11,32 @@ class TaskDeclarator:
         """
         self.__model_manager = model_manager
 
-        self.__base_prompt_clarify = 'Assess the user task "{task}" to determine if it is sufficiently clear for ' \
-                                     'execution on a smartphone. Given that seniors often provide vague or ' \
-                                     'incomplete task descriptions, identify the most crucial piece of missing ' \
-                                     'information. If the task is clear, indicate so. If not, provide a focused ' \
-                                     'question with up to 4 selectable options to clarify the task effectively. ' \
-                                     'The Options should be designed to extract the most essential missing detail ' \
-                                     'for task clarification. Return your analysis in JSON format, comprising: ' \
-                                     '1. "Clear": a boolean indicating if the task is clear enough. ' \
-                                     '2. "Question": a single question for further task clarification. ' \
-                                     '3. "Options": a list of up to 4 example options that may answers the question. ' \
-                                     'Response for a clear task: {{"Clear": true, "Question": "", "Options": []}}.' \
-                                     'Example response for an unclear task (related to app choice): {{"Clear": false, ' \
-                                     '"Question": "Which app would you prefer to use for this communication?", ' \
-                                     '"Options": ["Message", "WhatsApp", "Meta", "Phone Call"]}}. ' \
-                                     'Example response for an unclear task (related to message content): ' \
-                                     '{{"Clear": false, "Question": "What is the content of the message you want to ' \
-                                     'send?", "Options": ["Greetings", "Appointment request", "Quick catch-up", ' \
-                                     '"Share a photo or video"]}}.' \
+        self.__base_prompt_clarify = 'Assess the user task "{task}" to determine if it is sufficiently clear for execution on a smartphone. ' \
+                                     'If it is not clear enough, provide a focused question with up to 4 selectable options to clarify the task.\n' \
+                                     '!!!Respond to the following points:\n' \
+                                     '1. "Clear": a boolean indicating if the task is clear enough.\n' \
+                                     '2. "Question": a single question to ask the user to further clarify the task with missing essential details.\n' \
+                                     '3. "Options" (optional): a list of up to 4 example options that may answers the question to give more missing details.' \
+                                     '!!!Note:\n' \
+                                     'ONLY use this JSON format to provide your answer: {{"Clear": "<True or False>", "Question": "<Question>", "Options": ["<Options>"]}}.\n' \
+                                     '!!!Examples:\n' \
+                                     '1. {{"Clear": "False", "Question": "Which app do you want to send your message?", "Options": ["Message", "WhatsApp", "Meta", "Phone Call"]}}.\n ' \
+                                     '2. {{"Clear": "False", "Question": "What is your location?", "Options": []}}.\n' \
+                                     '3. {{"Clear": "True"}}\n'
 
-        self.__base_prompt_decompose = 'Analyze the user task "{task}" to determine if it comprises multiple, ' \
-                                       'distinct sub-tasks. Complex tasks often consist of several steps that need ' \
-                                       'to be executed separately. ' \
-                                       'For instance, the task "Login to Facebook and send a message to Sam Wellson" ' \
-                                       'involves two separate actions: logging into Facebook and sending a message. ' \
-                                       'Identify if the given task requires decomposition and if so, break it down ' \
-                                       'into its constituent sub-tasks. Provide your analysis in JSON format, ' \
-                                       'including: ' \
-                                       '1. "Decompose": a boolean string indicating whether the task should be ' \
-                                       'decomposed, ' \
-                                       '2. "Sub-tasks": an array of the identified sub-tasks, or "None" if no ' \
-                                       'decomposition is needed, ' \
-                                       '3. "Explanation": a brief explanation of your decision. ' \
-                                       'Example: {{"Decompose": "True", "Sub-tasks": ["Login to Facebook", ' \
-                                       '"Send message to Sam Wellson on Facebook"], "Explanation": "The task ' \
-                                       'contains two independent actions that need to be completed sequentially."}}'
+        self.__base_prompt_decompose = 'Analyze the user task "{task}" to determine if it comprises multiple, distinct sub-tasks.' \
+                                       'Complex tasks often consist of several steps that need to be executed separately. ' \
+                                       'For instance, the task "Login to Facebook and send a message to Sam" involves two separate actions: logging into Facebook and sending a message.\n' \
+                                       '!!!Respond to the following points:\n' \
+                                       '1. "Decompose": a boolean string indicating whether the task should be decomposed.\n ' \
+                                       '2. "Sub-tasks": an array of the identified sub-tasks, or "None" if no decomposition is needed.\n ' \
+                                       '3. "Explanation": a brief explanation of your decision. \n' \
+                                       '!!!Note:\n' \
+                                       'ONLY use this JSON format to provide your answer: {{"Decompose":"<True or False>", "Sub-tasks": ["<subtask>"], "Explanation": "<Explanation>"}}\n' \
+                                       '!!!Example:\n' \
+                                       '1. {{"Decompose": "True", "Sub-tasks": ["Login to Facebook", "Send message to Sam Wellson on Facebook"], ' \
+                                       '"Explanation": "The task contains two independent actions that need to be completed sequentially."}}\n' \
+                                       '2. {{"Decompose"： "False", "Explanation": "This task is simple enough to be executed on the smartphone."}}\n'
 
         self.__base_prompt_classify = 'Classify the given user task "{task}" into one of three categories for ' \
                                       'smartphone usage: ' \

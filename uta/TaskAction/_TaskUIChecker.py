@@ -20,9 +20,9 @@ class _TaskUIChecker:
                                '2. This UI has been proved as a related UI to the task, you have to perform one of the given action.\n' \
                                '3. Select "Input" only if the keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
                                '4. Ensure the chosen element supports the intended action (clickable to click or scrollable to scroll). \n' \
-                               '!!!Example:\n' \
-                               '{{"Action": "Click", "Element": "3", "Reason": "Open Settings to access task settings"}}. \n' \
-                               '{{"Action": "Input", "Element": "4", "Input Text": "Download Trump", "Reason": "Type in the name to follow the account."}}.\n'
+                               '!!!Examples:\n' \
+                               '1. {{"Action": "Click", "Element": "3", "Reason": "Open Settings to access task settings"}}. \n' \
+                               '22. {{"Action": "Input", "Element": "4", "Input Text": "Download Trump", "Reason": "Type in the name to follow the account."}}.\n'
 
         self.__back_prompt = 'Is there an element in the current UI that can be clicked to navigate back and assist in completing the task "{task}"? \n' \
                              '!!!Answer the following three questions:\n' \
@@ -32,7 +32,7 @@ class _TaskUIChecker:
                              '!!!Notes: \n' \
                              '1. ONLY use this JSON format to provide your answer: {{"Can": "<Yes or No>", "Element": "<ID or None>", "Description": "<description>"}}.\n' \
                              '2. Select a clickable element from the UI hierarchy. \n' \
-                             '!!!Example: \n' \
+                             '!!!Examples: \n' \
                              '1. {{"Can": "Yes", "Element": 2, "Reason": "Navigates to the previous screen", "Description": "Click on the \'Back\' button"}}.\n' \
                              '2. {{"Can": "No", "Element": "None", "Reason": "No back button present", "Description": "None"}}.\n'
 
