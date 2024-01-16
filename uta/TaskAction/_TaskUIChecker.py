@@ -65,7 +65,7 @@ class _TaskUIChecker:
         if len(task.actions) > 0:
             prompt += '(Action history for this task - avoid repetition: ' + str(task.actions) + '.)\n'
         if len(task.except_elements_ids) > 0:
-            prompt += '(Elements with the following IDs have been proved to be unrelated to this task, except them: ' \
+            prompt += '(Elements with the following IDs have been proved to be unrelated to this task, exclude them: ' \
                       + str(task.except_elements_ids) + '.)\n'
         return prompt
 

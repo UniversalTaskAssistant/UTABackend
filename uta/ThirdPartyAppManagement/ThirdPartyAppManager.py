@@ -38,15 +38,14 @@ class ThirdPartyAppManager:
                                       '...and so on. \n\n' \
                                       'Apps to analyze: \n{app_details}'
 
-        self.__availability_check_prompt = 'Identify the app related to the task "{task}". Consider the following' \
-                                           ' apps: [{app_list}]. \n' \
-                                           'Note: Exclude apps that cannot be launched or have been launched ' \
-                                           'already: [{exp_apps}]. \n' \
-                                           'Respond in JSON format with (1) the app package name if related, ' \
-                                           'or "None" if unrelated, and (2) a brief reason. \n' \
-                                           'Format: {{"App": "<app_package_or_None>", "Reason": "<explanation>"}}. \n' \
-                                           'Example: {{"App": "com.example.app", "Reason": "Directly performs the ' \
-                                           'task"}} or {{"App": "None", "Reason": "No app is related"}}.'
+        self.__availability_check_prompt = 'Identify the app related to the task "{task}" from the given app list. \n' \
+                                           '!!!Apps:\n{app_list}\n' \
+                                           '!!!Note:\n ' \
+                                           '1. ONLY use this JSON format to provide your answer: {{"App": "<app_package_or_None>", "Reason": "<explanation>"}}.\n' \
+                                           '2. If no related found, answer "None" for the "App" in the answer JSON.\n' \
+                                           '!!!Example\n:' \
+                                           '{{"App": "com.whatsapp.com", "Reason": "To send message in whatsapp, open the whatsapp app."}}.\n ' \
+                                           '{{"App": "None", "Reason": "No app is related to the task."}}.\n'
 
     def search_app_by_name(self, app_name):
         """
@@ -137,13 +136,17 @@ class ThirdPartyAppManager:
         """
         try:
             print('* Check Related App *')
-            # Provide a default empty list if except_apps is None
-            except_apps_str = '; '.join(task.except_apps)
             # Format base prompt
-            prompt = self.__availability_check_prompt.format(task=task.task_description, app_list='; '.join(app_list),
-                                                             exp_apps=except_apps_str)
-            conversations = [{'role': 'system', 'content': SYSTEM_PROMPT}, {'role': 'user', 'content': prompt}]
+            prompt = self.__availability_check_prompt.format(task=task.task_description, app_list='; '.join(app_list))
+            if len(task.user_clarify) > 0:
+                prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + '.)\n'
+            if len(task.subtasks) > 0:
+                prompt += '(Potential subtasks and steps to complete the task: ' + str(task.subtasks) + '.)\n'
+            if len(task.except_apps) > 0:
+                prompt += '(These apps cannot be launched or are proved to be unrelated to the task, ' \
+                          'exclude them from your selection.\n' + str(task.except_apps) + '.)\n'
             # Ask FM
+            conversations = [{'role': 'system', 'content': SYSTEM_PROMPT}, {'role': 'user', 'content': prompt}]
             resp = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)
             task.res_related_app_check = json.loads(resp['content'])
             print(task.res_related_app_check)
