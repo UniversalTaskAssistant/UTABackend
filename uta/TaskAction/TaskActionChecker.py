@@ -65,6 +65,11 @@ class TaskActionChecker:
         # [Related UI] => Check action
         else:
             action = self.check_element_action(ui_data, task, printlog)
+            try:
+                action['Coordinate'] = ui_data.elements[int(action['Element'])]
+            except Exception as e:
+                print(action)
+                raise e
         task.actions.append(action)
         return action
 
