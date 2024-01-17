@@ -190,7 +190,7 @@ class Device:
         """
         Take action on the device
         Args:
-            action (dict): {"Action":, "Element":, "Input Text":, "Description":, "Reason":}
+            action (dict): {"Action":, "Coordinate":, "Element":, "Input Text":, "Description":, "Reason":}
             ui_data (UIData): UI data containing the element coordinates
             show (bool): If True, displays the annotated action
         """
@@ -198,17 +198,11 @@ class Device:
         print(action)
         action_type = action['Action'].lower()
         if 'click' in action_type:
-            self.click_screen(ui_data, action['Element'], show)
-        elif 'scroll down' in action_type:
-            self.down_scroll_screen(ui_data, action['Element'], show)
-        elif 'scroll up' in action_type:
-            self.up_scroll_screen(ui_data, action['Element'], show)
-        elif 'swipe left' in action_type:
-            self.left_swipe_screen(ui_data, action['Element'], show)
-        elif 'swipe right' in action_type:
-            self.right_swipe_screen(ui_data, action['Element'], show)
-        elif 'press' in action_type:
-            self.long_press_screen(ui_data, action['Element'], show)
+            self.click_screen(ui_data, action['Coordinate'], show)
+        elif 'scroll' in action_type:
+            self.down_scroll_screen(ui_data, action['Coordinate'], show)
+        elif 'swipe' in action_type:
+            self.right_swipe_screen(ui_data, action['Coordinate'], show)
         elif 'input' in action_type:
             self.input_text(action['Input Text'])
         elif 'launch' in action_type:
@@ -216,120 +210,120 @@ class Device:
         else:
             raise ValueError(f"No expected action returned from model, returned action: {action_type}")
 
-    def click_screen(self, ui, element, show=False):
+    def click_screen(self, ui, coordinate, show=False):
         """
         Simulates a tap on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            element: The key for the element in the UI to tap.
+            coordinate: The key for the element in the UI to tap.
             show (bool): If True, displays the tap visually.
         """
-        ele = ui.elements[element]
+        ele = ui.elements[coordinate]
         bounds = ele['bounds']
         centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         if show:
-            board = ui.img.copy()
+            board = ui.ui_screenshot.copy()
             cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
             cv2.imshow('click', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
             cv2.waitKey()
             cv2.destroyWindow('click')
         self.__adb_device.input_tap(centroid[0], centroid[1])
 
-    def long_press_screen(self, ui, element, show=False):
+    def long_press_screen(self, ui, coordinate, show=False):
         """
         Simulates a long press on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            element: The key for the element in the UI to long press.
+            coordinate: The key for the element in the UI to long press.
             show (bool): If True, displays the long press visually.
         """
-        ele = ui.elements[element]
+        ele = ui.elements[coordinate]
         bounds = ele['bounds']
         centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         if show:
-            board = ui.img.copy()
+            board = ui.ui_screenshot.copy()
             cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
             cv2.imshow('long_press', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
             cv2.waitKey()
             cv2.destroyWindow('long_press')
         self.__adb_device.input_swipe(centroid[0], centroid[1], centroid[0], centroid[1], 3000)
 
-    def up_scroll_screen(self, ui, element, show=False):
+    def up_scroll_screen(self, ui, coordinate, show=False):
         """
         Simulates an upward scroll on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            element: The key for the element in the UI to scroll up.
+            coordinate: The key for the element in the UI to scroll up.
             show (bool): If True, displays the scroll action visually.
         """
-        ele = ui.elements[element]
+        ele = ui.elements[coordinate]
         bounds = ele['bounds']
         scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[1])
         if show:
-            board = ui.img.copy()
+            board = ui.ui_screenshot.copy()
             cv2.arrowedLine(board, scroll_start, scroll_end, (255, 0, 255), 8)
             cv2.imshow('up_scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
             cv2.waitKey()
             cv2.destroyWindow('up_scroll')
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
 
-    def down_scroll_screen(self, ui, element, show=False):
+    def down_scroll_screen(self, ui, coordinate, show=False):
         """
         Simulates a downward scroll on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            element: The key for the element in the UI to scroll down.
+            coordinate: The key for the element in the UI to scroll down.
             show (bool): If True, displays the scroll action visually.
         """
-        ele = ui.elements[element]
+        ele = ui.elements[coordinate]
         bounds = ele['bounds']
         scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[3])
         scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         if show:
-            board = ui.img.copy()
+            board = ui.ui_screenshot.copy()
             cv2.arrowedLine(board, scroll_start, scroll_end, (255, 0, 255), 8)
             cv2.imshow('down_scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
             cv2.waitKey()
             cv2.destroyWindow('down_scroll')
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
 
-    def right_swipe_screen(self, ui, element, show=False):
+    def right_swipe_screen(self, ui, coordinate, show=False):
         """
         Simulates a right swipe on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            element: The key for the element in the UI to swipe right.
+            coordinate: The key for the element in the UI to swipe right.
             show (bool): If True, displays the swipe action visually.
         """
-        ele = ui.elements[element]
+        ele = ui.elements[coordinate]
         bounds = ele['bounds']
         bias = 20
         swipe_start = (bounds[0] + bias, (bounds[3] + bounds[1]) // 2)
         swipe_end = (bounds[2], (bounds[3] + bounds[1]) // 2)
         if show:
-            board = ui.img.copy()
+            board = ui.ui_screenshot.copy()
             cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
             cv2.imshow('right_swipe', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
             cv2.waitKey()
             cv2.destroyWindow('right_swipe')
         self.__adb_device.input_swipe(swipe_start[0], swipe_start[1], swipe_end[0], swipe_end[1], 500)
 
-    def left_swipe_screen(self, ui, element, show=False):
+    def left_swipe_screen(self, ui, coordinate, show=False):
         """
         Simulates a left swipe on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            element: The key for the element in the UI to swipe left.
+            coordinate: The key for the element in the UI to swipe left.
             show (bool): If True, displays the swipe action visually.
         """
-        ele = ui.elements[element]
+        ele = ui.elements[coordinate]
         bounds = ele['bounds']
         bias = 20
         swipe_start = (bounds[2] - bias, (bounds[3] + bounds[1]) // 2)
         swipe_end = (bounds[0], (bounds[3] + bounds[1]) // 2)
         if show:
-            board = ui.img.copy()
+            board = ui.ui_screenshot.copy()
             cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
             cv2.imshow('left_swipe', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
             cv2.waitKey()

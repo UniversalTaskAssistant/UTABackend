@@ -44,6 +44,8 @@
         "Explanation": "The task 'Check my contacts' is a single action and does not need to be broken into sub-tasks. It does not require any other dependent tasks to be performed sequentially or in parallel.",
         "Proc": "Decompose"
     },
+    "user_clarify": [],
+    "subtasks": [],
     "conversation_automation": [
         {
             "role": "system",
@@ -77,14 +79,13 @@
         "Reason": "There is no back button or home button present in the current UI hierarchy that would allow navigation to a previous screen or main menu",
         "Description": "None"
     },
-    "except_elements_ids": [],
     "relations": [],
+    "except_elements_ids": [],
     "actions": [
         {
             "Action": "Other App"
         }
     ],
-    "task_execution_result": null,
     "related_app": "com.android.contacts",
     "res_related_app_check": {
         "App": "com.android.contacts",

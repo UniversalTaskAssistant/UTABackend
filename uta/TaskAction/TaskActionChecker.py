@@ -1,6 +1,3 @@
-import json
-from uta.DataStructures import *
-from uta.config import *
 from uta.TaskAction._TaskUIChecker import _TaskUIChecker
 
 
@@ -12,27 +9,20 @@ class TaskActionChecker:
         self.__model_manager = model_manager
         self.__task_ui_checker = _TaskUIChecker(model_manager)
 
-    def action_inquiry(self, task, user_message, printlog=False):
+    def action_inquiry(self, task, printlog=False):
         """
         Execute inquiry type task.
         Args:
             task (Task): Task object containing historical inquiry steps.
-            user_message (str): User's question.
             printlog (bool): If True, enables logging of outputs.
         Returns:
             FM's response.
         """
         try:
-            step.user_conversation = {'role': 'user', 'content': user_message}
-            inquiry_history_list = [one_conv for step_index, one_step in enumerate(task.steps) if
-                                    isinstance(one_step, InquiryStep) for one_conv in
-                                    task.conversation_automation[step_index]]
-            inquiry_history_list.append(step.user_conversation)
-
-            resp = self.__model_manager.send_fm_conversation(inquiry_history_list, printlog=printlog)
-            step.llm_conversation = resp
-            task.conversation_automation.append([step.user_conversation, step.llm_conversation])
-            return json.loads(resp)
+            action = {"Action": "Search", "Content": task.task_description}
+            task.actions.append(action)
+            task.res_action_check = action
+            return action
         except Exception as e:
             print('error:', e)
             raise e

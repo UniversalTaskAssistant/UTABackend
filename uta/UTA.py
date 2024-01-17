@@ -87,9 +87,15 @@ class UTA:
         print('\n*** Declare task ***')
         user, task = self.instantiate_user_task(user_id, task_id, user_msg)
         clarify = self.clarify_task(task)
-        if clarify['Clear'] == 'True' or clarify['Clear'] == True:
+        if clarify['Clear'] == 'True' or clarify['Clear'] is True:
             self.classify_task(task)
-            decompose = self.decompose_task(task)
+            if 'general' in task.task_type.lower():
+                task.res_decomposition = {"Decompose": "False", "Sub-tasks": [],
+                                          "Explanation": "This task is simple enough to be executed on the smartphone.",
+                                          'Proc': 'Decompose'}  # I suggest we use full name, Proc is too vague to understand
+                decompose = task.res_decomposition
+            else:
+                decompose = self.decompose_task(task)
             self.system_connector.save_task(task)
             return decompose
         else:
@@ -166,7 +172,7 @@ class UTA:
         # 2. act based on task type
         task_type = task.task_type.lower()
         if 'general' in task_type:
-            self.task_action_checker.action_inquiry(ui, task)
+            action = self.task_action_checker.action_inquiry(task)
         elif 'system' in task_type or 'app' in task_type:
             task.conversation_automation = []   # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
@@ -179,8 +185,10 @@ class UTA:
                     action = {"Action": "Launch", "App": related_app['App'], "Description": "Launch app"}
                 else:
                     action = {"Action": "Infeasible", "Description": "No related app installed."}
-            self.system_connector.save_task(task)
-            return ui, action
+        else:
+            raise Exception
+        self.system_connector.save_task(task)
+        return ui, action
 
 
 if __name__ == '__main__':

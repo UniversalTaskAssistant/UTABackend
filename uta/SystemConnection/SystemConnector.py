@@ -111,6 +111,9 @@ class SystemConnector:
         """
         # output_file_path_elements = pjoin(output_dir, ui_data.ui_id + '_elements.json')
         # self.save_json(ui_data.elements, output_file_path_elements)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            print('- Create ui folder', output_dir, '-')
         output_file_path_element_tree = pjoin(output_dir, ui_data.ui_id + '_uitree.json')
         self.save_json(ui_data.element_tree, output_file_path_element_tree)
         print('- Export ui elements to file', output_file_path_element_tree, '-')

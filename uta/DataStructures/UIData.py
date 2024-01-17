@@ -153,48 +153,49 @@ class UIData(_Data):
         """
         assert recommended_action != "None"
 
-        ele = self.elements[recommended_action.element_id]
+        ele = self.elements[recommended_action["Coordinate"]]
         bounds = ele['bounds']
+        action_type = recommended_action['Action'].lower()
 
-        if recommended_action.action.lower() == 'click':
+        if 'click' in action_type:
             centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
             board = self.ui_screenshot.copy()
             cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
             self.annotated_screenshot = board
-        elif recommended_action.action.lower() == 'long press':
+        elif 'press' in action_type:
             centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
             board = self.ui_screenshot.copy()
             cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
             self.annotated_screenshot = board
-        elif recommended_action.action.lower() == 'scroll up':
+        elif 'scroll up' in action_type:
             scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
             scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[1])
             board = self.ui_screenshot.copy()
             cv2.circle(board, scroll_start, 20, (255, 0, 255), 8)
             cv2.circle(board, scroll_end, 20, (255, 0, 255), 8)
             self.annotated_screenshot = board
-        elif recommended_action.action.lower() == 'scroll down':
+        elif 'scroll down' in action_type:
             scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[3])
             scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
             board = self.ui_screenshot.copy()
             cv2.circle(board, scroll_start, 20, (255, 0, 255), 8)
             cv2.circle(board, scroll_end, 20, (255, 0, 255), 8)
             self.annotated_screenshot = board
-        elif recommended_action.action.lower() == 'swipe right':
+        elif 'swipe right' in action_type:
             bias = 20
             swipe_start = (bounds[0] + bias, (bounds[3] + bounds[1]) // 2)
             swipe_end = (bounds[2], (bounds[3] + bounds[1]) // 2)
             board = self.ui_screenshot.copy()
             cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
             self.annotated_screenshot = board
-        elif recommended_action.action.lower() == 'swipe left':
+        elif 'swipe left' in action_type:
             bias = 20
             swipe_start = (bounds[2] - bias, (bounds[3] + bounds[1]) // 2)
             swipe_end = (bounds[0], (bounds[3] + bounds[1]) // 2)
             board = self.ui_screenshot.copy()
             cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
             self.annotated_screenshot = board
-        elif recommended_action.action.lower() == 'input':
+        elif 'input' in action_type:
             text = recommended_action.input_text
             text_x = bounds[0] + 5  # Slightly right from the left bound
             text_y = (bounds[1] + bounds[3]) // 2  # Vertically centered

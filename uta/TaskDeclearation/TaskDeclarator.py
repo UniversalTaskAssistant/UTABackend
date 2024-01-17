@@ -36,7 +36,8 @@ class TaskDeclarator:
                                        '!!!Example:\n' \
                                        '1. {{"Decompose": "True", "Sub-tasks": ["Login to Facebook", "Send message to Sam Wellson on Facebook"], ' \
                                        '"Explanation": "The task contains two independent actions that need to be completed sequentially."}}\n' \
-                                       '2. {{"Decompose"： "False", "Explanation": "This task is simple enough to be executed on the smartphone."}}\n'
+                                       '2. {{"Decompose"： "False", "Sub-tasks": [], ' \
+                                       '"Explanation": "This task is simple enough to be executed on the smartphone."}}\n'
 
         self.__base_prompt_classify = 'Classify the given user task "{task}" into one of three categories for smartphone usage:\n ' \
                                       '!!!Categories:' \
