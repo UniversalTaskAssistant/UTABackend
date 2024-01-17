@@ -100,10 +100,8 @@ class _TaskUIChecker:
         """
         print('* Check UI and Task Relation *')
         # Format base prompt
-        except_elements = ','.join(task.except_elements_ids)
-        action_history = ';'.join(task.actions)
-        prompt = self.__relation_prompt.format(task=task.task_description, except_elements=except_elements,
-                                               action_history=action_history)
+        prompt = self.wrap_task_info(task)
+        prompt += self.__relation_prompt.format(task=task.task_description)
         # Ask FM
         resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_relation_check = json.loads(resp['content'])
@@ -122,10 +120,8 @@ class _TaskUIChecker:
         """
         print('* Check UI Action and Target Element *')
         # Format base prompt
-        except_elements = ','.join(task.except_elements_ids)
-        action_history = ';'.join(task.actions)
-        prompt = self.__action_prompt.format(task=task.task_description, except_elements=except_elements,
-                                             action_history=action_history)
+        prompt = self.wrap_task_info(task)
+        prompt += self.__action_prompt.format(task=task.task_description)
         # Ask FM
         resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_action_check = json.loads(resp['content'])
@@ -144,10 +140,8 @@ class _TaskUIChecker:
         """
         print('* Check Any Action to Go Back to Related UI *')
         # Format base prompt
-        except_elements = ','.join(task.except_elements_ids)
-        action_history = ';'.join(task.actions)
-        prompt = self.__back_prompt.format(task=task.task_description, except_elements=except_elements,
-                                           action_history=action_history)
+        prompt = self.wrap_task_info(task)
+        prompt += self.__back_prompt.format(task=task.task_description)
         # Ask FM
         resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
         task.res_go_back_check = json.loads(resp['content'])

@@ -39,7 +39,8 @@ class TaskActionChecker:
         """
         print('\n*** Check Action on UI *** ')
         # Check ui task relation
-        self.check_ui_relation(ui_data, task, printlog)
+        relation = self.check_ui_relation(ui_data, task, printlog)
+        task.relations.append(relation)
         # [Complete] => Finish
         if 'complete' in task.res_relation_check['Relation'].lower():
             action = {"Action": "Complete", "Reason": task.res_relation_check['Relation']['Reason']}

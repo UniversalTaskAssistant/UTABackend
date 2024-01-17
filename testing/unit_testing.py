@@ -153,11 +153,15 @@ def test_task_declarator():
     description = "I want to watch football videos"
     # description = "How are you today?"
     task = Task("1", "1", description)
+    print(task.to_dict())
 
-    # resp = task_declarator.clarify_task(task, printlog=True)
-    # resp = task_declarator.classify_task(task)
+    resp = task_declarator.clarify_task(task, printlog=True)
+    print(task.to_dict())
+    resp = task_declarator.classify_task(task)
+    print(task.to_dict())
     resp = task_declarator.decompose_task(task)
-    print(resp)
+    print(task.to_dict())
+    # print(resp)
 
 
 def test_googleplay():
@@ -254,6 +258,47 @@ def test_device():
     device.take_action(action, ui_data=gui, show=True)
 
 
+def test_taskuichecker():
+    model_manager = ModelManager()
+    task_ui_checker = _TaskUIChecker(model_manager)
+
+    elements = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_elements.json')
+    tree = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_tree.json')
+    system_connector = SystemConnector()
+    screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
+    xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
+    wm = (1080, 2400)
+    gui = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file, ui_resize=wm)
+    gui.elements = elements
+    gui.element_tree = tree
+
+    task = Task("1", "1", 'Open the youtube')
+
+    task_declarator = TaskDeclarator(model_manager)
+    task_declarator.clarify_task(task, printlog=True)
+    task_declarator.classify_task(task)
+    task_declarator.decompose_task(task)
+
+    new_prompt = task_ui_checker.wrap_task_info(task)
+    print(new_prompt)
+
+    res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
+    print(task.to_dict())
+    print(res)
+
+    res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
+    print(task.to_dict())
+    print(res)
+
+    res = task_ui_checker.check_element_action(gui, task, printlog=True)
+    print(task.to_dict())
+    print(res)
+    task = Task("1", "2", 'Go to the phone camera')
+    res = task_ui_checker.check_ui_go_back_availability(gui, task, printlog=True)
+    print(task.to_dict())
+    print(res)
+
+
 if __name__ == '__main__':
     # test_task()
 
@@ -270,4 +315,5 @@ if __name__ == '__main__':
     # test_googleplay()
     # test_appmanager()
 
-    test_device()
+    # test_device()
+    test_taskuichecker()
