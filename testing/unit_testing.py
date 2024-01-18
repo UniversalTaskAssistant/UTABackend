@@ -1,5 +1,4 @@
 import cv2
-import time
 
 from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
@@ -15,6 +14,7 @@ from uta.ThirdPartyAppManagement import ThirdPartyAppManager, _GooglePlay
 from uta.TaskAction import _TaskUIChecker, TaskActionChecker
 
 from uta.config import *
+from uta import UTA
 
 
 def test_task():
@@ -328,6 +328,54 @@ def test_actionchecker():
         print(task.to_dict())
 
 
+def get_package():
+    device = Device()
+    device.connect()
+
+    print(device.get_current_package_and_activity_name())
+    print(device.get_app_list_on_the_device())
+
+
+def test_uta():
+    uta = UTA()
+    user_id = "3"
+    resolution = (1080, 2400)
+    app_list = ['com.google.android.apps.youtube YouTube',
+                'com.google.android.apps.youtube.kids YouTube Kids',
+                'com.google.android.apps.youtube.unplugged YouTube TV: Live TV & more',
+                'com.google.android.apps.youtube.music YouTube Music',
+                'com.google.android.youtube.tv YouTube for Android TV',
+                'com.google.android.youtube.tvunplugged YouTube TV: Live TV & more',
+                'com.google.android.apps.youtube.creator YouTube Studio',
+                'com.google.android.apps.youtube.music.pwa YouTube Music for Chromebook',
+                'com.google.android.youtube.tvkids YouTube Kids for Android TV',
+                'com.google.android.youtube.tvmusic YouTube Music',
+                'com.google.android.videos Google TV',
+                'com.netflix.mediaclient Netflix',
+                'com.tubitv Tubi: Movies & Live TV',
+                'com.amazon.avod.thirdpartyclient Amazon Prime Video',
+                'com.google.android.apps.youtube.producer YouTube Create',
+                'com.disney.disneyplus Disney+',
+                'com.vimeo.android.videoapp Vimeo',
+                'com.crunchyroll.crunchyroid Crunchyroll',
+                'com.hulu.plus Hulu: Stream TV shows & movies',
+                'com.plexapp.android Plex: Stream Movies & TV']
+    uta.system_connector.user_data_root = WORK_PATH + 'old_test_data/test/user_info/'
+
+    uta.setup_user(user_id, resolution, app_list)
+    uta.instantiate_user_task(user_id, "0", user_msg="Open the app")
+    uta.instantiate_user_task(user_id, "0", user_msg="Open the app")
+    uta.declare_task(user_id, "0", "Open the Youtube app")
+
+    screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
+    xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
+    package_name = "com.google.android.apps.nexuslauncher"
+    activity_name = "com.google.android.apps.nexuslauncher.NexusLauncherActivity"
+    ui, action = uta.automate_task(user_id, "0", screenshot, xml_file, package_name, activity_name, printlog=True)
+    print(ui)
+    print(action)
+
+
 if __name__ == '__main__':
     # test_task()
 
@@ -344,6 +392,8 @@ if __name__ == '__main__':
     # test_googleplay()
     # test_appmanager()
 
-    test_device()
+    # test_device()
+    # get_package()
     # test_taskuichecker()
     # test_actionchecker()
+    test_uta()

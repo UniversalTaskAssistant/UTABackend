@@ -153,7 +153,7 @@ class UIData(_Data):
         """
         assert recommended_action != "None"
 
-        ele = self.elements[recommended_action["Coordinate"]]
+        ele = self.elements[int(recommended_action["Element"])]
         bounds = ele['bounds']
         action_type = recommended_action['Action'].lower()
 
@@ -196,7 +196,7 @@ class UIData(_Data):
             cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
             self.annotated_screenshot = board
         elif 'input' in action_type:
-            text = recommended_action.input_text
+            text = recommended_action['Input Text']
             text_x = bounds[0] + 5  # Slightly right from the left bound
             text_y = (bounds[1] + bounds[3]) // 2  # Vertically centered
             board = self.ui_screenshot.copy()

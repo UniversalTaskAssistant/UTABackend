@@ -94,8 +94,10 @@ class UTA:
                                           "Explanation": "This task is simple enough to be executed on the smartphone.",
                                           'Proc': 'Decompose'}  # I suggest we use full name, Proc is too vague to understand
                 decompose = task.res_decomposition
-            else:
+            elif 'system' in task.task_type.lower() or 'app' in task.task_type.lower():
                 decompose = self.decompose_task(task)
+            else:
+                raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
             self.system_connector.save_task(task)
             return decompose
         else:
@@ -168,7 +170,7 @@ class UTA:
         # 1. process ui
         ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=user.device_resolution)
         self.ui_processor.process_ui(ui)
-        self.system_connector.save_ui_data(ui, output_dir=pjoin(DATA_PATH, user_id, task_id))
+        self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
         # 2. act based on task type
         task_type = task.task_type.lower()
         if 'general' in task_type:
@@ -186,7 +188,7 @@ class UTA:
                 else:
                     action = {"Action": "Infeasible", "Description": "No related app installed."}
         else:
-            raise Exception
+            raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
         self.system_connector.save_task(task)
         return ui, action
 
