@@ -170,7 +170,7 @@ class UTA:
         self.ui_processor.process_ui(ui)
         self.system_connector.save_ui_data(ui, output_dir=pjoin(DATA_PATH, user_id, task_id))
         # 2. act based on task type
-        task_type = task.task_typetask_type.lower()
+        task_type = task.task_type.lower()
         if 'general' in task_type:
             action = self.task_action_checker.action_inquiry(task)
         elif 'system' in task_type or 'app' in task_type:
