@@ -236,24 +236,26 @@ def test_device():
     gui.elements = elements
     gui.element_tree = tree
 
-    # device.right_swipe_screen(gui, 0, True)
-    # device.left_swipe_screen(gui, 0, True)
-    # device.up_scroll_screen(gui, 0, True)
-    # device.down_scroll_screen(gui, 0, True)
-    # device.long_press_screen(gui, 19, True)
-    # device.click_screen(gui, 19, True)
+    # device.right_swipe_screen(gui, gui.elements[0], True)
+    # device.left_swipe_screen(gui, gui.elements[0], True)
+    # device.up_scroll_screen(gui, gui.elements[0], True)
+    # device.down_scroll_screen(gui, gui.elements[0], True)
+    # device.long_press_screen(gui, gui.elements[19], True)
+    # device.click_screen(gui, gui.elements[19], True)
 
     # for act in ["Swipe", "Scroll", "Click", "Launch"]:
     #     cood = 0 if act != "Click" else 19
-    #     action = {"Action": act, "Coordinate": cood, "Element": str(cood), "App": 'com.google.android.youtube',
+    #     cood_ele = gui.elements[cood]
+    #     action = {"Action": act, "Coordinate": cood_ele, "Element": str(cood), "App": 'com.google.android.youtube',
     #               "Input Text": "something."}
     #     device.take_action(action, ui_data=gui, show=False)
     #     time.sleep(3)
 
     # test input independently
     cood = 19
+    cood_ele = gui.elements[cood]
     act = "Input"
-    action = {"Action": act, "Coordinate": cood, "Element": str(cood), "App": 'com.google.android.youtube',
+    action = {"Action": act, "Coordinate": cood_ele, "Element": str(cood), "App": 'com.google.android.youtube',
               "Input Text": "something."}
     device.take_action(action, ui_data=gui, show=True)
 
@@ -286,6 +288,7 @@ def test_taskuichecker():
     print(task.to_dict())
     print(res)
 
+    task = Task("1", "1", 'Open the CSIRO app')
     res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
     print(task.to_dict())
     print(res)
@@ -297,6 +300,32 @@ def test_taskuichecker():
     res = task_ui_checker.check_ui_go_back_availability(gui, task, printlog=True)
     print(task.to_dict())
     print(res)
+
+
+def test_actionchecker():
+    model_manager = ModelManager()
+    task_action_checker = TaskActionChecker(model_manager)
+
+    task = Task("1", "1", 'How is the weather like today?')
+    res = task_action_checker.action_inquiry(task, printlog=True)
+    print(res)
+    print(task.to_dict())
+
+    elements = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_elements.json')
+    tree = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_tree.json')
+    system_connector = SystemConnector()
+    screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
+    xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
+    wm = (1080, 2400)
+    gui = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file, ui_resize=wm)
+    gui.elements = elements
+    gui.element_tree = tree
+
+    for sub_task in ['Go to the phone camera', 'Go to the Youtube', 'Go to the CSIRO app', 'Go to the home page']:
+        task = Task("1", "1", sub_task)
+        res = task_action_checker.action_on_ui(gui, task, printlog=True)
+        print(res)
+        print(task.to_dict())
 
 
 if __name__ == '__main__':
@@ -316,4 +345,5 @@ if __name__ == '__main__':
     # test_appmanager()
 
     # test_device()
-    test_taskuichecker()
+    # test_taskuichecker()
+    test_actionchecker()

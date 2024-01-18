@@ -210,16 +210,15 @@ class Device:
         else:
             raise ValueError(f"No expected action returned from model, returned action: {action_type}")
 
-    def click_screen(self, ui, coordinate, show=False):
+    def click_screen(self, ui, element, show=False):
         """
         Simulates a tap on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            coordinate: The key for the element in the UI to tap.
+            element: The element in the UI to tap.
             show (bool): If True, displays the tap visually.
         """
-        ele = ui.elements[coordinate]
-        bounds = ele['bounds']
+        bounds = element['bounds']
         centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         if show:
             board = ui.ui_screenshot.copy()
@@ -229,16 +228,15 @@ class Device:
             cv2.destroyWindow('click')
         self.__adb_device.input_tap(centroid[0], centroid[1])
 
-    def long_press_screen(self, ui, coordinate, show=False):
+    def long_press_screen(self, ui, element, show=False):
         """
         Simulates a long press on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            coordinate: The key for the element in the UI to long press.
+            element: The key for the element in the UI to long press.
             show (bool): If True, displays the long press visually.
         """
-        ele = ui.elements[coordinate]
-        bounds = ele['bounds']
+        bounds = element['bounds']
         centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         if show:
             board = ui.ui_screenshot.copy()
@@ -248,16 +246,15 @@ class Device:
             cv2.destroyWindow('long_press')
         self.__adb_device.input_swipe(centroid[0], centroid[1], centroid[0], centroid[1], 3000)
 
-    def up_scroll_screen(self, ui, coordinate, show=False):
+    def up_scroll_screen(self, ui, element, show=False):
         """
         Simulates an upward scroll on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            coordinate: The key for the element in the UI to scroll up.
+            element: The key for the element in the UI to scroll up.
             show (bool): If True, displays the scroll action visually.
         """
-        ele = ui.elements[coordinate]
-        bounds = ele['bounds']
+        bounds = element['bounds']
         scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[1])
         if show:
@@ -268,16 +265,15 @@ class Device:
             cv2.destroyWindow('up_scroll')
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
 
-    def down_scroll_screen(self, ui, coordinate, show=False):
+    def down_scroll_screen(self, ui, element, show=False):
         """
         Simulates a downward scroll on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            coordinate: The key for the element in the UI to scroll down.
+            element: The key for the element in the UI to scroll down.
             show (bool): If True, displays the scroll action visually.
         """
-        ele = ui.elements[coordinate]
-        bounds = ele['bounds']
+        bounds = element['bounds']
         scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[3])
         scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
         if show:
@@ -288,16 +284,15 @@ class Device:
             cv2.destroyWindow('down_scroll')
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
 
-    def right_swipe_screen(self, ui, coordinate, show=False):
+    def right_swipe_screen(self, ui, element, show=False):
         """
         Simulates a right swipe on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            coordinate: The key for the element in the UI to swipe right.
+            element: The key for the element in the UI to swipe right.
             show (bool): If True, displays the swipe action visually.
         """
-        ele = ui.elements[coordinate]
-        bounds = ele['bounds']
+        bounds = element['bounds']
         bias = 20
         swipe_start = (bounds[0] + bias, (bounds[3] + bounds[1]) // 2)
         swipe_end = (bounds[2], (bounds[3] + bounds[1]) // 2)
@@ -309,16 +304,15 @@ class Device:
             cv2.destroyWindow('right_swipe')
         self.__adb_device.input_swipe(swipe_start[0], swipe_start[1], swipe_end[0], swipe_end[1], 500)
 
-    def left_swipe_screen(self, ui, coordinate, show=False):
+    def left_swipe_screen(self, ui, element, show=False):
         """
         Simulates a left swipe on a specified element of the UI.
         Args:
             ui: UI object containing elements.
-            coordinate: The key for the element in the UI to swipe left.
+            element: The key for the element in the UI to swipe left.
             show (bool): If True, displays the swipe action visually.
         """
-        ele = ui.elements[coordinate]
-        bounds = ele['bounds']
+        bounds = element['bounds']
         bias = 20
         swipe_start = (bounds[2] - bias, (bounds[3] + bounds[1]) // 2)
         swipe_end = (bounds[0], (bounds[3] + bounds[1]) // 2)
