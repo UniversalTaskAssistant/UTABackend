@@ -22,7 +22,8 @@ class _TaskUIChecker:
                                '4. Ensure the chosen element supports the intended action (clickable to click or scrollable to scroll). \n' \
                                '!!!Examples:\n' \
                                '1. {{"Action": "Click", "Element": "3", "Reason": "Open Settings to access task settings"}}. \n' \
-                               '22. {{"Action": "Input", "Element": "4", "Input Text": "Download Trump", "Reason": "Type in the name to follow the account."}}.\n'
+                               '2. {{"Action": "Input", "Element": "4", "Input Text": "Download Trump", "Reason": "Type in the name to follow the account."}}.\n' \
+                               '3. {{"Action": "Scroll", "Element": "3", "Reason": "Scroll down to view more elements"}}\n'
 
         self.__back_prompt = 'Is there an element in the current UI that can be clicked to navigate back and assist in completing the task "{task}"? \n' \
                              '!!!Answer the following three questions:\n' \
