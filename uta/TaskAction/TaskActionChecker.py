@@ -60,6 +60,7 @@ class TaskActionChecker:
                 bounds = ui_data.elements[int(action['Element'])]['bounds']
                 centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
                 action['Coordinate'] = centroid
+                action['ElementBounds'] = bounds
             except Exception as e:
                 print(action)
                 raise e

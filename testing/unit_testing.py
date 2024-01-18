@@ -236,12 +236,12 @@ def test_device():
     gui.elements = elements
     gui.element_tree = tree
 
-    # device.right_swipe_screen(gui, gui.elements[0], True)
-    # device.left_swipe_screen(gui, gui.elements[0], True)
-    # device.up_scroll_screen(gui, gui.elements[0], True)
-    # device.down_scroll_screen(gui, gui.elements[0], True)
-    # device.long_press_screen(gui, gui.elements[19], True)
-    # device.click_screen(gui, gui.elements[19], True)
+    # device.right_swipe_screen(gui, 0, True)
+    # device.left_swipe_screen(gui, 0, True)
+    # device.up_scroll_screen(gui, 0, True)
+    # device.down_scroll_screen(gui, 0, True)
+    # device.long_press_screen(gui, 19, True)
+    # device.click_screen(gui, 19, True)
 
     # for act in ["Swipe", "Scroll", "Click", "Launch"]:
     #     cood = 0 if act != "Click" else 19
@@ -344,6 +344,6 @@ if __name__ == '__main__':
     # test_googleplay()
     # test_appmanager()
 
-    # test_device()
+    test_device()
     # test_taskuichecker()
-    test_actionchecker()
+    # test_actionchecker()
