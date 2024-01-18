@@ -57,7 +57,9 @@ class TaskActionChecker:
         else:
             action = self.check_element_action(ui_data, task, printlog)
             try:
-                action['Coordinate'] = ui_data.elements[int(action['Element'])]
+                bounds = ui_data.elements[int(action['Element'])]['bounds']
+                centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+                action['Coordinate'] = centroid
             except Exception as e:
                 print(action)
                 raise e
