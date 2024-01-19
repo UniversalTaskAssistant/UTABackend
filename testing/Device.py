@@ -60,7 +60,7 @@ class Device:
         with open(screen_path, 'wb') as fp:
             fp.write(screen)
         xml = self.cap_current_ui_hierarchy_xml()
-        with open(xml_path, 'w') as fp:
+        with open(xml_path, 'w', encoding='utf-8') as fp:
             fp.write(xml)
         print('- Export UI image and xml to ', screen_path, xml_path, '-')
         return screen_path, xml_path
@@ -202,7 +202,7 @@ class Device:
         elif 'scroll' in action_type:
             self.down_scroll_screen(ui_data, int(action['Element']), show)
         elif 'swipe' in action_type:
-            self.right_swipe_screen(ui_data, int(action['Element']), show)
+            self.left_swipe_screen(ui_data, int(action['Element']), show)
         elif 'input' in action_type:
             self.input_text(action['Input Text'])
         elif 'launch' in action_type:

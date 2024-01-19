@@ -1,179 +1,122 @@
-from uta.DataStructures import *
-
+from os.path import join as pjoin
+import cv2
 import json
-import time
+
+from testing.Device import Device
+from uta.UTA import UTA
+from uta.config import *
 
 
-def connect_to_emulator(uta):
+def annotate_ui_operation(ui, recommended_action):
     """
-    Connect to emulator.
+    Create annotated UI for debugging
     """
-    uta.system_connector.connect_adb_device()
+    assert recommended_action != "None"
 
+    try:
+        ele = ui.elements[int(recommended_action["Element"])]
+        bounds = ele['bounds']
+        action_type = recommended_action['Action'].lower()
 
-def capture_ui_information(uta):
-    """
-    Captures the current UI and view hierarchy.
-    Returns:
-        screenshot, view hierarchy, and resolution.
-    """
-    screenshot = uta.system_connector.cap_screenshot()
-    vh = uta.system_connector.cap_current_ui_hierarchy()
-    ui_resize = uta.system_connector.get_device_resolution()
-    return screenshot, vh, ui_resize
-
-
-def get_app_lists(uta):
-    excepted_related_apps = uta.system_connector.get_current_package_and_activity_name()['package_name']
-    device_app_list = uta.system_connector.get_app_list_on_the_device()
-    return excepted_related_apps, device_app_list
-
-
-def launch_app(uta, rel_app):
-    uta.system_connector.launch_app(rel_app)
-    cur_app, _ = uta.system_connector.get_current_package_and_activity_name().values()
-    if cur_app in rel_app:
-        return True
-    return False
-
-
-def execute_ui_operation(uta, action, ui, show=False, waiting_time=2):
-    """
-    Executes a UI operation based on the recommended action.
-    Args:
-        action (dict): Action to be performed.
-        ui: The UI object on which the action is to be performed.
-        show (bool): Shows the operation if True.
-        waiting_time (int): Time to wait after performing the action.
-    Raises:
-        ValueError: If an unexpected action is encountered.
-    """
-    element = ui.elements[action['Element']]
-    if action['Action'] == 'Click':
-        uta.system_connector.click_screen(ui, element, show)
-    elif action['Action'] == 'Scroll Up':
-        uta.system_connector.up_scroll_screen(ui, element, show)
-    elif action['Action'] == 'Scroll Down':
-        uta.system_connector.down_scroll_screen(ui, element, show)
-    elif action['Action'] == 'Swipe Right':
-        uta.system_connector.right_swipe_screen(ui, element, show)
-    elif action['Action'] == 'Swipe Left':
-        uta.system_connector.left_swipe_screen(ui, element, show)
-    elif action['Action'] == 'Long Press':
-        uta.system_connector.long_press_screen(ui, element, show)
-    elif action['Action'] == 'Input':
-        uta.system_connector.input_text(action['Input Text'])
-    else:
-        raise ValueError(f"No expected action returned from model, returned action: {action['Action']}")
-    time.sleep(waiting_time)
-
-
-def automate_task(uta, task, max_turn=100, clarify_max_turn=3, related_app_max_turn=3, debug=False,
-                  except_apps=None, printlog=False, show_operation=False):
-    """
-    Main function to automate a given task, handling task decomposition, execution, and result storage.
-
-    Args:
-        task (str): The task description.
-        max_turn (int, optional): Maximum iterations for task automation. Defaults to 100.
-        clarify_max_turn (int, optional): Maximum iterations for task clarification. Defaults to 3.
-        related_app_max_turn (int, optional): Maximum attempts to launch related apps. Defaults to 3.
-        debug (bool, optional): Enables debug mode if set to True. Defaults to False.
-        except_apps (list, optional): List of apps to exclude from task automation. Defaults to None.
-        printlog (bool, optional): Enables detailed logging if set to True. Defaults to False.
-        show_operation (bool, optional): Whether to visually show UI operations. Defaults to False.
-    """
-    # Initializes the task execution agents
-    connect_to_emulator(uta)
-    uta.initialize_agents()
-
-    screenshot, vh, ui_resize = capture_ui_information(uta)
-    ui_data = uta.process_ui(screenshot, vh, ui_resize)
-
-    # Create a new original task object and increment task ID
-    original_task = OriginalTask(f"{uta.user_id}-{uta.ori_task_postfix_id}", original_task=task)
-    conversation = task
-    clarified_result = {"Clear": "False", "Question": ""}
-
-    # Loop for task clarification with user interaction
-    while clarify_max_turn and clarified_result['Clear'] == "False":
-        clarified_result = uta.clarify_task(conversation, printlog)
-        original_task.append_clarifying_conversation(({'role': 'user', 'content': conversation},
-                                                      {'role': 'assistant', 'content': clarified_result}))
-
-        conversation = input(clarified_result)  # we send this to front and wait for answer
-        clarify_max_turn -= 1
-    original_task.set_attributes(clarifyed_task=clarified_result['content'])
-
-    # Decompose and classify the task into sub-tasks
-    task_class_tuple = uta.decompose_and_classify_tasks(task, printlog)
-    for (clarified_task, task_class) in task_class_tuple:
-        # Create a new autonomic task object and increment task ID
-        new_task = AutonomicTask(f"{uta.user_id}-{uta.ori_task_postfix_id}-{uta.autonomic_task_postfix_id}",
-                                 task=clarified_task, task_type=task_class)
-        uta.autonomic_task_postfix_id += 1
-
-        # Process task based on its classification
-        if task_class == "General Inquiry":
-            llm_response = uta.execute_inquiry_task(clarified_task)
-            print(llm_response)
+        if 'click' in action_type:
+            centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+            board = ui.ui_screenshot.copy()
+            cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
+            annotated_screenshot = board
+        elif 'press' in action_type:
+            centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+            board = ui.ui_screenshot.copy()
+            cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
+            annotated_screenshot = board
+        # elif 'scroll up' in action_type:
+        #     scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+        #     scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[1])
+        #     board = ui.ui_screenshot.copy()
+        #     cv2.circle(board, scroll_start, 20, (255, 0, 255), 8)
+        #     cv2.circle(board, scroll_end, 20, (255, 0, 255), 8)
+        #     annotated_screenshot = board
+        elif 'scroll' in action_type:
+            scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[3])
+            scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+            board = ui.ui_screenshot.copy()
+            cv2.circle(board, scroll_start, 20, (255, 0, 255), 8)
+            cv2.circle(board, scroll_end, 20, (255, 0, 255), 8)
+            annotated_screenshot = board
+        # elif 'swipe right' in action_type:
+        #     bias = 20
+        #     swipe_start = (bounds[0] + bias, (bounds[3] + bounds[1]) // 2)
+        #     swipe_end = (bounds[2], (bounds[3] + bounds[1]) // 2)
+        #     board = ui.ui_screenshot.copy()
+        #     cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
+        #     annotated_screenshot = board
+        elif 'swipe' in action_type:
+            bias = 20
+            swipe_start = (bounds[2] - bias, (bounds[3] + bounds[1]) // 2)
+            swipe_end = (bounds[0], (bounds[3] + bounds[1]) // 2)
+            board = ui.ui_screenshot.copy()
+            cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
+            annotated_screenshot = board
+        elif 'input' in action_type:
+            text = recommended_action['Input Text']
+            text_x = bounds[0] + 5  # Slightly right from the left bound
+            text_y = (bounds[1] + bounds[3]) // 2  # Vertically centered
+            board = ui.ui_screenshot.copy()
+            cv2.putText(board, text, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            annotated_screenshot = board
         else:
-            # Loop for executing non-inquiry tasks
-            for step_turn in range(max_turn):
-                excepted_related_apps, device_app_list = get_app_lists(uta)
-                relation, action, result = uta.automate_app_and_system_task(ui_data, clarified_task,
-                                                                            excepted_related_apps, device_app_list,
-                                                                                      except_apps=except_apps,
-                                                                                      printlog=printlog)
+            annotated_screenshot = ui.ui_screenshot.copy()
+    except Exception as e:
+        print(e)
+        annotated_screenshot = ui.ui_screenshot.copy()
+    _, encoded_image = cv2.imencode('.png', annotated_screenshot)
+    return encoded_image.tobytes()
+        
+        
+# set up user task
+task = 'Send message "I love you" to my mom'
+user_id = 'user1'
+task_id = 'task2'
+# init device
+device = Device()
+device.connect()
+app_list = device.get_app_list_on_the_device()
+resolution = device.get_device_resolution()
+# init uta
+uta = UTA()
+uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
-                # Create a new automation step
-                auto_mode_step = AutoModeStep(f"{uta.user_id}-{uta.ori_task_postfix_id}-{uta.autonomic_task_postfix_id}"
-                                       f"-{uta.step_postfix_id}")  # Create a new step with the given step_id
-                auto_mode_step.set_attributes(ui_data=ui_data, relation=relation, execution_result=result)
+# task declaration
+msg = task
+while True:
+    dec = uta.declare_task(user_id=user_id, task_id=task_id, user_msg=msg)
+    if dec['Proc'] == 'Clarify':
+        print(dec['Question'], '\n', dec['Options'])
+        msg = input('Input your answer:')
+    else:
+        break
 
-                # Check the recommended action and set attributes
-                if action:
-                    auto_mode_step.set_attributes(recommended_action=action)
-                    if result == "Can go back, execute the back action.":
-                        auto_mode_step.set_attributes(is_go_back=True)
+# task automation
+ui_id = 0
+max_try = 20
+for i in range(max_try):
+    try:
+        ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id, output_dir=pjoin(DATA_PATH, user_id, task_id))
+        package, activity = device.get_current_package_and_activity_name()
+        keyboard_active = device.check_keyboard_active()
+        ui_data, action = uta.automate_task(user_id=user_id, task_id=task_id, ui_img_file=ui_img, ui_xml_file=ui_xml,
+                                            package_name=package, activity_name=activity, keyboard_active=keyboard_active, printlog=False)
 
-                uta.step_postfix_id += 1
+        annotate_screenshot = annotate_ui_operation(ui_data, action)
+        screen_path = pjoin(DATA_PATH, user_id, task_id, f"{str(ui_id)}_annotated.png")
+        with open(screen_path, 'wb') as fp:
+            fp.write(annotate_screenshot)
 
-                new_task.append_step(auto_mode_step)
-
-                if result in {"Enter next turn.", "Can go back, execute the back action."}:
-                    execute_ui_operation(uta, action, ui_data, show_operation)
-                    # Annotate UI operation for debugging
-                    if debug:
-                        auto_mode_step.annotate_ui_operation()
-                elif result == "No related app can be found.":
-                    new_task.set_attributes(execution_result="Failed")
-                    break
-                elif result == "Task is completed.":
-                    new_task.set_attributes(execution_result="Finish")
-                    break
-                else:
-                    launch = 0
-                    rel_app = action.description
-                    for _ in range(related_app_max_turn):
-                        if launch_app(uta, rel_app):
-                            launch = 1
-                            break
-                        excepted_related_apps.append(rel_app)
-                        rel_app = uta.check_related_apps(clarified_task, device_app_list,
-                                                         except_apps=excepted_related_apps, printlog=printlog)
-
-                    if not launch:
-                        new_task.set_attributes(execution_result="Failed")
-                        break
-
-            # Exceed the max_turn
-            if new_task.execution_result != 'Finish':
-                new_task.set_attributes(execution_result="Failed")
-
-        original_task.append_autonomic_task(new_task)
-        uta.user.append_user_task(original_task)
-
-    # Store the user's task data in a local file or database
-    uta.store_data_to_local(json.loads(str(uta.user)), f"result_user_{uta.user.user_id}")  # later should be
-    # changed to database/server
+        if 'complete' in action['Action'].lower():
+            break
+        device.take_action(action=action, ui_data=ui_data, show=False)
+        ui_id += 1
+    except Exception as e:
+        error_json = {'error': str(e)}
+        error_path = pjoin(DATA_PATH, user_id, task_id, f"{str(ui_id)}_error.json")
+        with open(error_path, "w", encoding='utf-8') as fp:
+            json.dump(error_json, fp, indent=4)
