@@ -41,6 +41,7 @@ html_template = """
 <table>
   <!-- Table header -->
   <tr>
+    <th>Task Dir</th>
     <th>Task</th>
     <th>Task Type</th>
     <th>Sub-Tasks</th>
@@ -53,6 +54,7 @@ html_template = """
     <!-- First sub-row -->
     <tr>
       <td rowspan="5">{{task_dir_name}}</td>
+      <td rowspan="5">{{data['task']}}</td>
       <td rowspan="5">{{data['task_type']}}</td>
       <td rowspan="5">{{data['subtasks']}}</td>
       <td rowspan="5"><input type="radio" onclick="togglePink(this.parentNode)"></td>
@@ -70,21 +72,23 @@ html_template = """
     </tr>
 
     <!-- Third and Fourth sub-rows for screenshots -->
-    {% for _ in range(2) %} <!-- Repeat twice for two sub-rows -->
-      <tr>
-        {% for (key, screenshot) in data['screenshot']|dictsort %}
-          <td>
-            {% if loop.index == 1 %} <!-- Only add image in the third sub-row -->
-              <img src="{{screenshot['img']}}" alt="Screenshot_{{key}}" style="width:200px">
-            {% else %} <!-- Add relation and action in the fourth sub-row -->
-              <input type="radio" onclick="togglePink(this.parentNode)">
-              <p>Relation: {{screenshot['info']['rel']}}</p>
-              <p>Action: {{screenshot['info']['act']}}</p>
-            {% endif %}
-          </td>
-        {% endfor %}
-      </tr>
-    {% endfor %}
+    <tr>
+      {% for (key, screenshot) in data['screenshot']|dictsort %}
+        <td>
+          <img src="{{screenshot['img']}}" alt="Screenshot_{{key}}" style="width:200px">
+        </td>
+      {% endfor %}
+    </tr>
+    
+    <tr>
+      {% for (key, screenshot) in data['screenshot']|dictsort %}
+        <td>
+          <input type="radio" onclick="togglePink(this.parentNode)">
+          <p>Relation: {{screenshot['info']['rel']}}</p>
+          <p>Action: {{screenshot['info']['act']}}</p>
+        </td>
+      {% endfor %}
+    </tr>
 
     <!-- Fifth sub-row for error -->
     <tr>
@@ -105,20 +109,24 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
     data = {}
     with open(task_dir + '/task.json', 'r', encoding='utf-8') as file:
         task_json = json.load(file)
+        data['task'] = task_json['task_description']
         data['task_type'] = task_json['task_type']
         data['subtasks'] = str(task_json['subtasks'])
         data['conversation_clarification'] = {}
 
         for i in range(0, len(task_json['conversation_clarification']) - 1, 2):
-            data['conversation_clarification'][str(i)] = {'assistant': str(task_json['conversation_clarification'][i]),
-                                                          'user': str(task_json['conversation_clarification'][i + 1])}
-        data['conversation_clarification'][str(i)] = {'assistant': str(task_json['conversation_clarification'][i]),
-                                                      'user': str(task_json['conversation_clarification'][i])}
+            data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
+                                                     'user': str(task_json['conversation_clarification'][i + 1])}
+        i = len(task_json['conversation_clarification']) - 1
+        data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
+                                                 'user': str(task_json['conversation_clarification'][i])}
 
         data['screenshot'] = {}
-        for img_idx, one_img in enumerate(glob.glob(task_dir + '/*_annotated.png')):
-            data['screenshot'][str(img_idx)] = {'img': one_img, 'info': {'rel': str(task_json['relations'][img_idx]),
-                                                                         'act': str(task_json['actions'][img_idx])}}
+        for one_img in glob.glob(task_dir + '/*_annotated.png'):
+            img_name = os.path.basename(one_img)
+            idx_key = int(img_name.split('_')[0])
+            data['screenshot'][idx_key] = {'img': one_img, 'info': {'rel': str(task_json['relations'][idx_key]),
+                                                                    'act': str(task_json['actions'][idx_key])}}
 
         if os.path.exists(task_dir + '/error.json'):
             with open(task_dir + '/error.json', 'r', encoding='utf-8') as error:

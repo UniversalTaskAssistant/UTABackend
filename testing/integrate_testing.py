@@ -73,9 +73,9 @@ def annotate_ui_operation(ui, recommended_action):
         
         
 # set up user task
-task = 'Send message "I love you" to my mom'
+task = 'Open Youtube app for me'
 user_id = 'user1'
-task_id = 'task2'
+task_id = 'task1'
 # init device
 device = Device()
 device.connect()
@@ -117,6 +117,6 @@ for i in range(max_try):
         ui_id += 1
     except Exception as e:
         error_json = {'error': str(e)}
-        error_path = pjoin(DATA_PATH, user_id, task_id, f"{str(ui_id)}_error.json")
+        error_path = pjoin(DATA_PATH, user_id, task_id, f"error.json")
         with open(error_path, "w", encoding='utf-8') as fp:
             json.dump(error_json, fp, indent=4)
