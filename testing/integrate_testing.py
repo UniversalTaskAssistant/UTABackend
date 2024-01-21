@@ -1,6 +1,7 @@
 from os.path import join as pjoin
 import cv2
 import json
+import traceback
 
 from testing.Device import Device
 from uta.UTA import UTA
@@ -70,12 +71,64 @@ def annotate_ui_operation(ui, recommended_action):
         annotated_screenshot = ui.ui_screenshot.copy()
     _, encoded_image = cv2.imencode('.png', annotated_screenshot)
     return encoded_image.tobytes()
-        
-        
+
+
+def task_declaration(msg, max_try=20):
+    for i in range(max_try):
+        try:
+            dec = uta.declare_task(user_id=user_id, task_id=task_id, user_msg=msg)
+            if dec['Proc'] == 'Clarify':
+                print(dec['Question'], '\n', dec['Options'])
+                msg = input('Input your answer:')
+            else:
+                break
+        except Exception as e:
+            print(e)
+            error_trace = traceback.format_exc()  # Get the stack trace
+            error_json = {
+                'error': str(e),
+                'traceback': error_trace  # Save the stack trace in the JSON
+            }
+            error_path = pjoin(DATA_PATH, user_id, task_id, f"declaration_error.json")
+            with open(error_path, "w", encoding='utf-8') as fp:
+                json.dump(error_json, fp, indent=4)
+            break
+
+
+def task_automation(max_try=20):
+    ui_id = 0
+    for i in range(max_try):
+        try:
+            ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id, output_dir=pjoin(DATA_PATH, user_id, task_id))
+            package, activity = device.get_current_package_and_activity_name()
+            keyboard_active = device.check_keyboard_active()
+            ui_data, action = uta.automate_task(user_id=user_id, task_id=task_id, ui_img_file=ui_img, ui_xml_file=ui_xml,
+                                                package_name=package, activity_name=activity, keyboard_active=keyboard_active, printlog=False)
+
+            annotate_screenshot = annotate_ui_operation(ui_data, action)
+            screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
+            with open(screen_path, 'wb') as fp:
+                fp.write(annotate_screenshot)
+
+            if 'complete' in action['Action'].lower():
+                break
+            device.take_action(action=action, ui_data=ui_data, show=False)
+            ui_id += 1
+        except Exception as e:
+            print(e)
+            error_trace = traceback.format_exc()  # Get the stack trace
+            error_json = {
+                'error': str(e),
+                'traceback': error_trace  # Save the stack trace in the JSON
+            }
+            error_path = pjoin(DATA_PATH, user_id, task_id, f"automation_error.json")
+            with open(error_path, "w", encoding='utf-8') as fp:
+                json.dump(error_json, fp, indent=4)
+            break
+
+
 # set up user task
-task = 'Open Youtube app for me'
 user_id = 'user1'
-task_id = 'task1'
 # init device
 device = Device()
 device.connect()
@@ -85,38 +138,30 @@ resolution = device.get_device_resolution()
 uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
-# task declaration
-msg = task
-while True:
-    dec = uta.declare_task(user_id=user_id, task_id=task_id, user_msg=msg)
-    if dec['Proc'] == 'Clarify':
-        print(dec['Question'], '\n', dec['Options'])
-        msg = input('Input your answer:')
-    else:
-        break
+task_list = ['Open Youtube app for me', 'Open Youtube app for me', 'I want to enlarge the font size of my phone',
+             'I want to boost volume', 'I want to open auto-read function',
+             'I want to add a contact number, the name is Mulong Xie and phone number is 0450674929',
+             'I want to set a special ringtone for the call of my friend Mulong',
+             'I want to listen radio about world news',
+             'I want to take a photo', 'I want to edit the last photo and add text "hello" in it',
+             'I want to open my bluetooth', 'I want to look at my album', 'tell me today\'s weather',
+             ' I want to open my wifi', 'I need to open my hotspot',
+             'I want to set Mulong as a quick-dial number, there should be a icon on the screen that I can directly call him by pressing it',
+             'I want to take note "I like apple", and I want the phone use sound to read it for me',
+             'I want to translate the "I like apple" into French', 'I need to go to the nearest market',
+             'I want to see a youtube introducing canberra raiders', 'please tell me what time it is now in voice',
+             'Can you help me clean my phone\'s memory?',
+             'I want to cook a pasta for my son, I totally have no idea']
 
-# task automation
-ui_id = 0
-max_try = 20
-for i in range(max_try):
-    try:
-        ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id, output_dir=pjoin(DATA_PATH, user_id, task_id))
-        package, activity = device.get_current_package_and_activity_name()
-        keyboard_active = device.check_keyboard_active()
-        ui_data, action = uta.automate_task(user_id=user_id, task_id=task_id, ui_img_file=ui_img, ui_xml_file=ui_xml,
-                                            package_name=package, activity_name=activity, keyboard_active=keyboard_active, printlog=False)
+for task_idx, task in enumerate(task_list):
+    if task_idx != 5:
+        continue
+    task_id = f"task{task_idx+1}"
+    # go homepage
+    device.go_homepage()
 
-        annotate_screenshot = annotate_ui_operation(ui_data, action)
-        screen_path = pjoin(DATA_PATH, user_id, task_id, f"{str(ui_id)}_annotated.png")
-        with open(screen_path, 'wb') as fp:
-            fp.write(annotate_screenshot)
+    # task declaration
+    # task_declaration(task)
 
-        if 'complete' in action['Action'].lower():
-            break
-        device.take_action(action=action, ui_data=ui_data, show=False)
-        ui_id += 1
-    except Exception as e:
-        error_json = {'error': str(e)}
-        error_path = pjoin(DATA_PATH, user_id, task_id, f"error.json")
-        with open(error_path, "w", encoding='utf-8') as fp:
-            json.dump(error_json, fp, indent=4)
+    # task automation
+    task_automation(max_try=20)

@@ -22,8 +22,13 @@ html_template = """
     border: 1px solid black;
     text-align: left;
     padding: 8px;
-    max-width:200px;
+    max-width: 800px;
     word-wrap: break-word;
+  }
+  pre {
+    white-space: pre; /* Keeps the original formatting */
+    overflow-x: auto; /* Allows horizontal scrolling */
+    margin: 0;
   }
   tr:nth-child(even) {background-color: #f2f2f2;}
   .pink { background-color: pink; }
@@ -36,7 +41,7 @@ html_template = """
 </head>
 <body>
 
-<h2>Screenshots and Data Table</h2>
+<h2>Screenshots and Action Table</h2>
 
 <table>
   <!-- Table header -->
@@ -51,28 +56,12 @@ html_template = """
 
   <!-- Loop over tasks -->
   {% for task_dir_name, data in directories.items() %}
-    <!-- First sub-row -->
     <tr>
-      <td rowspan="5">{{task_dir_name}}</td>
-      <td rowspan="5">{{data['task']}}</td>
-      <td rowspan="5">{{data['task_type']}}</td>
-      <td rowspan="5">{{data['subtasks']}}</td>
-      <td rowspan="5"><input type="radio" onclick="togglePink(this.parentNode)"></td>
-      <!-- Loop for conversation assistant -->
-      {% for (conv_id, conversation) in data['conversation_clarification']|dictsort %}
-        <td>{{conversation['assistant']}}</td>
-      {% endfor %}
-    </tr>
-
-    <!-- Second sub-row for conversation user -->
-    <tr>
-      {% for (conv_id, conversation) in data['conversation_clarification']|dictsort %}
-        <td>{{conversation['user']}}</td>
-      {% endfor %}
-    </tr>
-
-    <!-- Third and Fourth sub-rows for screenshots -->
-    <tr>
+      <td rowspan="3">{{task_dir_name}}</td>
+      <td rowspan="3">{{data['task']}}</td>
+      <td rowspan="3">{{data['task_type']}}</td>
+      <td rowspan="3">{{data['subtasks']}}</td>
+      <td rowspan="3"><input type="radio" onclick="togglePink(this.parentNode)"></td>
       {% for (key, screenshot) in data['screenshot']|dictsort %}
         <td>
           <img src="{{screenshot['img']}}" alt="Screenshot_{{key}}" style="width:200px">
@@ -90,9 +79,9 @@ html_template = """
       {% endfor %}
     </tr>
 
-    <!-- Fifth sub-row for error -->
+    <!-- Sub-row for error -->
     <tr>
-      <td><p>Error: {{data['error']}}</p></td>
+      <td colspan="20"><pre>Error: {{data['error']}}</pre></td>
     </tr>
   {% endfor %}
 </table>
@@ -128,10 +117,10 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
             data['screenshot'][idx_key] = {'img': one_img, 'info': {'rel': str(task_json['relations'][idx_key]),
                                                                     'act': str(task_json['actions'][idx_key])}}
 
-        if os.path.exists(task_dir + '/error.json'):
-            with open(task_dir + '/error.json', 'r', encoding='utf-8') as error:
+        if os.path.exists(task_dir + '/automation_error.json'):
+            with open(task_dir + '/automation_error.json', 'r', encoding='utf-8') as error:
                 error_json = json.load(error)
-                data['error'] = error_json['error']
+                data['error'] = error_json['traceback']
         else:
             data['error'] = "No error."
 
@@ -143,8 +132,8 @@ template = Template(html_template)
 html = template.render(directories=directories)
 
 # Write the HTML file
-with open(pjoin(DATA_PATH, user_id) + '/output.html', 'w', encoding='utf-8') as file:
+with open(pjoin(DATA_PATH, user_id) + '/automation_logs.html', 'w', encoding='utf-8') as file:
     file.write(html)
 
 # Notify user
-print("HTML file 'output.html' generated successfully.")
+print("HTML file 'automation_logs.html' generated successfully.")

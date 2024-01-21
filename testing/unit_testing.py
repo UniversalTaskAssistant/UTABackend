@@ -132,19 +132,19 @@ def test_uiprocessor():
     model_manager = ModelManager()
     ui_processor = UIProcessor(model_manager)
 
-    screenshot = DATA_PATH + 'user1/task1/0.png'
-    xml_file = DATA_PATH + 'user1/task1/0.xml'
-    ui_data = UIData(screenshot_file=screenshot, xml_file=xml_file)
+    screenshot = DATA_PATH + 'user1/task6/4.png'
+    xml_file = DATA_PATH + 'user1/task6/4.xml'
+    ui_data = UIData(screenshot_file=screenshot, xml_file=xml_file, ui_resize=(1080, 2400))
     print(ui_data.to_dict())
 
     new_ui = ui_processor.process_ui(ui_data=ui_data, show=True)
-    new_ui.annotate_ui_operation({"Action": "Click", "Coordinate": 3, "Element": "3", "others": "N/A"})
+    # new_ui.annotate_ui_operation({"Action": "Click", "Coordinate": 3, "Element": "3", "others": "N/A"})
     print(new_ui.to_dict())
 
-    board = new_ui.annotated_screenshot
-    cv2.imshow('long_press', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
-    cv2.waitKey()
-    cv2.destroyWindow('long_press')
+    # board = new_ui.annotated_screenshot
+    # cv2.imshow('long_press', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
+    # cv2.waitKey()
+    # cv2.destroyWindow('long_press')
 
 
 def test_task_declarator():
@@ -386,7 +386,7 @@ if __name__ == '__main__':
 
     # test_local()
     # test_systemcomnnector()
-    # test_uiprocessor()
+    test_uiprocessor()
     # test_task_declarator()
 
     # test_googleplay()
@@ -396,4 +396,4 @@ if __name__ == '__main__':
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
-    test_uta()
+    # test_uta()

@@ -348,6 +348,16 @@ class Device:
         # wait a few second to be refreshed
         time.sleep(waiting_time)
 
+    def go_homepage(self, waiting_time=2):
+        """
+        Simulates the "Go Home Page" operation.
+        Args:
+            waiting_time (int): Time to wait after the action, in seconds.
+        """
+        self.__adb_device.shell('input keyevent KEYCODE_HOME')
+        # wait a few second to be refreshed
+        time.sleep(waiting_time)
+
 
 if __name__ == '__main__':
     device = Device()
