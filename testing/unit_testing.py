@@ -236,12 +236,12 @@ def test_device():
     gui.elements = elements
     gui.element_tree = tree
 
-    # device.right_swipe_screen(gui, 0, True)
-    # device.left_swipe_screen(gui, 0, True)
-    # device.up_scroll_screen(gui, 0, True)
-    # device.down_scroll_screen(gui, 0, True)
-    # device.long_press_screen(gui, 19, True)
-    # device.click_screen(gui, 19, True)
+    device.right_swipe_screen(gui, 0, True)
+    device.left_swipe_screen(gui, 0, True)
+    device.up_scroll_screen(gui, 0, True)
+    device.down_scroll_screen(gui, 0, True)
+    device.long_press_screen(gui, 19, True)
+    device.click_screen(gui, 19, True)
 
     # for act in ["Swipe", "Scroll", "Click", "Launch"]:
     #     cood = 0 if act != "Click" else 19
@@ -252,12 +252,12 @@ def test_device():
     #     time.sleep(3)
 
     # test input independently
-    cood = 19
-    cood_ele = gui.elements[cood]
-    act = "Input"
-    action = {"Action": act, "Coordinate": cood_ele, "Element": str(cood), "App": 'com.google.android.youtube',
-              "Input Text": "something."}
-    device.take_action(action, ui_data=gui, show=True)
+    # cood = 19
+    # cood_ele = gui.elements[cood]
+    # act = "Input"
+    # action = {"Action": act, "Coordinate": cood_ele, "Element": str(cood), "App": 'com.google.android.youtube',
+    #           "Input Text": "something."}
+    # device.take_action(action, ui_data=gui, show=True)
 
 
 def test_taskuichecker():
@@ -386,13 +386,13 @@ if __name__ == '__main__':
 
     # test_local()
     # test_systemcomnnector()
-    test_uiprocessor()
+    # test_uiprocessor()
     # test_task_declarator()
 
     # test_googleplay()
     # test_appmanager()
 
-    # test_device()
+    test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()

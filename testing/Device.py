@@ -200,7 +200,7 @@ class Device:
         if 'click' in action_type:
             self.click_screen(ui_data, int(action['Element']), show)
         elif 'scroll' in action_type:
-            self.down_scroll_screen(ui_data, int(action['Element']), show)
+            self.up_scroll_screen(ui_data, int(action['Element']), show)  # scroll down
         elif 'swipe' in action_type:
             self.left_swipe_screen(ui_data, int(action['Element']), show)
         elif 'input' in action_type:

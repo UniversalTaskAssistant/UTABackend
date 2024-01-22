@@ -2,6 +2,7 @@ from os.path import join as pjoin
 import cv2
 import json
 import traceback
+import time
 
 from testing.Device import Device
 from uta.UTA import UTA
@@ -112,7 +113,8 @@ def task_automation(max_try=20):
 
             if 'complete' in action['Action'].lower():
                 break
-            device.take_action(action=action, ui_data=ui_data, show=False)
+            device.take_action(action=action, ui_data=ui_data, show=True)
+            time.sleep(2)  # wait the action to be done
             ui_id += 1
         except Exception as e:
             print(e)
@@ -138,7 +140,7 @@ resolution = device.get_device_resolution()
 uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
-task_list = ['Open Youtube app for me', 'Open Youtube app for me', 'I want to enlarge the font size of my phone',
+task_list = ['Open Language Setting page of my mobile', 'Open Youtube app for me', 'I want to enlarge the font size of my phone',
              'I want to boost volume', 'I want to open auto-read function',
              'I want to add a contact number, the name is Mulong Xie and phone number is 0450674929',
              'I want to set a special ringtone for the call of my friend Mulong',
@@ -154,7 +156,7 @@ task_list = ['Open Youtube app for me', 'Open Youtube app for me', 'I want to en
              'I want to cook a pasta for my son, I totally have no idea']
 
 for task_idx, task in enumerate(task_list):
-    if task_idx != 5:
+    if task_idx != 22:
         continue
     task_id = f"task{task_idx+1}"
     # go homepage
@@ -164,4 +166,4 @@ for task_idx, task in enumerate(task_list):
     # task_declaration(task)
 
     # task automation
-    task_automation(max_try=20)
+    task_automation(max_try=10)

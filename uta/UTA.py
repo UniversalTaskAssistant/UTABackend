@@ -7,7 +7,6 @@ from uta.TaskDeclearation import TaskDeclarator
 from uta.TaskAction import TaskActionChecker
 from uta.ThirdPartyAppManagement import ThirdPartyAppManager
 from uta.UIProcessing import UIProcessor
-from uta.config import *
 
 
 class UTA:
@@ -172,7 +171,7 @@ class UTA:
         self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
         # 2. act based on task type
         # task_type = task.task_type.lower()
-        task_type = 'app'
+        task_type = 'app'  # for testing reason, here we force the task_type to be app
         if 'general' in task_type:
             action = self.task_action_checker.action_inquiry(task)
         elif 'system' in task_type or 'app' in task_type:
