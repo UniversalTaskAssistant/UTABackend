@@ -85,6 +85,11 @@ class _UIPreProcessor:
         json_cp = copy.deepcopy(json_vh)
         element_root = json_cp['activity']['root']
         element_root['class'] = 'root'
+
+        self.__element_no = 0
+        self.__elements = []
+        self.__elements_leaves = []
+
         # clean up the json tree to remove redundant layout node
         self.__prone_invalid_children(element_root)
         self.__remove_redundant_nesting(element_root)
