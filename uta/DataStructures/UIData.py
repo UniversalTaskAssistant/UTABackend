@@ -21,6 +21,7 @@ class UIData(_Data):
         self.ui_vh_json = None      # ui vh json, after processing
 
         # UI elements
+        self.elements_ids = 0       # count elements
         self.elements = []          # list of element in dictionary {'id':, 'class':...}
         self.elements_leaves = []   # leaf nodes that does not have children
         self.element_tree = None    # structural element tree, dict type
