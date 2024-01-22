@@ -114,6 +114,7 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
         for one_img in glob.glob(task_dir + '/*_annotated.png'):
             img_name = os.path.basename(one_img)
             idx_key = int(img_name.split('_')[0])
+            img_path = f".{one_img.split(user_id)[-1]}"
             data['screenshot'][idx_key] = {'img': one_img, 'info': {'rel': str(task_json['relations'][idx_key]),
                                                                     'act': str(task_json['actions'][idx_key])}}
 

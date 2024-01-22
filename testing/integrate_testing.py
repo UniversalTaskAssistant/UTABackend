@@ -113,7 +113,7 @@ def task_automation(max_try=20):
 
             if 'complete' in action['Action'].lower():
                 break
-            device.take_action(action=action, ui_data=ui_data, show=True)
+            device.take_action(action=action, ui_data=ui_data, show=False)
             time.sleep(2)  # wait the action to be done
             ui_id += 1
         except Exception as e:
