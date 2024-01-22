@@ -186,6 +186,7 @@ class UTA:
                     action = {"Action": "Launch", "App": related_app['App'], "Description": "Launch app"}
                 else:
                     action = {"Action": "Infeasible", "Description": "No related app installed."}
+                task.actions[-1] = action  # we record the launch action here to instead "other app"
         else:
             raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
         self.system_connector.save_task(task)
