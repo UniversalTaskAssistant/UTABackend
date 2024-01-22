@@ -171,7 +171,8 @@ class UTA:
         ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
         self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
         # 2. act based on task type
-        task_type = task.task_type.lower()
+        # task_type = task.task_type.lower()
+        task_type = 'app'
         if 'general' in task_type:
             action = self.task_action_checker.action_inquiry(task)
         elif 'system' in task_type or 'app' in task_type:

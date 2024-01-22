@@ -19,6 +19,9 @@ class UIProcessor:
             ui_data.ui_vh_json (dict): VH in a tidy json format
         """
         print('* Reformat xml vh *')
+        self.__ui_preprocessor.__element_no = 0
+        self.__ui_preprocessor.__elements = []
+        self.__ui_preprocessor.__elements_leaves = []
         self.__ui_preprocessor.ui_vh_xml_cvt_to_json(ui_data=ui_data)
 
     def ui_info_extraction(self, ui_data):
@@ -30,6 +33,9 @@ class UIProcessor:
             ui_data.elements; ui_data.elements_leaves (list of dicts)
         """
         print('* Extract ui elements from vh *')
+        self.__ui_preprocessor.__element_no = 0
+        self.__ui_preprocessor.__elements = []
+        self.__ui_preprocessor.__elements_leaves = []
         self.__ui_preprocessor.ui_info_extraction(ui_data=ui_data)
 
     def ui_analysis_elements_description(self, ui_data, ocr=True, cls=True):
