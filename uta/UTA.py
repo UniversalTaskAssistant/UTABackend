@@ -168,8 +168,7 @@ class UTA:
         task.cur_activity = activity_name
         task.keyboard_active = keyboard_active
         # 1. process ui
-        ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=user.device_resolution)
-        self.ui_processor.process_ui(ui)
+        ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
         self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
         # 2. act based on task type
         # task_type = task.task_type.lower()
@@ -192,6 +191,21 @@ class UTA:
             raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
         self.system_connector.save_task(task)
         return ui, action
+
+    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
+        """
+        Process ui dato
+        Args:
+            ui_img_file (path): Screenshot image path
+            ui_xml_file (path): VH xml file path
+            device_resolution (tuple): Device resolution
+            show (bool): True to show the detection result
+        Return:
+            ui (UIData): ui data with processing results
+        """
+        ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
+        self.ui_processor.process_ui(ui, show=show)
+        return ui
 
 
 if __name__ == '__main__':

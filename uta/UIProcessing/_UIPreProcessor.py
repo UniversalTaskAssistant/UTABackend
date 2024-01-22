@@ -4,9 +4,7 @@ import xmltodict
 
 class _UIPreProcessor:
     def __init__(self):
-        self.__element_no = 0           # for the record of element number
-        self.__elements = []            # for the record of processed elements
-        self.__elements_leaves = []     # for the record of processed elements without children
+        pass
 
     '''
     ******************************************
@@ -94,12 +92,11 @@ class _UIPreProcessor:
         self.__prone_invalid_children(element_root)
         self.__remove_redundant_nesting(element_root)
         self.__merge_element_with_single_leaf_child(element_root)
-        self.__extract_children_elements(element_root, 0)
-        self.__gather_leaf_elements()
+        # build hierarchy
+        self.__extract_children_elements(ui_data, element_root, 0)
+        self.__gather_leaf_elements(ui_data)
         # json.dump(self.elements, open(self.output_file_path_elements, 'w', encoding='utf-8'), indent=4)
         # print('Save elements to', self.output_file_path_elements)
-        ui_data.elements = self.__elements
-        ui_data.elements_leaves = self.__elements_leaves
 
     def __prone_invalid_children(self, element):
         """
@@ -168,20 +165,26 @@ class _UIPreProcessor:
                 element['children'] = new_children
         return element
 
-    def __extract_children_elements(self, element, layer):
+    def __extract_children_elements(self, ui_data, element, layer):
         """
         Recursively extract children from an element
+        Args:
+            ui_data (UIData)
+            element (dict): dict node with attributes and hierarchical elements
+            layer (int): number of layer for the current element
+        Returns:
+             children_depth (int): maximum depth of children nodes
         """
-        element['id'] = self.__element_no
+        element['id'] = ui_data.elements_ids
         element['layer'] = layer
-        self.__elements.append(element)
+        ui_data.elements.append(element)
         children_depth = layer  # record the depth of the children
         if 'children' in element and len(element['children']) > 0:
             element['children-id'] = []
             for child in element['children']:
-                self.__element_no += 1
-                element['children-id'].append(self.__element_no)
-                children_depth = max(children_depth, self.__extract_children_elements(child, layer + 1))
+                ui_data.elements_ids += 1
+                element['children-id'].append(ui_data.elements_ids)
+                children_depth = max(children_depth, self.__extract_children_elements(ui_data, child, layer + 1))
             element['children-depth'] = children_depth
             # replace wordy 'children' with 'children-id'
             del element['children']
@@ -189,15 +192,16 @@ class _UIPreProcessor:
             del element['ancestors']
         return children_depth
 
-    def __gather_leaf_elements(self):
+    @staticmethod
+    def __gather_leaf_elements(ui_data):
         """
         Gather all leaf elements that have no children together
         """
         i = 0
-        for ele in self.__elements:
+        for ele in ui_data.elements:
             if 'children-id' not in ele:
                 ele['leaf-id'] = i
-                self.__elements_leaves.append(ele)
+                ui_data.elements_leaves.append(ele)
                 i += 1
             else:
                 ele['class'] += '(container)'
