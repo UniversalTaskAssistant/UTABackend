@@ -156,7 +156,7 @@ task_list = ['Open Language Setting page of my mobile', 'Open Youtube app for me
              'I want to cook a pasta for my son, I totally have no idea']
 
 for task_idx, task in enumerate(task_list):
-    if task_idx != 22:
+    if task_idx != 21:
         continue
     task_id = f"task{task_idx+1}"
     # go homepage

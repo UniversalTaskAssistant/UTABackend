@@ -37,7 +37,7 @@ class _IconClassifier:
         try:
             # convert cv2 image to PIL image
             if type(imgs[0]) == np.ndarray:
-                imgs = [Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB)) for img in imgs]
+                imgs = [Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB)) for img in imgs if len(img) > 0]
 
             # Apply transformations and convert to batch tensor
             inputs = [self.__transform_test(img) for img in imgs]

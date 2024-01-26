@@ -16,14 +16,14 @@ html_template = """
   table {
     width: 100%;
     border-collapse: collapse;
-    overflow: scroll;
+    table-layout: auto;
   }
   th, td {
     border: 1px solid black;
     text-align: left;
     padding: 8px;
-    max-width: 800px;
     word-wrap: break-word;
+    overflow: hidden;
   }
   pre {
     white-space: pre; /* Keeps the original formatting */
@@ -51,7 +51,7 @@ html_template = """
     <th>Task Type</th>
     <th>Sub-Tasks</th>
     <th>Fail</th>
-    <th>Records</th>
+    <th colspan="20">Records</th>
   </tr>
 
   <!-- Loop over tasks -->
@@ -115,7 +115,7 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
             img_name = os.path.basename(one_img)
             idx_key = int(img_name.split('_')[0])
             img_path = f".{one_img.split(user_id)[-1]}"
-            data['screenshot'][idx_key] = {'img': one_img, 'info': {'rel': str(task_json['relations'][idx_key]),
+            data['screenshot'][idx_key] = {'img': img_path, 'info': {'rel': str(task_json['relations'][idx_key]),
                                                                     'act': str(task_json['actions'][idx_key])}}
 
         if os.path.exists(task_dir + '/automation_error.json'):

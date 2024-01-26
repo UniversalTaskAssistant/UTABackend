@@ -99,15 +99,19 @@ class _TaskUIChecker:
         Returns:
             FM response (dict): {"Relation":, "Reason":}
         """
-        print('* Check UI and Task Relation *')
-        # Format base prompt
-        prompt = self.wrap_task_info(task)
-        prompt += self.__relation_prompt.format(task=task.task_description)
-        # Ask FM
-        resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-        task.res_relation_check = json.loads(resp['content'])
-        print(task.res_relation_check)
-        return task.res_relation_check
+        try:
+            print('* Check UI and Task Relation *')
+            # Format base prompt
+            prompt = self.wrap_task_info(task)
+            prompt += self.__relation_prompt.format(task=task.task_description)
+            # Ask FM
+            resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+            task.res_relation_check = json.loads(resp['content'])
+            print(task.res_relation_check)
+            return task.res_relation_check
+        except Exception as e:
+            print(resp)
+            raise e
 
     def check_element_action(self, ui_data, task, printlog=False):
         """
@@ -119,15 +123,19 @@ class _TaskUIChecker:
         Returns:
             FM response (dict): {"Action":"Input", "Element":3, "Description":, "Reason":, "Input Text": "Download Trump"}
         """
-        print('* Check UI Action and Target Element *')
-        # Format base prompt
-        prompt = self.wrap_task_info(task)
-        prompt += self.__action_prompt.format(task=task.task_description)
-        # Ask FM
-        resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-        task.res_action_check = json.loads(resp['content'])
-        print(task.res_action_check)
-        return task.res_action_check
+        try:
+            print('* Check UI Action and Target Element *')
+            # Format base prompt
+            prompt = self.wrap_task_info(task)
+            prompt += self.__action_prompt.format(task=task.task_description)
+            # Ask FM
+            resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+            task.res_action_check = json.loads(resp['content'])
+            print(task.res_action_check)
+            return task.res_action_check
+        except Exception as e:
+            print(resp)
+            raise e
 
     def check_ui_go_back_availability(self, ui_data, task, printlog=False):
         """
@@ -139,12 +147,16 @@ class _TaskUIChecker:
         Returns:
             FM response (dict): {"Can":"Yes", "Element": 2, "Reason":, "Description":"Click on the "go back" element"}
         """
-        print('* Check Any Action to Go Back to Related UI *')
-        # Format base prompt
-        prompt = self.wrap_task_info(task)
-        prompt += self.__back_prompt.format(task=task.task_description)
-        # Ask FM
-        resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-        task.res_go_back_check = json.loads(resp['content'])
-        print(task.res_go_back_check)
-        return task.res_go_back_check
+        try:
+            print('* Check Any Action to Go Back to Related UI *')
+            # Format base prompt
+            prompt = self.wrap_task_info(task)
+            prompt += self.__back_prompt.format(task=task.task_description)
+            # Ask FM
+            resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+            task.res_go_back_check = json.loads(resp['content'])
+            print(task.res_go_back_check)
+            return task.res_go_back_check
+        except Exception as e:
+            print(resp)
+            raise e

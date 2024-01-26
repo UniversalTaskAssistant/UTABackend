@@ -26,6 +26,9 @@ class Task(_Data):
         self.res_decomposition = dict()     # {"Decompose": "True", "Sub-tasks":[], "Explanation": }
         self.user_clarify = []              # List of string from the user message to further clarify the task
         self.subtasks = []                  # List of string to describe the subtask
+        self.involved_app = None            # targeted app for task execution
+        self.involved_app_package = None    # targeted app package or task execution
+        self.clarification_user_msg = None  # user message for further clarification
 
         # Only used when task automation
         self.conversation_automation = []   # List of conversations that occurred during multiple turns of task automation.

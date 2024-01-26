@@ -53,13 +53,13 @@ class _OpenAI:
         Returns:
             message (dict): {'role':'assistant', 'content': '...'}
         """
-        start = time.time()
-        if printlog:
-            print('*** Asking ***\n', conversation)
-        resp = openai.chat.completions.create(model=self._model, messages=conversation)
-        resp = dict(resp.choices[0].message)
-        msg = {'role': resp['role'], 'content': resp['content']}
         try:
+            start = time.time()
+            if printlog:
+                print('*** Asking ***\n', conversation)
+            resp = openai.chat.completions.create(model=self._model, messages=conversation)
+            resp = dict(resp.choices[0].message)
+            msg = {'role': resp['role'], 'content': resp['content']}
             if runtime:
                 # as we directly add msg to task.conversation, we cannot add attributes, so just print here
                 print('Runtime: ', '{:.3f}s'.format(time.time() - start))
@@ -67,7 +67,6 @@ class _OpenAI:
                 print('\n*** Answer ***\n', msg, '\n')
             return msg
         except Exception as e:
-            print('The return message content is not in JSON format')
             raise e
 
 

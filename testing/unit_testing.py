@@ -150,18 +150,40 @@ def test_uiprocessor():
 def test_task_declarator():
     model_manager = ModelManager()
     task_declarator = TaskDeclarator(model_manager)
-    description = "I want to watch football videos"
-    # description = "How are you today?"
+    # description = "I want to watch football videos"
+    description = "How are you today?"
     task = Task("1", "1", description)
     print(task.to_dict())
 
-    resp = task_declarator.clarify_task(task, printlog=True)
+    app_list = ['com.android.systemui.auto_generated_rro_vendor__', 'com.google.android.providers.media.module', 'com.google.android.overlay.permissioncontroller', 'com.google.android.overlay.googlewebview', 'com.android.calllogbackup', 'com.android.carrierconfig.auto_generated_rro_vendor__', 'com.android.systemui.accessibility.accessibilitymenu', 'com.android.internal.emulation.pixel_3_xl', 'com.android.providers.contacts', 'com.android.internal.emulation.pixel_4a', 'com.android.dreams.basic', 'com.android.companiondevicemanager', 'com.android.cts.priv.ctsshim', 'com.google.android.calendar', 'com.google.android.networkstack.tethering.emulator', 'com.google.android.contacts', 'com.android.mms.service', 'com.google.android.cellbroadcastreceiver', 'com.android.providers.downloads', 'com.android.bluetoothmidiservice', 'com.android.credentialmanager', 'com.google.android.printservice.recommendation', 'com.google.android.captiveportallogin', 'com.android.storagemanager.auto_generated_rro_product__', 'com.google.android.networkstack', 'com.google.android.overlay.googleconfig', 'com.android.keychain', 'com.google.android.tag', 'com.android.internal.emulation.pixel_2_xl', 'android.auto_generated_rro_vendor__', 'com.google.android.apps.wellbeing', 'com.android.nfc.auto_generated_rro_product__', 'com.android.virtualmachine.res', 'com.android.emulator.multidisplay', 'com.android.shell', 'com.google.android.adservices.api', 'com.google.android.wifi.dialog', 'com.google.android.apps.wallpaper.nexus', 'com.android.inputdevices', 'com.google.android.ondevicepersonalization.services', 'com.google.android.apps.customization.pixel', 'com.android.bookmarkprovider', 'com.google.android.onetimeinitializer', 'com.google.android.permissioncontroller', 'com.google.android.overlay.largescreenconfig', 'com.android.internal.emulation.pixel_6a', 'com.android.sharedstoragebackup', 'com.android.imsserviceentitlement', 'com.android.providers.media', 'com.android.providers.calendar', 'com.android.providers.blockednumber', 'com.google.android.documentsui', 'com.google.android.googlesdksetup', 'com.android.carrierconfig.auto_generated_rro_product__', 'com.google.android.devicelockcontroller', 'com.android.proxyhandler', 'com.android.systemui.emulation.pixel_3a', 'com.android.emergency.auto_generated_rro_product__', 'com.android.managedprovisioning', 'com.android.emergency', 'com.google.android.telephony.satellite', 'com.android.managedprovisioning.auto_generated_rro_product__', 'com.google.android.gm', 'com.android.carrierdefaultapp', 'com.android.backupconfirm', 'com.google.android.hotspot2.osulogin', 'com.android.nfc', 'com.google.android.deskclock', 'com.android.mtp', 'com.android.systemui.emulation.pixel_4a', 'com.google.android.gsf', 'com.google.android.overlay.pixelconfigcommon', 'com.android.internal.display.cutout.emulation.double', 'com.android.theme.font.notoserifsource', 'com.android.traceur.auto_generated_rro_product__', 'com.google.android.health.connect.backuprestore', 'com.google.android.settings.intelligence', 'com.android.systemui.emulation.pixel_3', 'com.android.systemui', 'com.android.wallpapercropper', 'com.android.internal.emulation.pixel_4', 'com.android.systemui.emulation.pixel_7', 'com.android.internal.emulation.pixel_fold', 'com.android.internal.emulation.pixel_5', 'com.android.systemui.emulation.pixel_6', 'com.android.providers.contacts.auto_generated_rro_product__', 'com.google.android.dialer', 'com.android.systemui.emulation.pixel_5', 'com.android.internal.emulation.pixel_3', 'com.android.systemui.emulation.pixel_4', 'com.android.internal.emulation.pixel_6', 'com.android.internal.systemui.navbar.gestural', 'com.android.internal.emulation.pixel_7', 'com.android.role.notes.enabled', 'com.google.android.apps.nexuslauncher', 'com.google.mainline.adservices', 'com.google.android.apps.wallpaper', 'com.android.internal.emulation.pixel_6_pro', 'com.google.android.federatedcompute', 'com.google.android.webview', 'com.google.android.sdksandbox', 'com.android.internal.emulation.pixel_3a', 'com.android.wallpaperbackup', 'com.android.systemui.emulation.pixel_6a', 'com.google.android.cellbroadcastservice', 'com.android.internal.systemui.navbar.twobutton', 'com.android.internal.systemui.navbar.threebutton', 'com.android.egg', 'com.android.systemui.emulation.pixel_fold', 'com.android.localtransport', 'android', 'com.android.camera2', 'com.android.systemui.emulation.pixel_3a_xl', 'com.android.providers.settings.auto_generated_rro_product__', 'com.google.android.soundpicker', 'com.google.android.packageinstaller', 'com.android.se', 'com.android.pacprocessor', 'com.google.android.connectivity.resources.goldfish.overlay', 'com.google.android.safetycenter.resources', 'com.google.android.apps.youtube.music', 'com.android.stk', 'com.android.internal.display.cutout.emulation.hole', 'com.android.settings', 'com.android.bips', 'com.google.android.partnersetup', 'com.android.internal.systemui.navbar.gestural_narrow_back', 'com.android.internal.display.cutout.emulation.tall', 'com.google.android.networkstack.tethering', 'com.android.systemui.emulation.pixel_7_pro', 'com.google.android.projection.gearhead', 'com.android.cameraextensions', 'com.google.android.odad', 'com.android.carrierconfig', 'com.android.internal.systemui.navbar.gestural_wide_back', 'com.google.android.ext.shared', 'com.google.android.feedback', 'com.android.chrome', 'com.google.android.apps.maps', 'com.google.android.as', 'android.auto_generated_rro_product__', 'com.android.musicfx', 'com.android.internal.systemui.navbar.transparent', 'com.android.server.telecom.auto_generated_rro_product__', 'com.google.android.inputmethod.latin', 'com.android.providers.settings.auto_generated_rro_vendor__', 'com.google.android.systemui.gxoverlay', 'com.google.android.uwb.resources', 'com.android.providers.downloads.ui', 'com.google.android.wifi.resources', 'com.android.ons', 'com.google.android.healthconnect.controller', 'com.android.intentresolver', 'com.google.android.apps.docs', 'com.google.android.nearby.halfsheet', 'com.android.phone.auto_generated_rro_vendor__', 'com.android.certinstaller', 'com.google.android.apps.restore', 'com.android.internal.emulation.pixel_7_pro', 'com.android.simappdialog', 'com.android.providers.telephony', 'com.android.wallpaper.livepicker', 'com.android.internal.display.cutout.emulation.emu01', 'com.android.internal.display.cutout.emulation.waterfall', 'com.android.settings.auto_generated_rro_product__', 'com.google.android.rkpdapp', 'com.android.providers.settings', 'com.android.systemui.emulation.pixel_3_xl', 'com.android.phone', 'com.android.internal.systemui.navbar.gestural_extra_wide_back', 'com.android.internal.emulation.pixel_4_xl', 'com.android.traceur', 'com.google.android.as.oss', 'com.google.android.apps.messaging', 'com.android.systemui.emulation.pixel_6_pro', 'com.android.internal.emulation.pixel_3a_xl', 'com.android.location.fused', 'com.android.vpndialogs', 'com.android.cellbroadcastreceiver', 'com.android.systemui.plugin.globalactions.wallet', 'com.google.android.tts', 'com.android.systemui.emulation.pixel_4_xl', 'com.google.android.googlequicksearchbox', 'com.google.android.modulemetadata', 'com.android.phone.auto_generated_rro_product__', 'com.android.systemui.accessibility.accessibilitymenu.auto_generated_rro_product__', 'com.android.htmlviewer', 'com.android.vending', 'com.google.android.ext.services', 'com.google.android.overlay.largescreensettingsprovider', 'com.google.android.configupdater', 'com.google.android.gms.supervision', 'com.android.providers.userdictionary', 'com.android.cts.ctsshim', 'com.google.android.apps.photos', 'com.android.bluetooth', 'com.google.android.markup', 'com.android.emulator.radio.config', 'com.android.internal.display.cutout.emulation.corner', 'com.google.android.gms', 'com.android.storagemanager', 'com.android.printspooler', 'com.android.systemui.auto_generated_rro_product__', 'com.android.providers.partnerbookmarks', 'com.android.soundpicker', 'com.google.mainline.telemetry', 'com.android.dynsystem', 'com.google.android.bluetooth', 'com.android.providers.telephony.auto_generated_rro_product__', 'com.google.android.connectivity.resources', 'com.android.bips.auto_generated_rro_product__', 'com.google.android.youtube', 'com.android.simappdialog.auto_generated_rro_product__', 'com.android.externalstorage', 'com.android.server.telecom']
+
+    # resp = task_declarator.clarify_task(task, app_list=app_list, printlog=True)
+    # print(resp)
+    # print(task.to_dict())
+    #
+    # user_input = input()
+    # task.clarification_user_msg = user_input
+
+    # resp = task_declarator.justify_user_message(task, printlog=True)
+    # print(resp)
+    # print(task.to_dict())
+
+    # resp = task_declarator.clarify_task(task, app_list=app_list, printlog=True)
+    # print(resp)
+    # print(task.to_dict())
+    #
+    # user_input = input()
+    # task.clarification_user_msg = user_input
+
+    resp = task_declarator.clarify_task(task, app_list=app_list, printlog=True)
+    print(resp)
     print(task.to_dict())
     resp = task_declarator.classify_task(task)
+    print(resp)
     print(task.to_dict())
     resp = task_declarator.decompose_task(task)
+    print(resp)
     print(task.to_dict())
-    # print(resp)
 
 
 def test_googleplay():
@@ -211,7 +233,7 @@ def test_device():
     # wm = device.get_device_resolution()
     # print(wm)
 
-    # print(device.get_app_list_on_the_device())
+    print(device.get_app_list_on_the_device())
     # device.launch_app('com.google.android.youtube')
     # print(device.get_current_package_and_activity_name())
     # print(device.get_device())
@@ -227,21 +249,21 @@ def test_device():
     # screen_path, xml_path = device.cap_and_save_ui_screenshot_and_xml("2", WORK_PATH + 'old_test_data/test/guidata/')
     # print(screen_path, xml_path)
 
-    elements = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_elements.json')
-    tree = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_tree.json')
-    system_connector = SystemConnector()
-    screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
-    xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
-    gui = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file)
-    gui.elements = elements
-    gui.element_tree = tree
-
-    device.right_swipe_screen(gui, 0, True)
-    device.left_swipe_screen(gui, 0, True)
-    device.up_scroll_screen(gui, 0, True)
-    device.down_scroll_screen(gui, 0, True)
-    device.long_press_screen(gui, 19, True)
-    device.click_screen(gui, 19, True)
+    # elements = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_elements.json')
+    # tree = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_tree.json')
+    # system_connector = SystemConnector()
+    # screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
+    # xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
+    # gui = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file)
+    # gui.elements = elements
+    # gui.element_tree = tree
+    #
+    # device.right_swipe_screen(gui, 0, True)
+    # device.left_swipe_screen(gui, 0, True)
+    # device.up_scroll_screen(gui, 0, True)
+    # device.down_scroll_screen(gui, 0, True)
+    # device.long_press_screen(gui, 19, True)
+    # device.click_screen(gui, 19, True)
 
     # for act in ["Swipe", "Scroll", "Click", "Launch"]:
     #     cood = 0 if act != "Click" else 19
@@ -387,12 +409,12 @@ if __name__ == '__main__':
     # test_local()
     # test_systemcomnnector()
     # test_uiprocessor()
-    # test_task_declarator()
+    test_task_declarator()
 
     # test_googleplay()
     # test_appmanager()
 
-    test_device()
+    # test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
