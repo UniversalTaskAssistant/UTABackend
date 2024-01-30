@@ -194,6 +194,11 @@ class UTA:
         try:
             # 0. retrieve task info
             user, task = self.instantiate_user_task(user_id, task_id)
+            # ensure current app is pre-selected app
+            if package_name != task.involved_app_package:
+                print("current package name is different from pre-selected package name.")
+                action = {"Action": "Launch", "App": task.involved_app_package, "Description": "Launch app"}
+                return None, action
             task.cur_package = package_name
             task.cur_activity = activity_name
             task.keyboard_active = keyboard_active
@@ -226,7 +231,7 @@ class UTA:
             error_trace = traceback.format_exc()
             action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}
             print(action)
-            return action
+            return None, action
 
     def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
         """

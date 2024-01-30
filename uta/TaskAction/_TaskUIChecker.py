@@ -31,13 +31,14 @@ class _TaskUIChecker:
                              '!!!Answer the following three questions:\n' \
                              '1. "Yes" or "No" - whether such a go-back/close element exists. \n' \
                              '2. Element Id - provide the ID if "Yes", else "None". \n' \
+                             '3. Keywords - if "No", provide the keywords used to search relevant apps in the Google App store, otherwise "None". \n' \
                              '3. Reason - a brief explanation. \n' \
                              '!!!Notes: \n' \
-                             '1. ONLY use this JSON format to provide your answer: {{"Can": "<Yes or No>", "Element": "<ID or None>", "Description": "<description>"}}.\n' \
+                             '1. ONLY use this JSON format to provide your answer: {{"Can": "<Yes or No>", "Element": "<ID or None>", "Keywords": "<keywords or None>", "Description": "<description>"}}.\n' \
                              '2. Select a clickable element from the UI hierarchy. \n' \
                              '!!!Examples: \n' \
-                             '1. {{"Can": "Yes", "Element": 2, "Reason": "Navigates to the previous screen", "Description": "Click on the \'Back\' button"}}.\n' \
-                             '2. {{"Can": "No", "Element": "None", "Reason": "No back button present", "Description": "None"}}.\n'
+                             '1. {{"Can": "Yes", "Element": 2, "Keywords": "None", "Reason": "Navigates to the previous screen", "Description": "Click on the \'Back\' button"}}.\n' \
+                             '2. {{"Can": "No", "Element": "None", "Keywords": "Youtube", "Reason": "No back button present, please search youtube for video watching", "Description": "None"}}.\n'
 
         self.__relation_prompt = 'What is the relation between this UI and the task "{task}" and why? ' \
                                  '!!!Answer the following three questions:\n' \
@@ -53,7 +54,8 @@ class _TaskUIChecker:
                                  '!!!Notes: \n' \
                                  '1. ONLY use this JSON format to provide your answer: {{"Relation": "<relation>", "Element": "<ID or None>", "Reason": "<reason>"}}.\n' \
                                  '2. Some elements may be related to the task, but they might be "selected", which means the task is already completed and the relation should be "Completed".\n' \
-                                 '3. Also pay attention to the navigation-bar/multi-tab menu that may have tab or option potentially leading to related pages. \n'
+                                 '3. Also pay attention to the navigation-bar/multi-tab menu that may have tab or option potentially leading to related pages. \n' \
+                                 '4. App {involved_app_package} is selected by user to finish this task, and now the app has been opened and current UI is one of the UI in the app.\n'
 
     @staticmethod
     def wrap_task_info(task):
@@ -110,7 +112,8 @@ class _TaskUIChecker:
             print('* Check UI and Task Relation *')
             # Format base prompt
             prompt = self.wrap_task_info(task)
-            prompt += self.__relation_prompt.format(task=task.task_description)
+            prompt += self.__relation_prompt.format(task=task.task_description,
+                                                    involved_app_package=task.involved_app_package)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_relation_check = json.loads(resp['content'])

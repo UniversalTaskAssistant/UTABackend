@@ -297,20 +297,10 @@ def test_taskuichecker():
     gui.element_tree = tree
 
     task = Task("1", "1", 'Open the youtube')
-
-    task_declarator = TaskDeclarator(model_manager)
-    task_declarator.clarify_task(task, app_list, printlog=True)
-    task_declarator.classify_task(task)
-    task_declarator.decompose_task(task)
-
     new_prompt = task_ui_checker.wrap_task_info(task)
     print(new_prompt)
 
-    res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
-    print(task.to_dict())
-    print(res)
-
-    task = Task("1", "1", 'Open the CSIRO app')
+    task.involved_app_package = "com.google.android.youtube"
     res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
     print(task.to_dict())
     print(res)
@@ -318,8 +308,14 @@ def test_taskuichecker():
     res = task_ui_checker.check_element_action(gui, task, printlog=True)
     print(task.to_dict())
     print(res)
-    task = Task("1", "2", 'Go to the phone camera')
+
     res = task_ui_checker.check_ui_go_back_availability(gui, task, printlog=True)
+    print(task.to_dict())
+    print(res)
+
+    task = Task("1", "1", 'Open the CSIRO app')
+    task.involved_app_package = "com.google.csiro"
+    res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
     print(task.to_dict())
     print(res)
 
@@ -345,6 +341,7 @@ def test_actionchecker():
 
     for sub_task in ['Go to the phone camera', 'Go to the Youtube', 'Go to the CSIRO app', 'Go to the home page']:
         task = Task("1", "1", sub_task)
+        task.involved_app_package = "com.google.android.youtube"
         res = task_action_checker.action_on_ui(gui, task, printlog=True)
         print(res)
         print(task.to_dict())
@@ -398,6 +395,22 @@ def test_uta():
     print(action)
 
 
+def test_app_list():
+    device = Device()
+    device.connect()
+    local = _Local()
+    for _idx, one_app in enumerate(app_list):
+        if one_app != "com.google.android.deskclock":
+            continue
+        print(_idx)
+        device.go_homepage()
+        device.launch_app(one_app)
+        screenshot = device.cap_screenshot()
+        local.save_img(screenshot, WORK_PATH + f'old_test_data/test/app_list/{_idx}_page.png')
+        print(1)
+    device.disconnect()
+
+
 if __name__ == '__main__':
     # test_task()
 
@@ -416,6 +429,8 @@ if __name__ == '__main__':
 
     # test_device()
     # get_package()
-    test_taskuichecker()
+    # test_taskuichecker()
     # test_actionchecker()
     # test_uta()
+
+    test_app_list()
