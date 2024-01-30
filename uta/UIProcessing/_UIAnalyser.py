@@ -3,6 +3,9 @@ import copy
 
 
 class _UIAnalyser:
+    """
+    Analyze UI raw data for element description and element tree
+    """
     def __init__(self, model_manager):
         self.__model_manager = model_manager
 
