@@ -3,6 +3,9 @@ import xmltodict
 
 
 class _UIPreProcessor:
+    """
+    Preprocess UI xml raw data by cleaning up vh and convert to json
+    """
     def __init__(self):
         pass
 
@@ -21,8 +24,7 @@ class _UIPreProcessor:
         """
         ui_data.ui_vh_json = xmltodict.parse(open(ui_data.xml_file, 'r', encoding='utf-8').read())
         # Tidy up and reformat the json vh into Rico format
-        ui_data.ui_vh_json = {'activity': {'root': self.__cvt_node_to_rico_format(ui_data.ui_vh_json['hierarchy']
-                                                                                  ['node'])}}
+        ui_data.ui_vh_json = {'activity': {'root': self.__cvt_node_to_rico_format(ui_data.ui_vh_json['hierarchy']['node'])}}
 
     def __cvt_node_to_rico_format(self, node):
         """
