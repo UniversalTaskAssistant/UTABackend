@@ -195,10 +195,10 @@ class UTA:
             # 0. retrieve task info
             user, task = self.instantiate_user_task(user_id, task_id)
             # ensure current app is pre-selected app
-            if package_name != task.involved_app_package:
-                print("current package name is different from pre-selected package name.")
-                action = {"Action": "Launch", "App": task.involved_app_package, "Description": "Launch app"}
-                return None, action
+            # if package_name != task.involved_app_package:
+            #     print("current package name is different from pre-selected package name.")
+            #     action = {"Action": "Launch", "App": task.involved_app_package, "Description": "Launch app"}
+            #     return None, action
             task.cur_package = package_name
             task.cur_activity = activity_name
             task.keyboard_active = keyboard_active

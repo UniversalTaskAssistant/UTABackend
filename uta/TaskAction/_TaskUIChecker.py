@@ -49,13 +49,16 @@ class _TaskUIChecker:
                                  'Indirectly related: This UI has no direct element, but it has some elements leads to a related UI for the task or its subtasks. \n' \
                                  'Unrelated: This UI does not relate to the task or sub-tasks at all. \n' \
                                  'Completed: The task is already completed. \n' \
-                                 '2. Element Id that should be operated to proceed the task, if the UI is unrelated or the task is completed, then return None.' \
+                                 '2. Element Id that should be operated to proceed the task, the supported operation includes Click; Input (Input text); ' \
+                                 'Scroll (Vertically scroll the element); Swipe (Horizontally swipe the element), so besides clicking, searching bar and scroll down screen to check more elements can be options.' \
+                                 'If the UI is unrelated or the task is completed, then return None.' \
                                  '3. Reason that explains your decision.' \
                                  '!!!Notes: \n' \
                                  '1. ONLY use this JSON format to provide your answer: {{"Relation": "<relation>", "Element": "<ID or None>", "Reason": "<reason>"}}.\n' \
                                  '2. Some elements may be related to the task, but they might be "selected", which means the task is already completed and the relation should be "Completed".\n' \
                                  '3. Also pay attention to the navigation-bar/multi-tab menu that may have tab or option potentially leading to related pages. \n' \
-                                 '4. App {involved_app_package} is selected by user to finish this task, and now the app has been opened and current UI is one of the UI in the app.\n'
+                                 '4. App {involved_app_package} is selected by user to finish this task, and now the app has been opened and current UI is one of the UI in the app.\n' \
+                                 '5. If the current UI shows the task has been completed, than give "Completed" relation with "None" as Element Id.'
 
     @staticmethod
     def wrap_task_info(task):

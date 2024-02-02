@@ -233,9 +233,9 @@ def test_device():
     # wm = device.get_device_resolution()
     # print(wm)
 
-    print(device.get_app_list_on_the_device())
-    # device.launch_app('com.google.android.youtube')
-    # print(device.get_current_package_and_activity_name())
+    # print(device.get_app_list_on_the_device())
+    # device.launch_app('com.android.chrome')
+    print(device.get_current_package_and_activity_name())
     # print(device.get_device())
     # print(device.get_device_name())
     # print(device.check_keyboard_active())
@@ -399,14 +399,13 @@ def test_app_list():
     device = Device()
     device.connect()
     local = _Local()
+    app_list = device.get_app_list_on_the_device()
     for _idx, one_app in enumerate(app_list):
-        if one_app != "com.google.android.deskclock":
-            continue
         print(_idx)
         device.go_homepage()
         device.launch_app(one_app)
         screenshot = device.cap_screenshot()
-        local.save_img(screenshot, WORK_PATH + f'old_test_data/test/app_list/{_idx}_page.png')
+        local.save_img(screenshot, WORK_PATH + f'old_test_data/test/app_list_api31/{_idx}_{one_app}.png')
         print(1)
     device.disconnect()
 
@@ -427,10 +426,10 @@ if __name__ == '__main__':
     # test_googleplay()
     # test_appmanager()
 
-    # test_device()
+    test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
     # test_uta()
 
-    test_app_list()
+    # test_app_list()

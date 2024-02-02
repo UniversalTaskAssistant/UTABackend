@@ -86,12 +86,12 @@ html_template = """
 </html>
 """
 
-user_id = 'user1'
+user_id = 'user3'
 directories = {}
 for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
     task_dir_name = os.path.basename(task_dir)
-    if task_dir_name in ['task1']:
-        continue
+    # if task_dir_name in ['task1']:
+    #     continue
     data = {}
     with open(task_dir + '/task.json', 'r', encoding='utf-8') as file:
         task_json = json.load(file)
@@ -104,8 +104,9 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
             data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
                                                      'user': str(task_json['conversation_clarification'][i + 1])}
         i = len(task_json['conversation_clarification']) - 1
-        data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
-                                                 'user': ''}
+        if i >= 0:
+            data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
+                                                     'user': str(task_json['conversation_clarification'][i])}
 
         data['screenshot'] = {}
         for one_img in glob.glob(task_dir + '/*_annotated.png'):

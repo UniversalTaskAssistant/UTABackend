@@ -97,6 +97,22 @@ class Device:
     *** App ***
     ***********
     '''
+
+    def reboot_app(self, package_name, waiting_time=2):
+        """
+        Reboots an app on the device by its package name.
+        Args:
+            package_name (str): The package name of the app to reboot.
+            waiting_time (int): Time to wait after launching the app, in seconds.
+        """
+        print('--- Rebooting app:', package_name, '---')
+        # Step 1: Force stop the app
+        self.__adb_device.shell(f'am force-stop {package_name}')
+        # Optional wait time after stopping the app
+        time.sleep(waiting_time)
+        # Step 2: Launch the app using the existing launch_app method
+        self.launch_app(package_name, waiting_time)
+
     def launch_app(self, package_name, waiting_time=2):
         """
         Launches an app on the device by its package name.
@@ -135,7 +151,7 @@ class Device:
         Returns:
             A dictionary with 'package_name' and 'activity_name'.
         """
-        dumpsys_output = self.__adb_device.shell('dumpsys window displays | grep mCurrentFocus')
+        dumpsys_output = self.__adb_device.shell('dumpsys activity activities | grep mResumedActivity')
         package_and_activity = dumpsys_output.split('u0 ')[1].split('}')[0]
         package_name, activity_name = package_and_activity.split('/')
         print('Package name:', package_name, 'Activity name:', activity_name)
