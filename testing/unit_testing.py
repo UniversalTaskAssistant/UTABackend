@@ -420,13 +420,13 @@ if __name__ == '__main__':
 
     # test_local()
     # test_systemcomnnector()
-    # test_uiprocessor()
+    test_uiprocessor()
     # test_task_declarator()
 
     # test_googleplay()
     # test_appmanager()
 
-    test_device()
+    # test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
