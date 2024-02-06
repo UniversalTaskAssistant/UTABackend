@@ -15,7 +15,7 @@ class _UIChecker:
                              '4. Form: Requiring user to fill in data.\n' \
                              '!!!Respond to the following points:\n' \
                              '1. "Component": if the UI contains any of the given components, if not, answer "None".\n' \
-                             '2. "Explanation": a brief explanation of your decision. \n' \
+                             '2. "Explanation": one-sentence explanation of your decision. \n' \
                              '!!!Note:\n' \
                              'ONLY use this JSON format to provide your answer: {{"Component": "<Component>", "Explanation": "<Explanation>"}}\n' \
                              '!!!Example:\n' \
