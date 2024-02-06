@@ -1,5 +1,7 @@
 import time
 import json
+import re
+
 from uta.config import *
 from uta.ThirdPartyAppManagement._GooglePlay import _GooglePlay
 
@@ -46,6 +48,23 @@ class ThirdPartyAppManager:
                                            '!!!Examples\n:' \
                                            '1. {{"App": "com.whatsapp.com", "Reason": "To send message in whatsapp, open the whatsapp app."}}.\n ' \
                                            '2. {{"App": "None", "Reason": "No app is related to the task."}}.\n'
+
+    @staticmethod
+    def transfer_to_dict(resp):
+        """
+        Transfer string model returns to dict format
+        Args:
+            resp (dict): The model returns.
+        Return:
+            resp_dict (dict): The transferred dict.
+        """
+        try:
+            return json.loads(resp['content'])
+        except Exception as e:
+            regex = "\"[A-Za-z]+\": *\"[^\f\n\r\t\v:\"]+\"|\'[A-Za-z]+\': *\'[^\f\n\r\t\v:\']+\'"
+            attributes = re.findall(regex, resp['content'])
+            return {one_ele.split(': ')[0].strip('"').strip('\''): one_ele.split(': ')[1].strip('"').strip('\'')
+                    for one_ele in attributes}
 
     def search_app_by_name(self, app_name):
         """
@@ -148,7 +167,7 @@ class ThirdPartyAppManager:
             # Ask FM
             conversations = [{'role': 'system', 'content': SYSTEM_PROMPT}, {'role': 'user', 'content': prompt}]
             resp = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)
-            task.res_related_app_check = json.loads(resp['content'])
+            task.res_related_app_check = self.transfer_to_dict(resp)
             print(task.res_related_app_check)
             return task.res_related_app_check
         except Exception as e:

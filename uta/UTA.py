@@ -90,11 +90,13 @@ class UTA:
             # justify if user's response is reasonable
             if task.clarification_user_msg:
                 justify = self.justify_user_message(task)
-                if justify['Related'] == 'False' or justify['Related'] is False:  # if not, then return justify result
+                # if justify['Related'] == 'False' or justify['Related'] is False:  # if not, then return justify result
+                if 'false' in str(justify).lower():
                     return justify
 
             clarify = self.clarify_task(task, app_list=user.app_list)
-            if clarify['Clear'] == 'True' or clarify['Clear'] is True:
+            # if clarify['Clear'] == 'True' or clarify['Clear'] is True:
+            if 'true' in str(clarify).lower():
                 # record involved apps
                 if clarify.get("InvolvedApp") and clarify.get("InvolvedAppPackage"):
                     task.involved_app = clarify['InvolvedApp']
@@ -218,8 +220,8 @@ class UTA:
                 if action['Action'] == 'Other App':
                     related_app = self.app_recommender.check_related_apps(task=task, app_list=user.app_list)
                     if 'None' not in related_app['App']:
-                        task.related_app = related_app['App']
-                        action = {"Action": "Launch", "App": related_app['App'], "Description": "Launch app"}
+                        task.related_app = related_app
+                        action = {"Action": "Launch", "Description": "Launch app", **related_app}
                     else:
                         action = {"Action": "Infeasible", "Description": "No related app installed."}
                     task.actions[-1] = action  # we record the launch action here to instead "other app"

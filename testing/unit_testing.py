@@ -1,4 +1,5 @@
 import cv2
+import time
 
 from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
@@ -28,7 +29,7 @@ def test_task():
     task.load_from_dict(new_task)
     print(task.to_dict())
 
-    action = {"Action": "Long Press", "Element": "19", "Description": "N/A", "Input Text": "N/A", "Reason": "N/A"}
+    action = {"Action": "Long Press", "Element Id": "19", "Description": "N/A", "Input Text": "N/A", "Reason": "N/A"}
     task.actions.append(action)
     print(task.to_dict())
 
@@ -140,7 +141,7 @@ def test_uiprocessor():
     print(ui_data.to_dict())
 
     new_ui = ui_processor.process_ui(ui_data=ui_data, show=True)
-    # new_ui.annotate_ui_operation({"Action": "Click", "Coordinate": 3, "Element": "3", "others": "N/A"})
+    # new_ui.annotate_ui_operation({"Action": "Click", "Coordinate": 3, "Element Id": "3", "others": "N/A"})
     print(new_ui.to_dict())
 
     # board = new_ui.annotated_screenshot
@@ -249,15 +250,15 @@ def test_device():
     # screen_path, xml_path = device.cap_and_save_ui_screenshot_and_xml("2", WORK_PATH + 'old_test_data/test/guidata/')
     # print(screen_path, xml_path)
 
-    # elements = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_elements.json')
-    # tree = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_tree.json')
-    # system_connector = SystemConnector()
-    # screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
-    # xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
-    # gui = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file)
-    # gui.elements = elements
-    # gui.element_tree = tree
-    #
+    elements = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_elements.json')
+    tree = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_tree.json')
+    system_connector = SystemConnector()
+    screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
+    xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
+    gui = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file)
+    gui.elements = elements
+    gui.element_tree = tree
+
     # device.right_swipe_screen(gui, 0, True)
     # device.left_swipe_screen(gui, 0, True)
     # device.up_scroll_screen(gui, 0, True)
@@ -265,19 +266,19 @@ def test_device():
     # device.long_press_screen(gui, 19, True)
     # device.click_screen(gui, 19, True)
 
-    # for act in ["Swipe", "Scroll", "Click", "Launch"]:
-    #     cood = 0 if act != "Click" else 19
-    #     cood_ele = gui.elements[cood]
-    #     action = {"Action": act, "Coordinate": cood_ele, "Element": str(cood), "App": 'com.google.android.youtube',
-    #               "Input Text": "something."}
-    #     device.take_action(action, ui_data=gui, show=False)
-    #     time.sleep(3)
+    for act in ["Swipe", "Scroll", "Click", "Launch"]:
+        cood = 0 if act != "Click" else 19
+        cood_ele = gui.elements[cood]
+        action = {"Action": act, "Coordinate": cood_ele, "Element Id": str(cood), "App": 'com.google.android.youtube',
+                  "Input Text": "something."}
+        device.take_action(action, ui_data=gui, show=False)
+        time.sleep(3)
 
     # test input independently
     # cood = 19
     # cood_ele = gui.elements[cood]
     # act = "Input"
-    # action = {"Action": act, "Coordinate": cood_ele, "Element": str(cood), "App": 'com.google.android.youtube',
+    # action = {"Action": act, "Coordinate": cood_ele, "Element Id": str(cood), "App": 'com.google.android.youtube',
     #           "Input Text": "something."}
     # device.take_action(action, ui_data=gui, show=True)
 
@@ -297,13 +298,27 @@ def test_taskuichecker():
     gui.element_tree = tree
 
     task = Task("1", "1", 'Open the youtube')
-    new_prompt = task_ui_checker.wrap_task_info(task)
-    print(new_prompt)
+    new_prompt = task_ui_checker.wrap_task_info_before(task)
+    print(1, new_prompt)
+    new_prompt += task_ui_checker.wrap_task_info_after(task)
+    print(2, new_prompt)
+
+    res = {'content': '{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}'}
+    res = task_ui_checker.transfer_to_dict(res)
+    print(res)
+    res = {'content': '{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}\n'}
+    res = task_ui_checker.transfer_to_dict(res)
+    print(res)
 
     task.involved_app_package = "com.google.android.youtube"
     res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
     print(task.to_dict())
     print(res)
+
+    res = task_ui_checker.check_element_action(gui, task, printlog=True)
+    print(task.to_dict())
+    print(res)
+    task.actions.append(res)
 
     res = task_ui_checker.check_element_action(gui, task, printlog=True)
     print(task.to_dict())
@@ -318,6 +333,8 @@ def test_taskuichecker():
     res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
     print(task.to_dict())
     print(res)
+
+
 
 
 def test_actionchecker():
@@ -420,13 +437,13 @@ if __name__ == '__main__':
 
     # test_local()
     # test_systemcomnnector()
-    test_uiprocessor()
+    # test_uiprocessor()
     # test_task_declarator()
 
     # test_googleplay()
     # test_appmanager()
 
-    # test_device()
+    test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()

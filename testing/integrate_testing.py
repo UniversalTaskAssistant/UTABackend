@@ -18,7 +18,7 @@ def annotate_ui_operation(ui, recommended_action):
     assert recommended_action != "None"
 
     try:
-        ele = ui.elements[int(recommended_action["Element"])]
+        ele = ui.elements[int(recommended_action["Element Id"])]
         bounds = ele['bounds']
         action_type = recommended_action['Action'].lower()
 
@@ -101,11 +101,14 @@ def task_automation(max_try=20):
     ui_id = 0
     for i in range(max_try):
         try:
-            ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id, output_dir=pjoin(DATA_PATH, user_id, task_id))
+            ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id,
+                                                                       output_dir=pjoin(DATA_PATH, user_id, task_id))
             package, activity = device.get_current_package_and_activity_name()
             keyboard_active = device.check_keyboard_active()
-            ui_data, action = uta.automate_task(user_id=user_id, task_id=task_id, ui_img_file=ui_img, ui_xml_file=ui_xml,
-                                                package_name=package, activity_name=activity, keyboard_active=keyboard_active, printlog=False)
+            ui_data, action = uta.automate_task(user_id=user_id, task_id=task_id, ui_img_file=ui_img,
+                                                ui_xml_file=ui_xml,
+                                                package_name=package, activity_name=activity,
+                                                keyboard_active=keyboard_active, printlog=False)
 
             if action.get("Action") is not None and "error" in action["Action"].lower():
                 save_error(action["Exception"], action["Traceback"], "automation_error")
@@ -142,7 +145,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user5'
+user_id = 'user6'
 # init device
 device = Device()
 device.connect()
@@ -152,26 +155,24 @@ resolution = device.get_device_resolution()
 uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
-
 for task_idx, task in enumerate(task_list):
-    # if task_idx in [10, 13, 14, 18, 1, 3]:
-    #     continue
+    if task_idx not in [0, 9, 13, 21, 24, 25, 26, 27, 28, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 51, 53, 54, 55,
+                        56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 72, 81, 82, 83, 85, 86, 87, 89, 92, 93, 95]:
+        continue
     # if task_idx < 5:
     #     continue
-    # if task_idx < 15:
+    # if not 80 < task_idx <= 90:
     #     continue
-    if not 80 < task_idx <= 90:
-        continue
-    task_id = f"task{task_idx+1}"
+    task_id = f"task{task_idx + 1}"
     # go homepage
-    device.go_homepage()
+    # device.go_homepage()
 
     # task declaration
-    # task_declaration(task, max_try=10)
+    task_declaration(task, max_try=10)
 
-    user, task_obj = uta.instantiate_user_task(user_id, task_id)
-    device.reboot_app(task_obj.involved_app_package)
+    # user, task_obj = uta.instantiate_user_task(user_id, task_id)
+    # device.reboot_app(task_obj.involved_app_package)
     # task automation
-    task_automation(max_try=20)
+    # task_automation(max_try=20)
 
 device.disconnect()

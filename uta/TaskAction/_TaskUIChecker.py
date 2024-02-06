@@ -1,5 +1,6 @@
 from uta.config import *
 import json
+import re
 
 
 class _TaskUIChecker:
@@ -13,19 +14,20 @@ class _TaskUIChecker:
                                '!!!Answer the following questions:\n' \
                                '1. Action - one of the following types: Click; Input (Input text); ' \
                                'Scroll (Vertically scroll the element); Swipe (Horizontally swipe the element).\n' \
-                               '2. Element id: the id of the target element to perform the action, just repeat what is given.\n' \
+                               '2. Element Id: the id of the target element to perform the action, just repeat what is given.\n' \
                                '3. Reason: short explanation why you do the action.\n' \
                                '4. Input Text - optional, only if the Action type is Input.\n' \
                                '!!!Notes:\n' \
-                               '1. ONLY use this JSON format to provide your answer: {{"Action": "<type>", "Element": "<id>", "Input Text": "<text>", "Reason": "<why>"}}. \n' \
-                               '2. This UI has been proved as a related UI to the task, you have to perform one of the given action.\n' \
-                               '3. Select "Input" only if the keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
-                               '4. Ensure the chosen action supports the element (clickable to click or scrollable to scroll). \n' \
-                               '5. You must avoid to execute the repeated actions that have been executed before to avoid repeating same operation causes the program execution to get stuck.' \
+                               '- ONLY use this JSON format to provide your answer: {{"Action": "<type>", "Element Id": "<id>", "Input Text": "<text>", "Reason": "<why>"}}. \n' \
+                               '- This UI has been proved as a related UI to the task, you have to perform one of the given action.\n' \
+                               '- Select "Input" only if the keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
+                               '- Ensure the chosen action supports the element (clickable to click or scrollable to scroll). \n' \
+                               '- If current UI is related to phone settings, and there is a searching bar, you should firstly try to search relevant options in the searching bar.\n' \
+                               '- If not None, then Element Id must in an integer.\n' \
                                '!!!Examples:\n' \
-                               '1. {{"Action": "Click", "Element": "3", "Reason": "Open Settings to access task settings"}}. \n' \
-                               '2. {{"Action": "Input", "Element": "4", "Input Text": "Download Trump", "Reason": "Type in the name to follow the account."}}.\n' \
-                               '3. {{"Action": "Scroll", "Element": "3", "Reason": "Scroll down to view more elements"}}\n'
+                               '1. {{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}. \n' \
+                               '2. {{"Action": "Input", "Element Id": "4", "Input Text": "Download Trump", "Reason": "Type in the name to follow the account."}}.\n' \
+                               '3. {{"Action": "Scroll", "Element Id": "3", "Reason": "Scroll down to view more elements"}}\n'
 
         self.__back_prompt = 'Is there an element in the current UI that can be clicked to navigate back or close the current unrelated UI to assist in completing the task "{task}"? \n' \
                              '!!!Answer the following three questions:\n' \
@@ -34,11 +36,12 @@ class _TaskUIChecker:
                              '3. Keywords - if "No", provide the keywords used to search relevant apps in the Google App store, otherwise "None". \n' \
                              '3. Reason - a brief explanation. \n' \
                              '!!!Notes: \n' \
-                             '1. ONLY use this JSON format to provide your answer: {{"Can": "<Yes or No>", "Element": "<ID or None>", "Keywords": "<keywords or None>", "Description": "<description>"}}.\n' \
-                             '2. Select a clickable element from the UI hierarchy. \n' \
+                             '- ONLY use this JSON format to provide your answer: {{"Can": "<Yes or No>", "Element Id": "<ID or None>", "Keywords": "<keywords or None>", "Description": "<description>"}}.\n' \
+                             '- Select a clickable element from the UI hierarchy. \n' \
+                             '- If not None, then Element Id must in an integer.\n' \
                              '!!!Examples: \n' \
-                             '1. {{"Can": "Yes", "Element": 2, "Keywords": "None", "Reason": "Navigates to the previous screen", "Description": "Click on the \'Back\' button"}}.\n' \
-                             '2. {{"Can": "No", "Element": "None", "Keywords": "Youtube", "Reason": "No back button present, please search youtube for video watching", "Description": "None"}}.\n'
+                             '1. {{"Can": "Yes", "Element Id": 2, "Keywords": "None", "Reason": "Navigates to the previous screen", "Description": "Click on the \'Back\' button"}}.\n' \
+                             '2. {{"Can": "No", "Element Id": "None", "Keywords": "Youtube", "Reason": "No back button present, please search youtube for video watching", "Description": "None"}}.\n'
 
         self.__relation_prompt = 'What is the relation between this UI and the task "{task}" and why? ' \
                                  '!!!Answer the following three questions:\n' \
@@ -48,20 +51,20 @@ class _TaskUIChecker:
                                  'Directly related: This UI has an element directly related to the task or its sub-tasks and steps. \n' \
                                  'Indirectly related: This UI has no direct element, but it has some elements leads to a related UI for the task or its subtasks. \n' \
                                  'Unrelated: This UI does not relate to the task or sub-tasks at all. \n' \
-                                 'Completed: The task is already completed. \n' \
+                                 'Almost Complete: The task can be completed with one more action, which should be performed manually by the user. This option should be selected if the next action directly completes the task (e.g., the final step to increase volume).\n' \
                                  '2. Element Id that should be operated to proceed the task, the supported operation includes Click; Input (Input text); ' \
                                  'Scroll (Vertically scroll the element); Swipe (Horizontally swipe the element), so besides clicking, searching bar and scroll down screen to check more elements can be options.' \
-                                 'If the UI is unrelated or the task is completed, then return None.' \
+                                 'If the task is "Almost Complete" or "Unrelated," return None.\n' \
                                  '3. Reason that explains your decision.' \
                                  '!!!Notes: \n' \
-                                 '1. ONLY use this JSON format to provide your answer: {{"Relation": "<relation>", "Element": "<ID or None>", "Reason": "<reason>"}}.\n' \
-                                 '2. Some elements may be related to the task, but they might be "selected", which means the task is already completed and the relation should be "Completed".\n' \
-                                 '3. Also pay attention to the navigation-bar/multi-tab menu that may have tab or option potentially leading to related pages. \n' \
-                                 '4. App {involved_app_package} is selected by user to finish this task, and now the app has been opened and current UI is one of the UI in the app.\n' \
-                                 '5. If the current UI shows the task has been completed, than give "Completed" relation with "None" as Element Id.'
+                                 '- Responses must adhere to this JSON format: {{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<reason>"}}.\n' \
+                                 '- If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
+                                 '- App {involved_app_package} is selected by user to finish this task, and now the app has been opened and current UI is one of the UI in the app.\n' \
+                                 '- If current UI is related to phone settings, and there is a searching bar, you should firstly try to search relevant options in the searching bar.\n' \
+                                 '- If not None, then Element Id must in an integer.\n'
 
     @staticmethod
-    def wrap_task_info(task):
+    def wrap_task_info_before(task):
         """
         Wrap up task info to put in the fm prompt
         Args:
@@ -75,12 +78,39 @@ class _TaskUIChecker:
             prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + ')\n'
         if len(task.subtasks) > 0:
             prompt += '(Potential subtasks and steps to complete the task: ' + str(task.subtasks) + '.)\n'
+        return prompt
+
+    @staticmethod
+    def wrap_task_info_after(task):
+        """
+        Wrap up task info to put in the fm prompt
+        Args:
+            task (Task)
+        Return:
+            prompt (str): The wrapped prompt
+        """
+        prompt = ''
         if len(task.actions) > 0:
             prompt += '(Action history for this task - avoid repetition: ' + str(task.actions) + '.)\n'
-        if len(task.except_elements_ids) > 0:
-            prompt += '(Elements with the following IDs have been proved to be unrelated to this task, exclude them: ' \
-                      + str(task.except_elements_ids) + '.)\n'
+            prompt += 'Given the above actions, suggest a new action that progresses the task without repeating previous actions.\n'
         return prompt
+
+    @staticmethod
+    def transfer_to_dict(resp):
+        """
+        Transfer string model returns to dict format
+        Args:
+            resp (dict): The model returns.
+        Return:
+            resp_dict (dict): The transferred dict.
+        """
+        try:
+            return json.loads(resp['content'])
+        except Exception as e:
+            regex = "\"[A-Za-z]+\": *\"[^\f\n\r\t\v:\"]+\"|\'[A-Za-z]+\': *\'[^\f\n\r\t\v:\']+\'"
+            attributes = re.findall(regex, resp['content'])
+            return {one_ele.split(': ')[0].strip('"').strip('\''): one_ele.split(': ')[1].strip('"').strip('\'')
+                    for one_ele in attributes}
 
     def check_ui_task(self, ui_data, task, prompt, printlog=False):
         """
@@ -114,12 +144,13 @@ class _TaskUIChecker:
         try:
             print('* Check UI and Task Relation *')
             # Format base prompt
-            prompt = self.wrap_task_info(task)
+            prompt = self.wrap_task_info_before(task)
             prompt += self.__relation_prompt.format(task=task.task_description,
                                                     involved_app_package=task.involved_app_package)
+            prompt += self.wrap_task_info_after(task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-            task.res_relation_check = json.loads(resp['content'])
+            task.res_relation_check = self.transfer_to_dict(resp)
             print(task.res_relation_check)
             return task.res_relation_check
         except Exception as e:
@@ -134,16 +165,17 @@ class _TaskUIChecker:
             task (Task): Task object containing task description for which back navigation is being checked.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            FM response (dict): {"Action":"Input", "Element":3, "Description":, "Reason":, "Input Text": "Download Trump"}
+            FM response (dict): {"Action":"Input", "Element Id":3, "Description":, "Reason":, "Input Text": "Download Trump"}
         """
         try:
             print('* Check UI Action and Target Element *')
             # Format base prompt
-            prompt = self.wrap_task_info(task)
+            prompt = self.wrap_task_info_before(task)
             prompt += self.__action_prompt.format(task=task.task_description, element_id=task.res_relation_check['Element'])
+            prompt += self.wrap_task_info_after(task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-            task.res_action_check = json.loads(resp['content'])
+            task.res_action_check = self.transfer_to_dict(resp)
             print(task.res_action_check)
             return task.res_action_check
         except Exception as e:
@@ -158,16 +190,17 @@ class _TaskUIChecker:
             task (Task): Task object containing task description for which back navigation is being checked.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            FM response (dict): {"Can":"Yes", "Element": 2, "Reason":, "Description":"Click on the "go back" element"}
+            FM response (dict): {"Can":"Yes", "Element Id": 2, "Reason":, "Description":"Click on the "go back" element"}
         """
         try:
             print('* Check Any Action to Go Back to Related UI *')
             # Format base prompt
-            prompt = self.wrap_task_info(task)
+            prompt = self.wrap_task_info_before(task)
             prompt += self.__back_prompt.format(task=task.task_description)
+            prompt += self.wrap_task_info_after(task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-            task.res_go_back_check = json.loads(resp['content'])
+            task.res_go_back_check = self.transfer_to_dict(resp)
             print(task.res_go_back_check)
             return task.res_go_back_check
         except Exception as e:

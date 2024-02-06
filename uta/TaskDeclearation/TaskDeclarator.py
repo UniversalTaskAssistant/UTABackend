@@ -1,4 +1,6 @@
 import json
+import re
+
 from uta.config import *
 
 
@@ -103,6 +105,23 @@ class TaskDeclarator:
                 f'{task.involved_app} corresponding to app package {task.involved_app_package}.\n'
         return prompt
 
+    @staticmethod
+    def transfer_to_dict(resp):
+        """
+        Transfer string model returns to dict format
+        Args:
+            resp (dict): The model returns.
+        Return:
+            resp_dict (dict): The transferred dict.
+        """
+        try:
+            return json.loads(resp['content'])
+        except Exception as e:
+            regex = "\"[A-Za-z]+\": *\"[^\f\n\r\t\v:\"]+\"|\'[A-Za-z]+\': *\'[^\f\n\r\t\v:\']+\'"
+            attributes = re.findall(regex, resp['content'])
+            return {one_ele.split(': ')[0].strip('"').strip('\''): one_ele.split(': ')[1].strip('"').strip('\'')
+                    for one_ele in attributes}
+
     def clarify_task(self, task, app_list, printlog=False):
         """
         Clarify task to be clear to complete
@@ -128,7 +147,7 @@ class TaskDeclarator:
             # send conv to fm
             resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
             task.conversation_clarification.append(resp)
-            task.res_clarification = json.loads(resp['content'])
+            task.res_clarification = self.transfer_to_dict(resp)
             task.res_clarification['Proc'] = 'Clarify'
             print(task.res_clarification)
             return task.res_clarification
@@ -152,7 +171,7 @@ class TaskDeclarator:
                 # send conv to fm
                 resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
                 task.conversation_clarification.append(resp)
-                task.res_clarification = json.loads(resp['content'])
+                task.res_clarification = self.transfer_to_dict(resp)
                 task.res_clarification['Proc'] = 'Clarify'
                 print(task.res_clarification)
                 return task.res_clarification
@@ -177,7 +196,7 @@ class TaskDeclarator:
             conversation = [{"role": "system", "content": SYSTEM_PROMPT},
                             {"role": "user", "content": prompt}]
             resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
-            task.res_decomposition = json.loads(resp['content'])
+            task.res_decomposition = self.transfer_to_dict(resp)
             task.subtasks = task.res_decomposition['Sub-tasks']
             task.res_decomposition['Proc'] = 'Decompose'
             print(task.res_decomposition)
@@ -201,7 +220,7 @@ class TaskDeclarator:
             conversation = [{"role": "system", "content": SYSTEM_PROMPT},
                             {"role": "user", "content": prompt}]
             resp = self.__model_manager.send_fm_conversation(conversation=conversation, printlog=printlog)
-            task.res_classification = json.loads(resp['content'])
+            task.res_classification = self.transfer_to_dict(resp)
             task.res_classification['Proc'] = 'Classify'
             task.task_type = task.res_classification["Task Type"]
             print(task.res_classification)

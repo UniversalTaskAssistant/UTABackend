@@ -206,7 +206,7 @@ class Device:
         """
         Take action on the device
         Args:
-            action (dict): {"Action":, "Coordinate":, "Element":, "Input Text":, "Description":, "Reason":}
+            action (dict): {"Action":, "Coordinate":, "Element Id":, "Input Text":, "Description":, "Reason":}
             ui_data (UIData): UI data containing the element coordinates
             show (bool): If True, displays the annotated action
         """
@@ -214,11 +214,11 @@ class Device:
         print(action)
         action_type = action['Action'].lower()
         if 'click' in action_type:
-            self.click_screen(ui_data, int(action['Element']), show)
+            self.click_screen(ui_data, int(action['Element Id']), show)
         elif 'scroll' in action_type:
-            self.up_scroll_screen(ui_data, int(action['Element']), show)  # scroll down
+            self.up_scroll_screen(ui_data, int(action['Element Id']), show)  # scroll down
         elif 'swipe' in action_type:
-            self.left_swipe_screen(ui_data, int(action['Element']), show)
+            self.left_swipe_screen(ui_data, int(action['Element Id']), show)
         elif 'input' in action_type:
             self.input_text(action['Input Text'])
         elif 'launch' in action_type:

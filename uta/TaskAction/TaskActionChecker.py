@@ -35,7 +35,7 @@ class TaskActionChecker:
             task (Task): Task object containing task description for which back navigation is being checked.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            Action (dict): {"Action":, "Element":, "Reason":, "Description":, "Input Text":}
+            Action (dict): {"Action":, "Element Id":, "Reason":, "Description":, "Input Text":}
         """
         print('\n*** Check Action on UI *** ')
         # Check ui task relation
@@ -43,13 +43,13 @@ class TaskActionChecker:
         task.relations.append(relation)
         # [Complete] => Finish
         if 'complete' in task.res_relation_check['Relation'].lower():
-            action = {"Action": "Complete", "Reason": task.res_relation_check['Reason']}
+            action = {"Action": "Complete", **task.res_relation_check}
         # [Unrelated UI] => Check whether the ui can go back or check other app
         elif 'unrelated' in task.res_relation_check['Relation'].lower():
             # 1. Check if it can go back to a related gui
             go_back = self.check_ui_go_back_availability(ui_data, task, printlog)
             if 'yes' in go_back['Can'].lower():
-                action = {"Action": "Click", "Element": go_back['Element'], "Description": go_back['Description']}
+                action = {"Action": "Click", **go_back}  # avoid to directly refer the key in response as not stable
             # 2. Check if it can find another related app
             else:
                 action = {"Action": "Other App"}
@@ -87,7 +87,7 @@ class TaskActionChecker:
             task (Task): Task object containing task description for which back navigation is being checked.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            FM response (dict): {"Action":"Input", "Element":3, "Description":, "Reason":, "Input Text": "Download Trump"}
+            FM response (dict): {"Action":"Input", "Element Id":3, "Description":, "Reason":, "Input Text": "Download Trump"}
         """
         return self.__task_ui_checker.check_element_action(ui_data, task, printlog)
 
@@ -99,6 +99,6 @@ class TaskActionChecker:
             task (Task): Task object containing task description for which back navigation is being checked.
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            FM response (dict): {"Can":"Yes", "Element": 2, "Reason":, "Description":"Click on the "go back" element"}
+            FM response (dict): {"Can":"Yes", "Element Id": 2, "Reason":, "Description":"Click on the "go back" element"}
         """
         return self.__task_ui_checker.check_ui_go_back_availability(ui_data, task, printlog)
