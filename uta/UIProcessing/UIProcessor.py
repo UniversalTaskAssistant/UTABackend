@@ -1,6 +1,7 @@
 from uta.config import *
 from uta.UIProcessing._UIPreProcessor import _UIPreProcessor
 from uta.UIProcessing._UIAnalyser import _UIAnalyser
+from uta.UIProcessing._UIChecker import _UIChecker
 
 
 class UIProcessor:
@@ -9,7 +10,13 @@ class UIProcessor:
 
         self.__ui_preprocessor = _UIPreProcessor()
         self.__ui_analyser = _UIAnalyser(self.__model_manager)
+        self.__ui_checker = _UIChecker(self.__model_manager)
 
+    '''
+    ***********************
+    *** Process UI Info ***
+    ***********************
+    '''
     def ui_vh_xml_cvt_to_json(self, ui_data):
         """
         Convert xml vh to json format for easier processing
@@ -77,6 +84,23 @@ class UIProcessor:
         if show:
             ui_data.show_all_elements()
         return ui_data
+
+    '''
+    ****************
+    *** UI Check ***
+    ****************
+    '''
+    def check_ui_decision_page(self, ui_data):
+        """
+        Check if the UI contain any following special components that require user intervention:
+        1. UI Modal; 2. User Permission; 3. Login; 4. Form;
+        Args:
+            ui_data (UIData)
+        Returns:
+            response (dict): {"Component", "Explanation"}
+        """
+        print('* Check if UI requires user decision *')
+        return self.__ui_checker.check_ui_decision_page(ui_data)
 
 
 if __name__ == '__main__':

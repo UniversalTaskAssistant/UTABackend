@@ -176,6 +176,21 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
+    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
+        """
+        Process ui dato
+        Args:
+            ui_img_file (path): Screenshot image path
+            ui_xml_file (path): VH xml file path
+            device_resolution (tuple): Device resolution
+            show (bool): True to show the detection result
+        Return:
+            ui (UIData): ui data with processing results
+        """
+        ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
+        self.ui_processor.process_ui(ui, show=show)
+        return ui
+
     def automate_task(self, user_id, task_id, ui_img_file, ui_xml_file,
                       package_name=None, activity_name=None, keyboard_active=False, printlog=False):
         """
@@ -190,7 +205,6 @@ class UTA:
             keyboard_active (bool): If the keyboard is active, can only input text when the keyboard is active
             printlog (bool): If True, enables logging of outputs.
         Returns:
-            ui (UIData)
             Action (dict): {"Action": }
         """
         try:
@@ -207,6 +221,9 @@ class UTA:
             # 1. process ui
             ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
             self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
+            ui_check = self.ui_processor.check_ui_decision_page(ui)
+            if 'none' not in ui_check['Component'].lower():
+                return {"Action": "User Decision", "Description": ui_check['Component'], "Explanation": ui_check['Explanation']}
             # 2. act based on task type
             # task_type = task.task_type.lower()
             task_type = 'app'  # for testing reason, here we force the task_type to be app
@@ -228,30 +245,14 @@ class UTA:
             else:
                 raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
             self.system_connector.save_task(task)
-            return ui, action
+            return action
         except Exception as e:
             error_trace = traceback.format_exc()
             action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}
             print(action)
-            return None, action
-
-    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
-        """
-        Process ui dato
-        Args:
-            ui_img_file (path): Screenshot image path
-            ui_xml_file (path): VH xml file path
-            device_resolution (tuple): Device resolution
-            show (bool): True to show the detection result
-        Return:
-            ui (UIData): ui data with processing results
-        """
-        ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
-        self.ui_processor.process_ui(ui, show=show)
-        return ui
+            return action
 
 
 if __name__ == '__main__':
     uta = UTA()
-    resp = uta.declare_task(user_id='1', task_id='1', user_msg='Send a message to my mom')
-    resp = uta.declare_task(user_id='1', task_id='1', user_msg='Send it in whats app')
+    uta.automate_task('user1', 'task3', ui_img_file='../data/user1/task3/0.png', ui_xml_file='../data/user1/task3/0.xml')
