@@ -75,7 +75,7 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
-    def fetch_available_task(self):
+    def fetch_available_task_list(self):
         """
         Fetch the current available task list
         Return:
