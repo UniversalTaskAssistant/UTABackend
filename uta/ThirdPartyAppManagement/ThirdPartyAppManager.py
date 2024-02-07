@@ -71,26 +71,6 @@ class ThirdPartyAppManager:
                 resp_dict[key] = value
             return resp_dict
 
-    def search_app_by_name(self, app_name):
-        """
-        Searches for an app by its name on the Google Play store.
-        Args:
-            app_name (str): The name of the app to search for.
-        Returns:
-            The most relevant app's information if found, otherwise None.
-        """
-        return self.__googleplay.search_app_by_name(app_name)
-
-    def search_apps_fuzzy(self, disp):
-        """
-        Performs a fuzzy search for apps on the Google Play store.
-        Args:
-            disp (str): The display term to search for.
-        Returns:
-            A list of apps that are related to the search term.
-        """
-        return self.__googleplay.search_apps_fuzzy(disp)
-
     def conclude_app_functionality(self, tar_app, printlog=False):
         """
         Conclude the functionality of given app.
@@ -193,12 +173,12 @@ class ThirdPartyAppManager:
         """
         try:
             if fuzzy:
-                app_list = self.search_apps_fuzzy(search_tar)[:max_return]
+                app_list = self.__googleplay.search_apps_fuzzy(search_tar)[:max_return]
                 app_functions = self.conclude_multi_apps_functionalities(app_list)
                 result = [{'title': app_list[idx]['title'], 'function': one_func} for idx, one_func in
                           enumerate(app_functions)]
             else:
-                tar_app = self.search_app_by_name(search_tar)
+                tar_app = self.__googleplay.search_app_by_name(search_tar)
                 app_function = self.conclude_app_functionality(tar_app)
                 result = [{'title': tar_app['title'], 'function': app_function}]
             step.app_recommendation_result = result

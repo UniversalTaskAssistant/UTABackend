@@ -233,7 +233,10 @@ class UTA:
             self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
             ui_check = self.ui_processor.check_ui_decision_page(ui)
             if 'none' not in ui_check['Component'].lower():
-                return ui, {"Action": "User Decision", "Description": ui_check['Component'], "Explanation": ui_check['Explanation']}
+                action = {"Action": "User Decision", **ui_check}
+                task.relations.append({"Relation": "None", "Element Id": "None", "Reason": "None"})
+                task.actions.append(action)
+                return ui, action
             # 2. act based on task type
             # task_type = task.task_type.lower()
             task_type = 'app'  # for testing reason, here we force the task_type to be app

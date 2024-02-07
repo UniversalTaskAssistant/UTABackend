@@ -1,5 +1,6 @@
 from uta.config import *
 import json
+import re
 
 
 class _UIChecker:
@@ -22,6 +23,27 @@ class _UIChecker:
                              '1. {{"Component": "User Permission", "Explanation": "This UI asks user permission to access photo"}}\n' \
                              '2. {{"Component": "None", "Explanation": "No mentioned components in this UI"}}'
 
+    @staticmethod
+    def transfer_to_dict(resp):
+        """
+        Transfer string model returns to dict format
+        Args:
+            resp (dict): The model returns.
+        Return:
+            resp_dict (dict): The transferred dict.
+        """
+        try:
+            return json.loads(resp['content'])
+        except Exception as e:
+            regex = r'"([A-Za-z ]+?)":\s*(".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\':\s*(\'.*?[^\\]\'|".*?[^\\]")'
+            attributes = re.findall(regex, resp['content'])
+            resp_dict = {}
+            for match in attributes:
+                key = match[0] if match[0] else match[2]  # Select the correct group for the key
+                value = match[1] if match[1] else match[3]  # Select the correct group for the value
+                resp_dict[key] = value
+            return resp_dict
+
     def check_ui_decision_page(self, ui_data):
         """
         Check if the UI contain any following special components that require user intervention:
@@ -37,7 +59,7 @@ class _UIChecker:
                                                         f'{str(ui_data.element_tree)}\n'},
                             {'role': 'user', 'content': self.__base_prompt}]
             resp = self.__model_manager.send_fm_conversation(conversation)
-            special_compo = json.loads(resp['content'])
+            special_compo = self.transfer_to_dict(resp)
             print(special_compo)
             return special_compo
         except Exception as e:
