@@ -27,6 +27,9 @@ class UTA:
         self.cur_user = None  # User object, current user
         self.cur_task = None  # Task object, current task
 
+    def fetch_available_task(self):
+        return list
+
     def setup_user(self, user_id, device_resolution, app_list):
         """
         Set up folders for user, and store user info into the user.json
