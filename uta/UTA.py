@@ -223,7 +223,7 @@ class UTA:
             self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
             ui_check = self.ui_processor.check_ui_decision_page(ui)
             if 'none' not in ui_check['Component'].lower():
-                return {"Action": "User Decision", "Description": ui_check['Component'], "Explanation": ui_check['Explanation']}
+                return ui, {"Action": "User Decision", "Description": ui_check['Component'], "Explanation": ui_check['Explanation']}
             # 2. act based on task type
             # task_type = task.task_type.lower()
             task_type = 'app'  # for testing reason, here we force the task_type to be app
@@ -240,17 +240,17 @@ class UTA:
                         task.related_app = related_app
                         action = {"Action": "Launch", "Description": "Launch app", **related_app}
                     else:
-                        action = {"Action": "Infeasible", "Description": "No related app installed."}
+                        action = {"Action": "Infeasible", "Description": "No related app installed.", **related_app}
                     task.actions[-1] = action  # we record the launch action here to instead "other app"
             else:
                 raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
             self.system_connector.save_task(task)
-            return action
+            return ui, action
         except Exception as e:
             error_trace = traceback.format_exc()
             action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}
             print(action)
-            return action
+            return None, action
 
 
 if __name__ == '__main__':

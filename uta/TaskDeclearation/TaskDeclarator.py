@@ -117,10 +117,14 @@ class TaskDeclarator:
         try:
             return json.loads(resp['content'])
         except Exception as e:
-            regex = "\"[A-Za-z]+\": *\"[^\f\n\r\t\v:\"]+\"|\'[A-Za-z]+\': *\'[^\f\n\r\t\v:\']+\'"
+            regex = r'"([A-Za-z ]+?)":\s*(".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\':\s*(\'.*?[^\\]\'|".*?[^\\]")'
             attributes = re.findall(regex, resp['content'])
-            return {one_ele.split(': ')[0].strip('"').strip('\''): one_ele.split(': ')[1].strip('"').strip('\'')
-                    for one_ele in attributes}
+            resp_dict = {}
+            for match in attributes:
+                key = match[0] if match[0] else match[2]  # Select the correct group for the key
+                value = match[1] if match[1] else match[3]  # Select the correct group for the value
+                resp_dict[key] = value
+            return resp_dict
 
     def clarify_task(self, task, app_list, printlog=False):
         """

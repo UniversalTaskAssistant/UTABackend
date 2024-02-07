@@ -9,6 +9,7 @@ from testing.Device import Device
 from testing.data_util import *
 from uta.UTA import UTA
 from uta.config import *
+from uta.SystemConnection import SystemConnector
 
 
 def annotate_ui_operation(ui, recommended_action):
@@ -110,14 +111,20 @@ def task_automation(max_try=20):
                                                 package_name=package, activity_name=activity,
                                                 keyboard_active=keyboard_active, printlog=False)
 
+            # ui_path = pjoin(DATA_PATH, user_id, task_id)
+            # ui_tree = SystemConnector().load_json(pjoin(ui_path, f"{i}_uitree.json"))
+            # ui_data = SystemConnector().load_ui_data(pjoin(ui_path, f"{i}.png"), pjoin(ui_path, f"{i}.xml"), resolution)
+            # ui_data.elements = ui_tree
+
             if action.get("Action") is not None and "error" in action["Action"].lower():
                 save_error(action["Exception"], action["Traceback"], "automation_error")
                 break
 
             annotate_screenshot = annotate_ui_operation(ui_data, action)
             screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
-            with open(screen_path, 'wb') as fp:
-                fp.write(annotate_screenshot)
+            SystemConnector().save_img(annotate_screenshot, screen_path)
+            # with open(screen_path, 'wb') as fp:
+            #     fp.write(annotate_screenshot)
 
             if 'complete' in action['Action'].lower():
                 break
@@ -140,12 +147,13 @@ def save_error(e, error_trace, save_name):
     if not os.path.exists(task_folder):
         os.makedirs(task_folder)
     error_path = pjoin(task_folder, f"{save_name}.json")
-    with open(error_path, "w", encoding='utf-8') as fp:
-        json.dump(error_json, fp, indent=4)
+    SystemConnector().save_json(error_json, error_path)
+    # with open(error_path, "w", encoding='utf-8') as fp:
+    #     json.dump(error_json, fp, indent=4)
 
 
 # set up user task
-user_id = 'user6'
+user_id = 'user4_5'
 # init device
 device = Device()
 device.connect()
@@ -156,8 +164,10 @@ uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
 for task_idx, task in enumerate(task_list):
-    if task_idx not in [0, 9, 13, 21, 24, 25, 26, 27, 28, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 51, 53, 54, 55,
-                        56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 72, 81, 82, 83, 85, 86, 87, 89, 92, 93, 95]:
+    # if task_idx not in [0, 9, 13, 21, 24, 25, 26, 27, 28, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 51, 53, 54, 55,
+    #                     56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 72, 81, 82, 83, 85, 86, 87, 89, 92, 93, 95]:
+    #     continue
+    if task_idx not in [0, 9]:
         continue
     # if task_idx < 5:
     #     continue
@@ -165,14 +175,14 @@ for task_idx, task in enumerate(task_list):
     #     continue
     task_id = f"task{task_idx + 1}"
     # go homepage
-    # device.go_homepage()
+    device.go_homepage()
 
     # task declaration
-    task_declaration(task, max_try=10)
+    # task_declaration(task, max_try=10)
 
-    # user, task_obj = uta.instantiate_user_task(user_id, task_id)
-    # device.reboot_app(task_obj.involved_app_package)
+    user, task_obj = uta.instantiate_user_task(user_id, task_id)
+    device.reboot_app(task_obj.involved_app_package)
     # task automation
-    # task_automation(max_try=20)
+    task_automation(max_try=20)
 
 device.disconnect()

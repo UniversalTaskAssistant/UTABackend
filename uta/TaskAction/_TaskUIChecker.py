@@ -33,15 +33,14 @@ class _TaskUIChecker:
                              '!!!Answer the following three questions:\n' \
                              '1. "Yes" or "No" - whether such a go-back/close element exists. \n' \
                              '2. Element Id - provide the ID if "Yes", else "None". \n' \
-                             '3. Keywords - if "No", provide the keywords used to search relevant apps in the Google App store, otherwise "None". \n' \
                              '3. Reason - a brief explanation. \n' \
                              '!!!Notes: \n' \
-                             '- ONLY use this JSON format to provide your answer: {{"Can": "<Yes or No>", "Element Id": "<ID or None>", "Keywords": "<keywords or None>", "Description": "<description>"}}.\n' \
+                             '- ONLY use this JSON format to provide your answer: {{"Can": "<Yes or No>", "Element Id": "<ID or None>", "Description": "<description>"}}.\n' \
                              '- Select a clickable element from the UI hierarchy. \n' \
                              '- If not None, then Element Id must in an integer.\n' \
                              '!!!Examples: \n' \
-                             '1. {{"Can": "Yes", "Element Id": 2, "Keywords": "None", "Reason": "Navigates to the previous screen", "Description": "Click on the \'Back\' button"}}.\n' \
-                             '2. {{"Can": "No", "Element Id": "None", "Keywords": "Youtube", "Reason": "No back button present, please search youtube for video watching", "Description": "None"}}.\n'
+                             '1. {{"Can": "Yes", "Element Id": 2, "Reason": "Navigates to the previous screen", "Description": "Click on the \'Back\' button"}}.\n' \
+                             '2. {{"Can": "No", "Element Id": "None", "Reason": "No back button present, please search youtube for video watching", "Description": "None"}}.\n'
 
         self.__relation_prompt = 'What is the relation between this UI and the task "{task}" and why? ' \
                                  '!!!Answer the following three questions:\n' \
@@ -54,14 +53,16 @@ class _TaskUIChecker:
                                  'Almost Complete: The task can be completed with one more action, which should be performed manually by the user. This option should be selected if the next action directly completes the task (e.g., the final step to increase volume).\n' \
                                  '2. Element Id that should be operated to proceed the task, the supported operation includes Click; Input (Input text); ' \
                                  'Scroll (Vertically scroll the element); Swipe (Horizontally swipe the element), so besides clicking, searching bar and scroll down screen to check more elements can be options.' \
-                                 'If the task is "Almost Complete" or "Unrelated," return None.\n' \
+                                 'If the task is "Almost Complete" or "Unrelated", Element Id should be "None".\n' \
                                  '3. Reason that explains your decision.' \
                                  '!!!Notes: \n' \
                                  '- Responses must adhere to this JSON format: {{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<reason>"}}.\n' \
                                  '- If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
                                  '- App {involved_app_package} is selected by user to finish this task, and now the app has been opened and current UI is one of the UI in the app.\n' \
                                  '- If current UI is related to phone settings, and there is a searching bar, you should firstly try to search relevant options in the searching bar.\n' \
-                                 '- If not None, then Element Id must in an integer.\n'
+                                 '- You must return "Relation" and "Element Id" in you returned json format result. If not None, then Element Id must in an integer.\n' \
+                                 '!!!Examples: \n' \
+                                 '{{"Relation": "Indirectly related", "Element Id": 2, "Reason": "The current UI is the home screen of the messaging app, but there\'s no direct element related to turning off vibration for texts. The task of turning off vibration for texts might require navigating to the settings of the messenger but there\'s no direct option visible in the hierarchy. However, the search bar (Element Id: 2) could possibly lead to settings or options related to vibration, hence it should be clicked to proceed to the task."}}.\n'
 
     @staticmethod
     def wrap_task_info_before(task):
@@ -107,10 +108,14 @@ class _TaskUIChecker:
         try:
             return json.loads(resp['content'])
         except Exception as e:
-            regex = "\"[A-Za-z]+\": *\"[^\f\n\r\t\v:\"]+\"|\'[A-Za-z]+\': *\'[^\f\n\r\t\v:\']+\'"
+            regex = r'"([A-Za-z ]+?)":\s*(".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\':\s*(\'.*?[^\\]\'|".*?[^\\]")'
             attributes = re.findall(regex, resp['content'])
-            return {one_ele.split(': ')[0].strip('"').strip('\''): one_ele.split(': ')[1].strip('"').strip('\'')
-                    for one_ele in attributes}
+            resp_dict = {}
+            for match in attributes:
+                key = match[0] if match[0] else match[2]  # Select the correct group for the key
+                value = match[1] if match[1] else match[3]  # Select the correct group for the value
+                resp_dict[key] = value
+            return resp_dict
 
     def check_ui_task(self, ui_data, task, prompt, printlog=False):
         """
@@ -171,7 +176,7 @@ class _TaskUIChecker:
             print('* Check UI Action and Target Element *')
             # Format base prompt
             prompt = self.wrap_task_info_before(task)
-            prompt += self.__action_prompt.format(task=task.task_description, element_id=task.res_relation_check['Element'])
+            prompt += self.__action_prompt.format(task=task.task_description, element_id=task.res_relation_check['Element Id'])
             prompt += self.wrap_task_info_after(task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
