@@ -91,7 +91,7 @@ html_template = """
 """
 
 
-user_id = 'user5'
+user_id = 'user6'
 directories = {}
 for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
     task_dir_name = os.path.basename(task_dir)

@@ -43,11 +43,12 @@ class ThirdPartyAppManager:
         self.__availability_check_prompt = 'Identify the app related to the task "{task}" from the given app list. \n' \
                                            '!!!Apps:\n{app_list}\n' \
                                            '!!!Note:\n ' \
-                                           '1. ONLY use this JSON format to provide your answer: {{"App": "<app_package_or_None>", "Reason": "<explanation>"}}.\n' \
+                                           '1. ONLY use this JSON format to provide your answer: {{"App": "<app_package_or_None>", "Keywords": "<keywords or None>", "Reason": "<explanation>"}}.\n' \
                                            '2. If no related found, answer "None" for the "App" in the answer JSON.\n' \
+                                           '3. If no related found, provide the keywords used to search relevant apps in the Google App store, otherwise "None". \n' \
                                            '!!!Examples\n:' \
-                                           '1. {{"App": "com.whatsapp.com", "Reason": "To send message in whatsapp, open the whatsapp app."}}.\n ' \
-                                           '2. {{"App": "None", "Reason": "No app is related to the task."}}.\n'
+                                           '1. {{"App": "com.whatsapp.com", "Keywords": "None", "Reason": "To send message in whatsapp, open the whatsapp app."}}.\n ' \
+                                           '2. {{"App": "None", "Keywords": "Youtube", "Reason": "No app is related to the task \'watch a video\'."}}.\n'
 
     @staticmethod
     def transfer_to_dict(resp):
@@ -61,10 +62,14 @@ class ThirdPartyAppManager:
         try:
             return json.loads(resp['content'])
         except Exception as e:
-            regex = "\"[A-Za-z]+\": *\"[^\f\n\r\t\v:\"]+\"|\'[A-Za-z]+\': *\'[^\f\n\r\t\v:\']+\'"
+            regex = r'"([A-Za-z ]+?)":\s*(".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\':\s*(\'.*?[^\\]\'|".*?[^\\]")'
             attributes = re.findall(regex, resp['content'])
-            return {one_ele.split(': ')[0].strip('"').strip('\''): one_ele.split(': ')[1].strip('"').strip('\'')
-                    for one_ele in attributes}
+            resp_dict = {}
+            for match in attributes:
+                key = match[0] if match[0] else match[2]  # Select the correct group for the key
+                value = match[1] if match[1] else match[3]  # Select the correct group for the value
+                resp_dict[key] = value
+            return resp_dict
 
     def search_app_by_name(self, app_name):
         """

@@ -235,7 +235,7 @@ def test_device():
     # print(wm)
 
     # print(device.get_app_list_on_the_device())
-    # device.launch_app('com.android.chrome')
+    device.launch_app('com.android.dialer')
     print(device.get_current_package_and_activity_name())
     # print(device.get_device())
     # print(device.get_device_name())
@@ -250,14 +250,14 @@ def test_device():
     # screen_path, xml_path = device.cap_and_save_ui_screenshot_and_xml("2", WORK_PATH + 'old_test_data/test/guidata/')
     # print(screen_path, xml_path)
 
-    elements = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_elements.json')
-    tree = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_tree.json')
-    system_connector = SystemConnector()
-    screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
-    xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
-    gui = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file)
-    gui.elements = elements
-    gui.element_tree = tree
+    # elements = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_elements.json')
+    # tree = _Local().load_json(WORK_PATH + 'old_test_data/test/guidata/0_tree.json')
+    # system_connector = SystemConnector()
+    # screenshot = WORK_PATH + 'old_test_data/test/guidata/0.png'
+    # xml_file = WORK_PATH + 'old_test_data/test/guidata/0.xml'
+    # gui = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file)
+    # gui.elements = elements
+    # gui.element_tree = tree
 
     # device.right_swipe_screen(gui, 0, True)
     # device.left_swipe_screen(gui, 0, True)
@@ -266,13 +266,13 @@ def test_device():
     # device.long_press_screen(gui, 19, True)
     # device.click_screen(gui, 19, True)
 
-    for act in ["Swipe", "Scroll", "Click", "Launch"]:
-        cood = 0 if act != "Click" else 19
-        cood_ele = gui.elements[cood]
-        action = {"Action": act, "Coordinate": cood_ele, "Element Id": str(cood), "App": 'com.google.android.youtube',
-                  "Input Text": "something."}
-        device.take_action(action, ui_data=gui, show=False)
-        time.sleep(3)
+    # for act in ["Swipe", "Scroll", "Click", "Launch"]:
+    #     cood = 0 if act != "Click" else 19
+    #     cood_ele = gui.elements[cood]
+    #     action = {"Action": act, "Coordinate": cood_ele, "Element Id": str(cood), "App": 'com.google.android.youtube',
+    #               "Input Text": "something."}
+    #     device.take_action(action, ui_data=gui, show=False)
+    #     time.sleep(3)
 
     # test input independently
     # cood = 19

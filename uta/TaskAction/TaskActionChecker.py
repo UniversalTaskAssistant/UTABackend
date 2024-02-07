@@ -52,12 +52,12 @@ class TaskActionChecker:
                 action = {"Action": "Click", **go_back}  # avoid to directly refer the key in response as not stable
             # 2. Check if it can find another related app
             else:
-                action = {"Action": "Other App"}
+                action = {"Action": "Other App", **go_back}
         # [Related UI] => Check action
         else:
             action = self.check_element_action(ui_data, task, printlog)
             try:
-                bounds = ui_data.elements[int(action['Element'])]['bounds']
+                bounds = ui_data.elements[int(action['Element Id'])]['bounds']
                 centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
                 action['Coordinate'] = centroid
                 action['ElementBounds'] = bounds

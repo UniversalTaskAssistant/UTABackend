@@ -223,7 +223,7 @@ class UTA:
                         task.related_app = related_app
                         action = {"Action": "Launch", "Description": "Launch app", **related_app}
                     else:
-                        action = {"Action": "Infeasible", "Description": "No related app installed."}
+                        action = {"Action": "Infeasible", "Description": "No related app installed.", **related_app}
                     task.actions[-1] = action  # we record the launch action here to instead "other app"
             else:
                 raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
