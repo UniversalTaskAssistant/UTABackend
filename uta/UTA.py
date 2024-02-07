@@ -5,6 +5,7 @@ from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
 from uta.SystemConnection import SystemConnector
 from uta.TaskDeclearation import TaskDeclarator
+from uta.AvailableTaskList import TaskList
 from uta.TaskAction import TaskActionChecker
 from uta.ThirdPartyAppManagement import ThirdPartyAppManager
 from uta.UIProcessing import UIProcessor
@@ -21,6 +22,7 @@ class UTA:
         # workers
         self.ui_processor = UIProcessor(self.model_manager)
         self.task_declarator = TaskDeclarator(self.model_manager)
+        self.task_list = TaskList(self.model_manager)
         self.task_action_checker = TaskActionChecker(self.model_manager)
         self.app_recommender = ThirdPartyAppManager(self.model_manager)
         # current data
@@ -73,6 +75,14 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
+    def fetch_available_task_list(self):
+        """
+        Fetch the current available task list
+        Return:
+            available_task_list (list): list of task descriptions (string)
+        """
+        return self.task_list.available_task_list
+
     def declare_task(self, user_id, task_id, user_msg):
         """
         Declare the task.
