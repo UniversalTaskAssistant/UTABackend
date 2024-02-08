@@ -13,6 +13,7 @@ from testing.Device import Device
 
 from uta.ThirdPartyAppManagement import ThirdPartyAppManager, _GooglePlay
 from uta.TaskAction import _TaskUIChecker, TaskActionChecker
+from uta.AvailableTaskList import TaskList
 
 from uta.config import *
 from uta import UTA
@@ -158,33 +159,33 @@ def test_task_declarator():
     task = Task("1", "1", description)
     print(task.to_dict())
 
-    # resp = task_declarator.clarify_task(task, app_list=app_list, printlog=True)
-    # print(resp)
-    # print(task.to_dict())
-    #
-    # user_input = input()
-    # task.clarification_user_msg = user_input
+    resp = task_declarator.clarify_task(task, app_list=app_list, printlog=True)
+    print(resp)
+    print(task.to_dict())
 
-    # resp = task_declarator.justify_user_message(task, printlog=True)
-    # print(resp)
-    # print(task.to_dict())
+    user_input = input()
+    task.clarification_user_msg = user_input
 
-    # resp = task_declarator.clarify_task(task, app_list=app_list, printlog=True)
-    # print(resp)
-    # print(task.to_dict())
-    #
-    # user_input = input()
-    # task.clarification_user_msg = user_input
+    resp = task_declarator.justify_user_message(task, printlog=True)
+    print(resp)
+    print(task.to_dict())
 
     resp = task_declarator.clarify_task(task, app_list=app_list, printlog=True)
     print(resp)
     print(task.to_dict())
-    resp = task_declarator.classify_task(task)
-    print(resp)
-    print(task.to_dict())
-    resp = task_declarator.decompose_task(task)
-    print(resp)
-    print(task.to_dict())
+    #
+    # user_input = input()
+    # task.clarification_user_msg = user_input
+
+    # resp = task_declarator.clarify_task(task, app_list=app_list, printlog=True)
+    # print(resp)
+    # print(task.to_dict())
+    # resp = task_declarator.classify_task(task)
+    # print(resp)
+    # print(task.to_dict())
+    # resp = task_declarator.decompose_task(task)
+    # print(resp)
+    # print(task.to_dict())
 
 
 def test_googleplay():
@@ -427,6 +428,16 @@ def test_app_list():
     device.disconnect()
 
 
+def test_tasklist():
+    model_manager = ModelManager()
+    tasklist = TaskList(model_manager)
+
+    task = Task("1", "1", "Open the camera.")
+    task.involved_app = "Android Camera"
+    res = tasklist.match_app_to_applist(task, app_list)
+    print(res)
+
+
 if __name__ == '__main__':
     # test_task()
 
@@ -438,15 +449,16 @@ if __name__ == '__main__':
     # test_local()
     # test_systemcomnnector()
     # test_uiprocessor()
-    # test_task_declarator()
+    test_task_declarator()
 
     # test_googleplay()
     # test_appmanager()
 
-    test_device()
+    # test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
     # test_uta()
 
     # test_app_list()
+    # test_tasklist()

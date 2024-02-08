@@ -42,13 +42,16 @@ class TaskActionChecker:
         relation = self.__task_ui_checker.check_ui_relation(ui_data, task, printlog)
         task.relations.append(relation)
         # [Complete] => Finish
-        if 'complete' in str(task.res_relation_check).lower():
+        if task.res_relation_check.get('Relation') and 'complete' in task.res_relation_check['Relation'].lower() or \
+                task.res_relation_check.get('Relation') is None and 'complete' in str(task.res_relation_check).lower():
             action = {"Action": "Complete", **task.res_relation_check}
         # [Unrelated UI] => Check whether the ui can go back or check other app
-        elif 'unrelated' in str(task.res_relation_check).lower():
+        elif task.res_relation_check.get('Relation') and 'unrelated' in task.res_relation_check['Relation'].lower() or \
+                task.res_relation_check.get('Relation') is None and 'unrelated' in str(task.res_relation_check).lower():
             # 1. Check if it can go back to a related gui
             go_back = self.__task_ui_checker.check_ui_go_back_availability(ui_data, task, printlog)
-            if 'yes' in go_back['Can'].lower():
+            if task.res_go_back_check.get('Can') and 'yes' in task.res_go_back_check['Can'].lower() or \
+                    task.res_go_back_check.get('Can') is None and 'yes' in str(task.res_go_back_check).lower():
                 action = {"Action": "Click", **go_back}  # avoid to directly refer the key in response as not stable
             # 2. Check if it can find another related app
             else:

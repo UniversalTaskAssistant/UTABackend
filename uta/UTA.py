@@ -65,7 +65,11 @@ class UTA:
                 task.task_description = user_msg
         else:
             if user_msg:
-                task.clarification_user_msg = user_msg
+                if len(task.res_task_match) == 0:
+                    task.clarification_user_msg = user_msg
+                else:
+                    task.selected_task = user_msg
+                    task.involved_app = self.task_list.app_list[self.task_list.available_task_list.index(user_msg)]
         self.cur_user = user
         self.cur_task = task
         return user, task
@@ -97,20 +101,26 @@ class UTA:
             print('\n*** Declare task ***')
             user, task = self.instantiate_user_task(user_id, task_id, user_msg)
 
+            if task.res_clarification.get('Clear') and 'true' in task.res_clarification['Clear'].lower() or \
+                    task.res_clarification.get('Clear') is None and 'true' in str(task.res_clarification).lower():
+                if len(task.res_task_match) == 0:
+                    task_list = self.task_list.match_task_to_list(task)
+                    self.system_connector.save_task(task)
+                    return task_list
+                else:
+                    match_app = self.task_list.match_app_to_applist(task, user.app_list)
+                    self.system_connector.save_task(task)
+                    return match_app
+
             # justify if user's response is reasonable
             if task.clarification_user_msg:
                 justify = self.task_declarator.justify_user_message(task)
-                if 'false' in str(justify).lower():
+                if task.res_justification.get('Related') and 'false' in task.res_justification['Related'].lower() or \
+                        task.res_justification.get('Related') is None and 'false' in str(task.res_justification).lower():
+                    self.system_connector.save_task(task)
                     return justify
 
             clarify = self.task_declarator.clarify_task(task=task, app_list=user.app_list)
-            if 'true' in str(clarify).lower():
-                # self.task_list.match_task_to_list(task)
-                # record involved apps
-                if clarify.get("InvolvedApp") and clarify.get("InvolvedAppPackage"):
-                    task.involved_app = clarify['InvolvedApp']
-                    task.involved_app_package = clarify['InvolvedAppPackage']
-                self.task_declarator.classify_task(task=task)
             self.system_connector.save_task(task)
             return clarify
         except Exception as e:
@@ -162,41 +172,35 @@ class UTA:
             task.cur_activity = activity_name
             task.keyboard_active = keyboard_active
 
-            task_type = task.task_type.lower()
-            if 'general' in task_type:
-                action = self.task_action_checker.action_inquiry(task)
-                self.system_connector.save_task(task)
-                return None, action
-            elif 'system' in task_type or 'app' in task_type:
-                # 1. process ui
-                ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-                self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id,
-                                                                        task_id))
-                ui_check = self.ui_processor.check_ui_decision_page(ui)
-                if 'none' not in ui_check['Component'].lower():
-                    action = {"Action": "User Decision", **ui_check}
-                    task.relations.append({"Relation": "None", "Element Id": "None", "Reason": "None"})
-                    task.actions.append(action)
-                    return ui, action
-
-                # 2. act step
-                task.conversation_automation = []   # clear up the conversation of previous ui
-                # check action on the UI by checking the relation and target elements
-                action = self.task_action_checker.action_on_ui(ui, task, printlog)
-                # if the current UI is unrelated, search for other apps
-                if action['Action'] == 'Other App':
-                    related_app = self.app_recommender.check_related_apps(task=task, app_list=user.app_list)
-                    if 'None' not in related_app['App']:
-                        task.related_app = related_app
-                        action = {"Action": "Launch", "Description": "Launch app", **related_app}
-                    else:
-                        action = {"Action": "Infeasible", "Description": "No related app installed.", **related_app}
-                    task.actions[-1] = action  # we record the launch action here to instead "other app"
-
-                self.system_connector.save_task(task)
+            # 1. process ui
+            ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
+            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id,
+                                                                    task_id))
+            ui_check = self.ui_processor.check_ui_decision_page(ui)
+            if ui_check.get('Component') and 'none' not in ui_check['Component'].lower() or \
+                    ui_check.get('Component') is None and 'none' not in str(ui_check).lower():
+                action = {"Action": "User Decision", **ui_check}
+                task.relations.append({"Relation": "None", "Element Id": "None", "Reason": "None"})
+                task.actions.append(action)
                 return ui, action
-            else:
-                raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
+
+            # 2. act step
+            task.conversation_automation = []   # clear up the conversation of previous ui
+            # check action on the UI by checking the relation and target elements
+            action = self.task_action_checker.action_on_ui(ui, task, printlog)
+            # if the current UI is unrelated, search for other apps
+            if action['Action'] == 'Other App':
+                related_app = self.app_recommender.check_related_apps(task=task, app_list=user.app_list)
+                if related_app.get('App') and 'none' not in related_app['App'].lower() or \
+                        related_app.get('App') is None and 'none' not in str(related_app).lower():
+                    task.related_app = related_app
+                    action = {"Action": "Launch", "Description": "Launch app", **related_app}
+                else:
+                    action = {"Action": "Infeasible", "Description": "No related app installed.", **related_app}
+                task.actions[-1] = action  # we record the launch action here to instead "other app"
+
+            self.system_connector.save_task(task)
+            return ui, action
         except Exception as e:
             error_trace = traceback.format_exc()
             action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}

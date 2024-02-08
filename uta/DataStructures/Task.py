@@ -22,8 +22,11 @@ class Task(_Data):
         # Only used when task declaration
         self.conversation_clarification = []  # List of conversations that occurred during multiple turns of task clarification.
         self.res_clarification = dict()     # {"Clear": "True", "Question": "None", "Options":[]}
+        self.res_justification = dict()
         self.res_classification = dict()    # {"Task Type": "1. General Inquiry", "Explanation":}
         self.res_decomposition = dict()     # {"Decompose": "True", "Sub-tasks":[], "Explanation": }
+        self.res_task_match = dict()        # {"RelatedTasks": ["Set up a pin for the device"], "Reason": "The given task is related to device pin."}
+        self.selected_task = None           # user selected task
         self.user_clarify = []              # List of string from the user message to further clarify the task
         self.subtasks = []                  # List of string to describe the subtask
         self.involved_app = None            # targeted app for task execution
