@@ -99,87 +99,25 @@ class UTA:
 
             # justify if user's response is reasonable
             if task.clarification_user_msg:
-                justify = self.justify_user_message(task)
-                # if justify['Related'] == 'False' or justify['Related'] is False:  # if not, then return justify result
+                justify = self.task_declarator.justify_user_message(task)
                 if 'false' in str(justify).lower():
                     return justify
 
-            clarify = self.clarify_task(task, app_list=user.app_list)
-            # if clarify['Clear'] == 'True' or clarify['Clear'] is True:
+            clarify = self.task_declarator.clarify_task(task=task, app_list=user.app_list)
             if 'true' in str(clarify).lower():
+                # self.task_list.match_task_to_list(task)
                 # record involved apps
                 if clarify.get("InvolvedApp") and clarify.get("InvolvedAppPackage"):
                     task.involved_app = clarify['InvolvedApp']
                     task.involved_app_package = clarify['InvolvedAppPackage']
-                self.classify_task(task)
-                if 'general' in task.task_type.lower():
-                    task.res_decomposition = {"Decompose": "False", "Sub-tasks": [],
-                                              "Explanation": "This task is simple enough to be executed on the smartphone.",
-                                              'Proc': 'Decompose'}  # I suggest we use full name, Proc is too vague to understand
-                    decompose = task.res_decomposition
-                elif 'system' in task.task_type.lower() or 'app' in task.task_type.lower():
-                    decompose = self.decompose_task(task)
-                else:
-                    raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
-                self.system_connector.save_task(task)
-                return decompose
-            else:
-                self.system_connector.save_task(task)
-                return clarify
+                self.task_declarator.classify_task(task=task)
+            self.system_connector.save_task(task)
+            return clarify
         except Exception as e:
             error_trace = traceback.format_exc()
             action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}
             print(action)
             return action
-
-    def justify_user_message(self, task, printlog=False):
-        """
-        justify whether user message is related to the clarification question
-        Args:
-            task (Task): Task object
-            printlog (bool): True to print the intermediate log
-        Returns:
-            LLM answer (dict): {"Clear": "True", "Question": "None", "Options":[]}
-        """
-        print('* Justify task *')
-        return self.task_declarator.justify_user_message(task=task, printlog=printlog)
-
-    def clarify_task(self, task, app_list, printlog=False):
-        """
-        Clarify task to be clear to complete
-        Args:
-            task (Task): Task object
-            app_list: list of user installed apps
-            printlog (bool): True to print the intermediate log
-        Returns:
-            LLM answer (dict): {"Clear": "True", "Question": "None", "Options":[]}
-        """
-        print('* Clarify task *')
-        return self.task_declarator.clarify_task(task=task, app_list=app_list, printlog=printlog)
-
-    def classify_task(self, task, printlog=False):
-        """
-        Clarify task to be clear to complete
-        Args:
-            task (Task): The user's task
-            printlog (bool): True to print the intermediate log
-        Returns:
-            LLM answer (dict): {"Task Type": "1. General Inquiry", "Explanation":}
-        """
-        print('* Classify task *')
-        return self.task_declarator.classify_task(task=task, printlog=printlog)
-
-    def decompose_task(self, task, printlog=False):
-        """
-        Clarify task to be clear to complete
-        Args:
-            task (Task): The user's task
-            printlog (bool): True to print the intermediate log
-        Returns:
-            LLM answer (dict): {"Decompose": "True", "Sub-tasks":[], "Explanation": }
-        """
-        print('* Decompose task *')
-        return self.task_declarator.decompose_task(task=task, printlog=printlog)
 
     '''
     ***********************
@@ -220,29 +158,28 @@ class UTA:
         try:
             # 0. retrieve task info
             user, task = self.instantiate_user_task(user_id, task_id)
-            # ensure current app is pre-selected app
-            # if package_name != task.involved_app_package:
-            #     print("current package name is different from pre-selected package name.")
-            #     action = {"Action": "Launch", "App": task.involved_app_package, "Description": "Launch app"}
-            #     return None, action
             task.cur_package = package_name
             task.cur_activity = activity_name
             task.keyboard_active = keyboard_active
-            # 1. process ui
-            ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
-            ui_check = self.ui_processor.check_ui_decision_page(ui)
-            if 'none' not in ui_check['Component'].lower():
-                action = {"Action": "User Decision", **ui_check}
-                task.relations.append({"Relation": "None", "Element Id": "None", "Reason": "None"})
-                task.actions.append(action)
-                return ui, action
-            # 2. act based on task type
-            # task_type = task.task_type.lower()
-            task_type = 'app'  # for testing reason, here we force the task_type to be app
+
+            task_type = task.task_type.lower()
             if 'general' in task_type:
                 action = self.task_action_checker.action_inquiry(task)
+                self.system_connector.save_task(task)
+                return None, action
             elif 'system' in task_type or 'app' in task_type:
+                # 1. process ui
+                ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
+                self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id,
+                                                                        task_id))
+                ui_check = self.ui_processor.check_ui_decision_page(ui)
+                if 'none' not in ui_check['Component'].lower():
+                    action = {"Action": "User Decision", **ui_check}
+                    task.relations.append({"Relation": "None", "Element Id": "None", "Reason": "None"})
+                    task.actions.append(action)
+                    return ui, action
+
+                # 2. act step
                 task.conversation_automation = []   # clear up the conversation of previous ui
                 # check action on the UI by checking the relation and target elements
                 action = self.task_action_checker.action_on_ui(ui, task, printlog)
@@ -255,10 +192,11 @@ class UTA:
                     else:
                         action = {"Action": "Infeasible", "Description": "No related app installed.", **related_app}
                     task.actions[-1] = action  # we record the launch action here to instead "other app"
+
+                self.system_connector.save_task(task)
+                return ui, action
             else:
                 raise ValueError(f"The task.task_type {task.task_type} is out of definition!")
-            self.system_connector.save_task(task)
-            return ui, action
         except Exception as e:
             error_trace = traceback.format_exc()
             action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}
