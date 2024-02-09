@@ -27,36 +27,30 @@ class TaskDeclarator:
                                     '"Question": "Which app do you want to send your message?", "Options": ["Message", "WhatsApp", "Meta", "Phone Call"]}}.\n ' \
                                     '2. {{"Related": "True", "Explanation": "The answer answers previous proposed questions."}}.\n'
 
-        self.__succeed_prompt_clarify = '!!!Respond to the following points:\n' \
+        self.__succeed_prompt_clarify = 'With the information, is it clear enough for execution on a smartphone?' \
+                                        '!!!Respond to the following points:\n' \
                                         '1. "Clear": a boolean indicating if the task is clear enough.\n' \
                                         '2. "Question": a single question to ask the user to further clarify the task with missing essential details.\n' \
-                                        '3. "Options" (optional): a list of up to 4 example options from {app_list} that may answers the question to give more missing details.' \
-                                        '4. "InvolvedApp" (only include this attribute if "Clear" is true): the app used for task execution.' \
-                                        '5. "InvolvedAppPackage" (only include this attribute if there is "InvolvedApp"): the full app package name corresponding to "InvolvedApp".' \
+                                        '3. "Options": Example answers to the question.' \
                                         '!!!Note:\n' \
-                                        'ONLY use this JSON format to provide your answer: {{"Clear": "<True or False>", "Question": "<Question>", "Options": ["<Options>"]}}.\n' \
+                                        '1. ONLY use this JSON format to provide your answer: {{"Clear": "<True or False>", "Question": "<Question>", "Options": ["<Option>"]}.\n' \
+                                        '2. Answer "None" in "Question" and empty list in options if it is clear.\n' \
                                         '!!!Examples:\n' \
-                                        '1. {{"Clear": "False", "Question": "Which app do you want to send your message?", "Options": ["Message", "WhatsApp", "Meta", "Phone Call"]}}.\n ' \
-                                        '2. {{"Clear": "False", "Question": "What is your location?", "Options": []}}.\n' \
-                                        '3. {{"Clear": "True", "InvolvedApp": "Message", "InvolvedAppPackage": "com.android.mms.service"}}\n'
+                                        '1. {{"Clear": "False", "Question": "How would you like to watch movie?", "Options": ["On the browser", "By YouTube"]}}.\n ' \
+                                        '2. {{"Clear": "True", "Question": "None", "Options": []}}\n'
 
-        self.__base_prompt_clarify = 'Assess the user task "{task}" to determine if it is sufficiently clear for execution on a smartphone. ' \
-                                     'If the task involves using a mobile app, then it can only be clear when it is also clear which specific app should be used. ' \
-                                     'If it is not clear enough, provide a focused question with up to 4 selectable options to clarify the task.' \
-                                     'If there are not enough selections, you can select less than 4 but larger than 1 selections. ' \
-                                     'If the task involves using a mobile app, the selectable app options can only be from {app_list}, and you should show the understandable official app name rather than Android package name.\n' \
+        self.__base_prompt_clarify = 'Check the user task "{task}" to determine if this task is clear enough for execution on a smartphone. ' \
+                                     'If it is not clear enough, provide a focused question to clarify the task, and give 1 to 3 example answers as options.' \
                                      '!!!Respond to the following points:\n' \
                                      '1. "Clear": a boolean indicating if the task is clear enough.\n' \
                                      '2. "Question": a single question to ask the user to further clarify the task with missing essential details.\n' \
-                                     '3. "Options" (optional): a list of up to 4 example options from {app_list} that may answers the question to give more missing details.' \
-                                     '4. "InvolvedApp" (only include this attribute if "Clear" is true): the app used for task execution.' \
-                                     '5. "InvolvedAppPackage" (only include this attribute if there is "InvolvedApp"): the full app package name corresponding to "InvolvedApp".' \
+                                     '3. "Options": Example answers to the question.' \
                                      '!!!Note:\n' \
-                                     'ONLY use this JSON format to provide your answer: {{"Clear": "<True or False>", "Question": "<Question>", "Options": ["<Options>"]}}.\n' \
+                                     '1. ONLY use this JSON format to provide your answer: {{"Clear": "<True or False>", "Question": "<Question>", "Options": ["<Option>"]}}.\n' \
+                                     '2. Answer "None" in "Question" and empty list in options if it is clear.\n' \
                                      '!!!Examples:\n' \
-                                     '1. {{"Clear": "False", "Question": "Which app do you want to send your message?", "Options": ["Message", "WhatsApp", "Meta", "Phone Call"]}}.\n ' \
-                                     '2. {{"Clear": "False", "Question": "What is your location?", "Options": []}}.\n' \
-                                     '3. {{"Clear": "True", "InvolvedApp": "Message", "InvolvedAppPackage": "com.android.mms.service"}}\n'
+                                     '1. {{"Clear": "False", "Question": "How would you like to watch movie?", "Options": ["On the browser", "By YouTube"]}}.\n ' \
+                                     '2. {{"Clear": "True", "Question": "None", "Options": []}}\n'
 
         self.__base_prompt_decompose = 'Analyze the user task "{task}" to determine if it comprises multiple, distinct sub-tasks.' \
                                        'Complex tasks often consist of several steps that need to be executed separately. ' \
@@ -140,8 +134,7 @@ class TaskDeclarator:
             # set base prompt for new conv
             if len(task.conversation_clarification) == 0:
                 task.conversation_clarification = [{'role': 'system', 'content': SYSTEM_PROMPT},
-                                                   {"role": "user", "content": self.__base_prompt_clarify.format(task=task.task_description,
-                                                                                                                 app_list=app_list)}]
+                                                   {"role": "user", "content": self.__base_prompt_clarify.format(task=task.task_description)}]
             elif task.clarification_user_msg:
                 task.conversation_clarification.append({'role': 'user', 'content': f"Response to the Question: {task.clarification_user_msg}.\n"
                                                                                    + self.__succeed_prompt_clarify})
@@ -156,7 +149,7 @@ class TaskDeclarator:
             print(task.res_clarification)
             return task.res_clarification
         except Exception as e:
-            print(resp)
+            # print(resp)
             raise e
 
     def justify_user_message(self, task, printlog=False):
