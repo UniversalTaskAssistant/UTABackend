@@ -13,19 +13,16 @@ class TaskDeclarator:
         """
         self.__model_manager = model_manager
 
-        self.__user_input_justify = 'As a mobile assistant, do you think the answer {user_msg} is related to the previous conversation? ' \
+        self.__user_input_justify = 'As a mobile assistant, do you think the user input "{user_msg}" is related to mobile app usage? ' \
                                     'If it is not related, please point out the reason.' \
                                     '!!!Respond to the following points:\n' \
                                     '1. "Related": a boolean indicating if the answer is related.\n' \
                                     '2. "Explanation": a brief explanation of your decision. \n' \
-                                    '3. "Question" (only include this attribute if \"Related\" is False): repeat the previous asked question again to user.\n' \
-                                    '4. "Options"  (optional, only include this attribute if \"Related\" is False): repeat the previous asked options again to user.\n' \
                                     '!!!Note:\n' \
                                     'ONLY use this JSON format to provide your answer: {{"Related": "<True or False>", "Explanation": "<Explanation>", "Question": "<Question>", "Options": ["<Options>"]}}\n' \
                                     '!!!Examples:\n' \
-                                    '1. {{"Related": "False", "Explanation": "The answer \"hello\" is greetings that is unrelated to previous proposed questions.", ' \
-                                    '"Question": "Which app do you want to send your message?", "Options": ["Message", "WhatsApp", "Meta", "Phone Call"]}}.\n ' \
-                                    '2. {{"Related": "True", "Explanation": "The answer answers previous proposed questions."}}.\n'
+                                    '1. {{"Related": "False", "Explanation": "The input \"hello\" is greetings that is unrelated to mobile app."}}.\n ' \
+                                    '2. {{"Related": "True", "Explanation": "The input is related to using YouTube app in the mobile device."}}.\n'
 
         self.__succeed_prompt_clarify = 'With the information, is it clear enough for execution on a smartphone?' \
                                         '!!!Respond to the following points:\n' \
