@@ -106,12 +106,10 @@ class UTA:
                 if len(task.res_task_match) == 0:
                     task_list = self.task_list.match_task_to_list(task)
                     self.system_connector.save_task(task)
-                    task_list['Proc'] = 'TaskMatch'
                     return task_list
                 else:
                     match_app = self.task_list.match_app_to_applist(task, user.app_list)
                     self.system_connector.save_task(task)
-                    match_app['Proc'] = 'AppMatch'
                     return match_app
 
             # justify if user's response is reasonable
@@ -120,12 +118,10 @@ class UTA:
                 if task.res_justification.get('Related') and 'false' in task.res_justification['Related'].lower() or \
                         task.res_justification.get('Related') is None and 'false' in str(task.res_justification).lower():
                     self.system_connector.save_task(task)
-                    justify['Proc'] = 'Justify'
                     return justify
 
             clarify = self.task_declarator.clarify_task(task=task, app_list=user.app_list)
             self.system_connector.save_task(task)
-            clarify['Proc'] = 'Clarify'
             return clarify
         except Exception as e:
             error_trace = traceback.format_exc()

@@ -166,6 +166,7 @@ class TaskDeclarator:
                 resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
                 task.conversation_clarification.append(resp)
                 task.res_justification = self.transfer_to_dict(resp)
+                task.res_justification['Proc'] = 'Justify'
                 print(task.res_justification)
                 return task.res_justification
             else:

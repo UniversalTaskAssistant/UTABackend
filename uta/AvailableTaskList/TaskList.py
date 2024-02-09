@@ -61,10 +61,10 @@ class TaskList:
             conversation = [{'role': 'system', 'content': SYSTEM_PROMPT},
                             {"role": "user", "content": self.__base_prompt_task_match.format(task=task.task_description)}]
             resp = self.__model_manager.send_fm_conversation(conversation)
-            task_match = self.transfer_to_dict(resp)
-            task.res_task_match = task_match
-            print(task_match)
-            return task_match
+            task.res_task_match = self.transfer_to_dict(resp)
+            task.res_task_match['Proc'] = 'TaskMatch'
+            print(task.res_task_match)
+            return task.res_task_match
         except Exception as e:
             print(resp)
             raise e
@@ -84,6 +84,7 @@ class TaskList:
                                                                                             app_list=app_list)}]
             resp = self.__model_manager.send_fm_conversation(conversation)
             app_match = self.transfer_to_dict(resp)
+            app_match['Proc'] = 'AppMatch'
             task.involved_app_package = app_match['AppPackage']
             print(app_match)
             return app_match
