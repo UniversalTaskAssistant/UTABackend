@@ -42,8 +42,8 @@ class TaskActionChecker:
         relation = self.__task_ui_checker.check_ui_relation(ui_data, task, printlog)
         task.relations.append(relation)
         # [Complete] => Finish
-        if task.res_relation_check.get('Relation') and 'complete' in task.res_relation_check['Relation'].lower() or \
-                task.res_relation_check.get('Relation') is None and 'complete' in str(task.res_relation_check).lower():
+        if task.res_relation_check.get('Relation') and 'almost complete' in task.res_relation_check['Relation'].lower() or \
+                task.res_relation_check.get('Relation') is None and 'almost complete' in str(task.res_relation_check).lower():
             action = {"Action": "Complete", **task.res_relation_check}
         # [Unrelated UI] => Check whether the ui can go back or check other app
         elif task.res_relation_check.get('Relation') and 'unrelated' in task.res_relation_check['Relation'].lower() or \

@@ -5,9 +5,15 @@ from uta.config import *
 
 class TaskList:
     def __init__(self, model_manager):
-        self.available_task_list = ['Set up a pin for the device',
-                                    'Change the pin for the device']
-        self.app_list = ['Android Settings', 'Android Settings']
+        self.available_task_list = ['Create a pin for the device', 'Change the pin for the device', 'Create the fingerprint for device', 'Change the fingerprint for device',
+                                    'Turn on/off the haptics', 'Increase/decrease the volume', 'Change the ringtone', 'Change the tesxtone', 'Turn on/off vibration for text',
+                                    'Turn on/off vibration for calls', 'Turn on/off lock screen sound', 'Turn on/off the text sound',
+                                    'View the notifications', 'Delete notifications', 'Make the text size of device bigger/smaller', 'Change the date', 'Change the time',
+                                    'Hide/show name when calling', 'Block/unblock a number', 'Stop my phone from receiving calls, texts, or emails', 'Add contact information to the lock screen',
+                                    'Use a photo as background',
+                                    'Take a photo using Google Photo', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
+                                    'Access Gmail App', 'Open and view files ', 'Share a file from Files app', 'Delete a file from Files app']
+        self.app_list = ['Android Settings'] * 22 + ["Phone Camera"] * 5 + ["Gmail"] + ["Android File"] * 3
 
         self.__model_manager = model_manager
         self.__base_prompt_task_match = 'Given the task {task}, select 0 to 3 most related tasks from the available task list.\n' \

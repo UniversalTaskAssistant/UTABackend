@@ -23,6 +23,8 @@ class _TaskUIChecker:
                                '- Select "Input" only if the keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
                                '- Ensure the chosen action supports the element (clickable to click or scrollable to scroll). \n' \
                                '- If current UI is related to phone settings, and there is a searching bar, you should firstly try to search relevant options in the searching bar.\n' \
+                               '- When searching in the searching bar, you should propose a noun phrase or a noun word from task {task} that has the most chance to find the wanted settings, ' \
+                               'for example, you can use word "pin" for task "Set up a pin for the device" and word "wallpaper" for task "Use a photo as background". \n' \
                                '- If not None, then Element Id must in an integer.\n' \
                                '!!!Examples:\n' \
                                '1. {{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}. \n' \

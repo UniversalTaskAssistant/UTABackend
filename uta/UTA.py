@@ -101,28 +101,32 @@ class UTA:
             print('\n*** Declare task ***')
             user, task = self.instantiate_user_task(user_id, task_id, user_msg)
 
-            if task.res_clarification.get('Clear') and 'true' in task.res_clarification['Clear'].lower() or \
-                    task.res_clarification.get('Clear') is None and 'true' in str(task.res_clarification).lower():
-                if len(task.res_task_match) == 0:
+            if len(task.res_task_match) == 0:
+                # justify if user's response is reasonable
+                if task.clarification_user_msg:
+                    justify = self.task_declarator.justify_user_message(task)
+                    if task.res_justification.get('Related') and 'false' in task.res_justification['Related'].lower() or \
+                            task.res_justification.get('Related') is None and 'false' in str(
+                        task.res_justification).lower():
+                        self.system_connector.save_task(task)
+                        return justify
+
+                clarify = self.task_declarator.clarify_task(task=task, app_list=user.app_list)
+
+                if task.res_clarification.get('Clear') and 'true' in task.res_clarification['Clear'].lower() or \
+                        task.res_clarification.get('Clear') is None and 'true' in str(task.res_clarification).lower():
+
                     task_list = self.task_list.match_task_to_list(task)
                     self.system_connector.save_task(task)
                     return task_list
-                else:
-                    match_app = self.task_list.match_app_to_applist(task, user.app_list)
-                    self.system_connector.save_task(task)
-                    return match_app
 
-            # justify if user's response is reasonable
-            if task.clarification_user_msg:
-                justify = self.task_declarator.justify_user_message(task)
-                if task.res_justification.get('Related') and 'false' in task.res_justification['Related'].lower() or \
-                        task.res_justification.get('Related') is None and 'false' in str(task.res_justification).lower():
-                    self.system_connector.save_task(task)
-                    return justify
+                self.system_connector.save_task(task)
+                return clarify
+            else:
+                match_app = self.task_list.match_app_to_applist(task, user.app_list)
+                self.system_connector.save_task(task)
+                return match_app
 
-            clarify = self.task_declarator.clarify_task(task=task, app_list=user.app_list)
-            self.system_connector.save_task(task)
-            return clarify
         except Exception as e:
             error_trace = traceback.format_exc()
             action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}

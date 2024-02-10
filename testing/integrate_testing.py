@@ -1,7 +1,6 @@
 from os.path import join as pjoin
 import os
 import cv2
-import json
 import traceback
 import time
 
@@ -89,6 +88,9 @@ def task_declaration(msg, max_try=20):
             if dec['Proc'] == 'Clarify':
                 print(dec)
                 msg = input('Input your answer:')
+            elif dec['Proc'] == 'TaskMatch':
+                print(dec)
+                msg = input('Input your App:')
             else:
                 break
         except Exception as e:
@@ -148,12 +150,10 @@ def save_error(e, error_trace, save_name):
         os.makedirs(task_folder)
     error_path = pjoin(task_folder, f"{save_name}.json")
     SystemConnector().save_json(error_json, error_path)
-    # with open(error_path, "w", encoding='utf-8') as fp:
-    #     json.dump(error_json, fp, indent=4)
 
 
 # set up user task
-user_id = 'user4_5'
+user_id = 'user8'
 # init device
 device = Device()
 device.connect()
@@ -163,16 +163,16 @@ resolution = device.get_device_resolution()
 uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
-for task_idx, task in enumerate(task_list):
+for task_idx, task in enumerate(task_list2):
     # if task_idx not in [0, 9, 13, 21, 24, 25, 26, 27, 28, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 51, 53, 54, 55,
     #                     56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 72, 81, 82, 83, 85, 86, 87, 89, 92, 93, 95]:
     #     continue
-    if task_idx not in [0, 9, 13]:
-        continue
+    # if task_idx not in [4]:
+    #     continue
     # if task_idx < 5:
     #     continue
-    # if not 80 < task_idx <= 90:
-    #     continue
+    if not 0 <= task_idx < 5:
+        continue
     task_id = f"task{task_idx + 1}"
 
     # task declaration
