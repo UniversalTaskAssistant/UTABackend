@@ -106,8 +106,7 @@ class UTA:
                 if task.clarification_user_msg:
                     justify = self.task_declarator.justify_user_message(task)
                     if task.res_justification.get('Related') and 'false' in task.res_justification['Related'].lower() or \
-                            task.res_justification.get('Related') is None and 'false' in str(
-                        task.res_justification).lower():
+                            task.res_justification.get('Related') is None and 'false' in str(task.res_justification).lower():
                         self.system_connector.save_task(task)
                         return justify
 
@@ -115,7 +114,6 @@ class UTA:
 
                 if task.res_clarification.get('Clear') and 'true' in task.res_clarification['Clear'].lower() or \
                         task.res_clarification.get('Clear') is None and 'true' in str(task.res_clarification).lower():
-
                     task_list = self.task_list.match_task_to_list(task)
                     self.system_connector.save_task(task)
                     return task_list

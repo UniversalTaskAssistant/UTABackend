@@ -13,7 +13,7 @@ class TaskDeclarator:
         """
         self.__model_manager = model_manager
 
-        self.__user_input_justify = 'As a mobile assistant, do you think the user input "{user_msg}" is related to mobile app usage? ' \
+        self.__user_input_justify = 'As an Android mobile assistant, do you think the user input "{user_msg}" is related to mobile app usage? ' \
                                     'If it is not related, please point out the reason.' \
                                     '!!!Respond to the following points:\n' \
                                     '1. "Related": a boolean indicating if the answer is related.\n' \
@@ -24,7 +24,7 @@ class TaskDeclarator:
                                     '1. {{"Related": "False", "Explanation": "The input \"hello\" is greetings that is unrelated to mobile app."}}.\n ' \
                                     '2. {{"Related": "True", "Explanation": "The input is related to using YouTube app in the mobile device."}}.\n'
 
-        self.__succeed_prompt_clarify = 'With the information, is it clear enough for execution on a smartphone?' \
+        self.__succeed_prompt_clarify = 'With the information, is it clear enough for execution on an Android smartphone?' \
                                         '!!!Respond to the following points:\n' \
                                         '1. "Clear": a boolean indicating if the task is clear enough.\n' \
                                         '2. "Question": a single question to ask the user to further clarify the task with missing essential details.\n' \
@@ -36,7 +36,7 @@ class TaskDeclarator:
                                         '1. {{"Clear": "False", "Question": "How would you like to watch movie?", "Options": ["On the browser", "By YouTube"]}}.\n ' \
                                         '2. {{"Clear": "True", "Question": "None", "Options": []}}\n'
 
-        self.__base_prompt_clarify = 'Check the user task "{task}" to determine if this task is clear enough for execution on a smartphone. ' \
+        self.__base_prompt_clarify = 'Check the user task "{task}" to determine if this task is clear enough for execution on an Android smartphone. ' \
                                      'If it is not clear enough, provide a focused question to clarify the task, and give 1 to 3 example answers as options.' \
                                      '!!!Respond to the following points:\n' \
                                      '1. "Clear": a boolean indicating if the task is clear enough.\n' \
