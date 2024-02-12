@@ -85,12 +85,17 @@ def task_declaration(msg, max_try=20):
                 save_error(dec["Exception"], dec["Traceback"], "declaration_error")
                 break
 
-            if dec['Proc'] == 'Clarify':
+            if dec.get('State') and 'related' in dec['State'].lower() or \
+                    dec.get('State') is None and 'related' in str(dec).lower():
                 print(dec)
                 msg = input('Input your answer:')
-            elif dec['Proc'] == 'TaskMatch':
+            elif dec.get('State') and 'unrelated' in dec['State'].lower() or \
+                    dec.get('State') is None and 'unrelated' in str(dec).lower():
                 print(dec)
-                msg = input('Input your App:')
+                msg = input('Input your Task:')
+            elif dec.get('State') and 'match' in dec['State'].lower() or \
+                    dec.get('State') is None and 'match' in str(dec).lower():
+                print(dec)
             else:
                 break
         except Exception as e:

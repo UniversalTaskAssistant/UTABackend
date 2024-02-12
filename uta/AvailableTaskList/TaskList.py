@@ -18,7 +18,7 @@ class TaskList:
                                'Given a user intention, try to select 3 most related tasks that match the user intention.\n' \
                                '!!!Cases:' \
                                '1. If successfully match related tasks, respond in the JSON format:{{"State": "Match", "RelatedTasks": ["<task from the list>"], "Reason": "<one-sentence reason>"}}\n' \
-                               '2. If the task is related to the tasks in the list but you need more details to make selection,  respond in the JSON format:{{"State": "Related", "Question":"<Question>", "Options":["<sample answers>"]}}\n' \
+                               '2. If the task is related to the tasks in the list but you need more details to make selection, respond in the JSON format:{{"State": "Related", "Question":"<Question>", "Options":["<sample answers>"]}}\n' \
                                '3. If the task is totally unrelated to any of the tasks in the list, respond in the JSON format:{{"State": "Unrelated"}}'
 
         self.__model_manager = model_manager
