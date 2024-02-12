@@ -13,7 +13,8 @@ class _TaskUIChecker:
                                'Determine the appropriate action to the selected element for completing the task in the current UI. \n' \
                                '!!!Answer the following questions:\n' \
                                '1. Action - one of the following types: Click; Input (Input text); ' \
-                               'Scroll (Vertically scroll the element); Swipe (Horizontally swipe the element).\n' \
+                               'Scroll (Vertically scroll the element); Swipe (Horizontally swipe the element). ' \
+                               'None (You believe the task has been almost completed as per the previous actions).\n' \
                                '2. Element Id: the id of the target element to perform the action, just repeat what is given.\n' \
                                '3. Reason: short explanation why you do the action.\n' \
                                '4. Input Text - optional, only if the Action type is Input.\n' \
@@ -23,8 +24,6 @@ class _TaskUIChecker:
                                '- Select "Input" only if the keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
                                '- Ensure the chosen action supports the element (clickable to click or scrollable to scroll). \n' \
                                '- If current UI is related to phone settings, and there is a searching bar, you should firstly try to search relevant options in the searching bar.\n' \
-                               '- When searching in the searching bar, you should propose a noun phrase or a noun word from task {task} that has the most chance to find the wanted settings, ' \
-                               'for example, you can use word "pin" for task "Set up a pin for the device" and word "wallpaper" for task "Use a photo as background". \n' \
                                '- If not None, then Element Id must in an integer.\n' \
                                '!!!Examples:\n' \
                                '1. {{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}. \n' \

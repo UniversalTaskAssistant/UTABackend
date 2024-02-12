@@ -21,7 +21,7 @@ class Task(_Data):
 
         # Only used when task declaration
         self.conversation_clarification = []  # List of conversations that occurred during multiple turns of task clarification.
-        self.conversation_pure_clarification = []
+        self.conversation_tasklist = []
         self.res_clarification = dict()     # {"Clear": "True", "Question": "None", "Options":[]}
         self.res_justification = dict()
         self.res_classification = dict()    # {"Task Type": "1. General Inquiry", "Explanation":}

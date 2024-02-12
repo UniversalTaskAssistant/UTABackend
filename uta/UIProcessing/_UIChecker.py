@@ -1,4 +1,3 @@
-from uta.config import *
 import json
 import re
 
@@ -9,7 +8,7 @@ class _UIChecker:
     """
     def __init__(self, model_manager):
         self.__model_manager = model_manager
-        self.__base_prompt = 'Given this UI, check if it contains any of the following components that require user decisions:\n' \
+        self.__system_prompt = 'You are a mobile assistant. Given an UI, you should check if it contains any of the following components that require user decisions:\n' \
                              '1. UI Modal: A window or dialog box overlaying on the top of main content, such as Alerts, Confirmations and Instructions.\n' \
                              '2. User Permission: Asking for user permission to perform app functionalities.\n' \
                              '3. Login Page: Requiring for account login before using app.\n' \
@@ -54,10 +53,10 @@ class _UIChecker:
             response (dict): {"Component", "Explanation"}
         """
         try:
-            conversation = [{'role': 'user', 'content': f'This is a view hierarchy of a UI '
+            conversation = [{'role': 'system', 'content': self.__system_prompt},
+                            {'role': 'user', 'content': f'Here is the view hierarchy of a UI '
                                                         f'containing various UI blocks and elements:\n'
-                                                        f'{str(ui_data.element_tree)}\n'},
-                            {'role': 'user', 'content': self.__base_prompt}]
+                                                        f'{str(ui_data.element_tree)}\n'}]
             resp = self.__model_manager.send_fm_conversation(conversation)
             special_compo = self.transfer_to_dict(resp)
             print(special_compo)

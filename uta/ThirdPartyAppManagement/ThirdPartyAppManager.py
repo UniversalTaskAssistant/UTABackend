@@ -40,8 +40,7 @@ class ThirdPartyAppManager:
                                       '...and so on. \n\n' \
                                       'Apps to analyze: \n{app_details}'
 
-        self.__availability_check_prompt = 'Identify the app related to the task "{task}" from the given app list. \n' \
-                                           '!!!Apps:\n{app_list}\n' \
+        self.__availability_system_prompt = 'Identify the app related to the given task from the given app list. \n' \
                                            '!!!Note:\n ' \
                                            '1. ONLY use this JSON format to provide your answer: {{"App": "<app_package_or_None>", "Keywords": "<keywords or None>", "Reason": "<explanation>"}}.\n' \
                                            '2. If no related found, answer "None" for the "App" in the answer JSON.\n' \
@@ -49,6 +48,9 @@ class ThirdPartyAppManager:
                                            '!!!Examples\n:' \
                                            '1. {{"App": "com.whatsapp.com", "Keywords": "None", "Reason": "To send message in whatsapp, open the whatsapp app."}}.\n ' \
                                            '2. {{"App": "None", "Keywords": "Youtube", "Reason": "No app is related to the task \'watch a video\'."}}.\n'
+
+        self.__availability_check_prompt = 'Given task: {task}\n' \
+                                           'Given app list: {app_list}'
 
     @staticmethod
     def transfer_to_dict(resp):
@@ -150,7 +152,8 @@ class ThirdPartyAppManager:
                 prompt += '(These apps cannot be launched or are proved to be unrelated to the task, ' \
                           'exclude them from your selection.\n' + str(task.except_apps) + '.)\n'
             # Ask FM
-            conversations = [{'role': 'system', 'content': SYSTEM_PROMPT}, {'role': 'user', 'content': prompt}]
+            conversations = [{'role': 'system', 'content': self.__availability_system_prompt},
+                             {'role': 'user', 'content': prompt}]
             resp = self.__model_manager.send_fm_conversation(conversations, printlog=printlog)
             task.res_related_app_check = self.transfer_to_dict(resp)
             print(task.res_related_app_check)

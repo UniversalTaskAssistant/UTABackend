@@ -132,22 +132,15 @@ class TaskDeclarator:
             if len(task.conversation_clarification) == 0:
                 task.conversation_clarification = [{'role': 'system', 'content': SYSTEM_PROMPT},
                                                    {"role": "user", "content": self.__base_prompt_clarify.format(task=task.task_description)}]
-                task.conversation_pure_clarification = [{'role': 'system', 'content': SYSTEM_PROMPT},
-                                                   {"role": "user", "content": self.__base_prompt_clarify.format(
-                                                       task=task.task_description)}]
             elif task.clarification_user_msg:
                 task.conversation_clarification.append({'role': 'user', 'content': f"Response to the Question: {task.clarification_user_msg}.\n"
                                                                                    + self.__succeed_prompt_clarify})
-                task.conversation_pure_clarification.append(
-                    {'role': 'user', 'content': f"Response to the Question: {task.clarification_user_msg}.\n"
-                                                + self.__succeed_prompt_clarify})
                 task.user_clarify.append(task.clarification_user_msg)
             else:
                 raise ValueError("not initial clarification but not clarification_user_msg is stored.")
             # send conv to fm
             resp = self.__model_manager.send_fm_conversation(conversation=task.conversation_clarification, printlog=printlog)
             task.conversation_clarification.append(resp)
-            task.conversation_pure_clarification.append(resp)
             task.res_clarification = self.transfer_to_dict(resp)
             task.res_clarification['Proc'] = 'Clarify'
             print(task.res_clarification)

@@ -59,13 +59,17 @@ class TaskActionChecker:
         # [Related UI] => Check action
         else:
             action = self.__task_ui_checker.check_element_action(ui_data, task, printlog)
-            try:
-                bounds = ui_data.elements[int(action['Element Id'])]['bounds']
-                centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-                action['Coordinate'] = centroid
-                action['ElementBounds'] = bounds
-            except Exception as e:
-                print(action)
-                raise e
+            if task.res_action_check.get('Action') and 'none' in task.res_action_check['Action'].lower() or \
+                task.res_action_check.get('Action') is None and 'none' in str(task.res_action_check).lower():
+                action = {"Action": "Complete", **task.res_relation_check}  # Prevent the Action is None
+            else:
+                try:
+                    bounds = ui_data.elements[int(action['Element Id'])]['bounds']
+                    centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+                    action['Coordinate'] = centroid
+                    action['ElementBounds'] = bounds
+                except Exception as e:
+                    print(action)
+                    raise e
         task.actions.append(action)
         return action

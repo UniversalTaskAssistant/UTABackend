@@ -1,6 +1,5 @@
 import json
 import re
-from uta.config import *
 
 
 class TaskList:
@@ -15,7 +14,7 @@ class TaskList:
                                     'Access Gmail App', 'Open and view files ', 'Share a file from Files app', 'Delete a file from Files app']
         self.app_list = ['Android Settings'] * 22 + ["Phone Camera"] + ["Google Photo"] * 4 + ["Gmail"] + ["Android File"] * 3
 
-        self.__system_prompt = 'You are an Android mobile assistant, you can only perform the following list of tasks:\n' + str(self.available_task_list) + '\n'\
+        self.__system_prompt_task_match = 'You are an Android mobile assistant, you can only perform the following list of tasks:\n' + str(self.available_task_list) + '\n'\
                                'Given a user intention, try to select 3 most related tasks that match the user intention.\n' \
                                '!!!Cases:' \
                                '1. If successfully match related tasks, respond in the JSON format:{{"State": "Match", "RelatedTasks": ["<task from the list>"], "Reason": "<one-sentence reason>"}}\n' \
@@ -25,29 +24,16 @@ class TaskList:
         self.__model_manager = model_manager
         self.__base_prompt_task_match = 'User intention: {task}.'
 
-        self.__base_prompt_app_match = 'Given an app list {app_list}, and an app name {app_name} needed by a phone user, please select the most relevant app package name from the app list.' \
-                                       '!!!Note:\n' \
-                                       '1. ONLY use this JSON format to provide your answer: {{"AppPackage": "<selected app package from the app list>", "Reason": "<one-sentence reason for selection>"}}' \
-                                       '2. If no app package in the app list directly matches the given app name, select the one that seems most relevant as "AppPackage".' \
-                                       '3. The result must contains "AppPackage" key. \n' \
-                                       '!!!Example:\n' \
-                                       '1. {{"AppPackage": "com.android.settings", "Reason": "The app name Android Settings is related to the app package com.android.settings."}}\n' \
-                                       '2. {{"AppPackage": "com.android.camera2", "Reason": "The app name Camera is related to the app package com.android.camera2."}}'
-
-    @staticmethod
-    def wrap_task_info(task):
-        """
-        Wrap up task info to put in the fm prompt
-        Args:
-            task (Task)
-        Return:
-            prompt (str): The wrapped prompt
-        """
-        prompt = ''
-        if len(task.user_clarify) > 0:
-            prompt += '!!!Context:\n'
-            prompt += '(Historical information for the task clarification:' + str(task.conversation_pure_clarification) + ')\n'
-        return prompt
+        self.__system_prompt_app_match = 'You are an Android mobile assistant. ' \
+                                         'Given an app list, and an app name needed by a phone user, please select the most relevant app package name from the app list.' \
+                                         '!!!Note:\n' \
+                                         '1. ONLY use this JSON format to provide your answer: {{"AppPackage": "<selected app package from the app list>", "Reason": "<one-sentence reason for selection>"}}' \
+                                         '2. If no app package in the app list directly matches the given app name, select the one that seems most relevant as "AppPackage".' \
+                                         '3. The result must contains "AppPackage" key. \n' \
+                                         '!!!Example:\n' \
+                                         '1. {{"AppPackage": "com.android.settings", "Reason": "The app name Android Settings is related to the app package com.android.settings."}}\n' \
+                                         '2. {{"AppPackage": "com.android.camera2", "Reason": "The app name Camera is related to the app package com.android.camera2."}}'
+        self.__base_prompt_app_match = 'App list: {app_list}\n App name: {app_name}'
 
     @staticmethod
     def transfer_to_dict(resp):
@@ -79,11 +65,12 @@ class TaskList:
             task_match (dict): {"RelatedTasks": [] or "None", "Reason":}
         """
         try:
-            prompt = self.wrap_task_info(task)
-            prompt += self.__base_prompt_task_match.format(task=task.task_description)
-            conversation = [{'role': 'system', 'content': self.__system_prompt},
-                            {"role": "user", "content": prompt}]
-            resp = self.__model_manager.send_fm_conversation(conversation)
+            if len(task.conversation_tasklist) == 0:
+                task.conversation_tasklist = [{'role': 'system', 'content': self.__system_prompt_task_match}]
+            prompt = self.__base_prompt_task_match.format(task=task.task_description)
+            task.conversation_tasklist.append({"role": "user", "content": prompt})
+            resp = self.__model_manager.send_fm_conversation(task.conversation_tasklist)
+            task.conversation_tasklist.append(resp)
             task.res_task_match = self.transfer_to_dict(resp)
             task.res_task_match['Proc'] = 'TaskMatch'
             print(task.res_task_match)
@@ -102,9 +89,9 @@ class TaskList:
             task_match (dict): {"RelatedTasks": [] or "None", "Reason":}
         """
         try:
-            conversation = [{'role': 'system', 'content': SYSTEM_PROMPT},
-                            {"role": "user", "content": self.__base_prompt_app_match.format(app_name=task.involved_app,
-                                                                                            app_list=app_list)}]
+            prompt = self.__base_prompt_app_match.format(app_name=task.involved_app, app_list=app_list)
+            conversation = [{'role': 'system', 'content': self.__system_prompt_app_match},
+                            {"role": "user", "content": prompt}]
             resp = self.__model_manager.send_fm_conversation(conversation)
             app_match = self.transfer_to_dict(resp)
             app_match['Proc'] = 'AppMatch'
