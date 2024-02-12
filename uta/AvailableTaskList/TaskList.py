@@ -15,15 +15,15 @@ class TaskList:
                                     'Access Gmail App', 'Open and view files ', 'Share a file from Files app', 'Delete a file from Files app']
         self.app_list = ['Android Settings'] * 22 + ["Phone Camera"] + ["Google Photo"] * 4 + ["Gmail"] + ["Android File"] * 3
 
+        self.__system_prompt = 'You are an Android mobile assistant, you can only perform the following list of tasks:\n' + str(self.available_task_list) + '\n'\
+                               'Given a user intention, try to select 3 most related tasks that match the user intention.\n' \
+                               '!!!Cases:' \
+                               '1. If successfully match related tasks, respond in the JSON format:{{"State": "Match", "RelatedTasks": ["<task from the list>"], "Reason": "<one-sentence reason>"}}\n' \
+                               '2. If the task is related to the tasks in the list but you need more details to make selection,  respond in the JSON format:{{"State": "Related", "Question":"<Question>", "Options":["<sample answers>"]}}\n' \
+                               '3. If the task is totally unrelated to any of the tasks in the list, respond in the JSON format:{{"State": "Unrelated"}}'
+
         self.__model_manager = model_manager
-        self.__base_prompt_task_match = 'Given the task {task}, select 0 to 3 most related tasks from the available task list.\n' \
-                                        '!!!Available task list:\n' + str(self.available_task_list) + \
-                                        '!!!Note:\n' \
-                                        '1. ONLY use this JSON format to provide your answer: {{"RelatedTasks": ["<task from the list>"], "Reason": "<one-sentence reason>"}}' \
-                                        '2. If no task in the list is related to the given task, answer "None" for the "RelatedTasks".\n' \
-                                        '!!!Example:\n' \
-                                        '1. {{"RelatedTasks": ["Set up a pin for the device"], "Reason": "The given task is related to device pin."}}\n' \
-                                        '2. {{"RelatedTasks": "None", "Reason": "No related task in the list to the given task."}}'
+        self.__base_prompt_task_match = 'User intention: {task}.'
 
         self.__base_prompt_app_match = 'Given an app list {app_list}, and an app name {app_name} needed by a phone user, please select the most relevant app package name from the app list.' \
                                        '!!!Note:\n' \
@@ -81,7 +81,7 @@ class TaskList:
         try:
             prompt = self.wrap_task_info(task)
             prompt += self.__base_prompt_task_match.format(task=task.task_description)
-            conversation = [{'role': 'system', 'content': SYSTEM_PROMPT},
+            conversation = [{'role': 'system', 'content': self.__system_prompt},
                             {"role": "user", "content": prompt}]
             resp = self.__model_manager.send_fm_conversation(conversation)
             task.res_task_match = self.transfer_to_dict(resp)
@@ -114,3 +114,7 @@ class TaskList:
         except Exception as e:
             print(resp)
             raise e
+
+
+if __name__ == '__main__':
+    task_list = TaskList(None)
