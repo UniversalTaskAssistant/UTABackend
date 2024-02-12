@@ -108,8 +108,7 @@ class Device:
         print('--- Rebooting app:', package_name, '---')
         # Step 1: Force stop the app
         self.close_app(package_name, waiting_time)
-        # Optional wait time after stopping the app
-        time.sleep(waiting_time)
+
         # Step 2: Launch the app using the existing launch_app method
         self.launch_app(package_name, waiting_time)
 

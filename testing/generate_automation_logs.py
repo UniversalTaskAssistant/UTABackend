@@ -91,7 +91,7 @@ html_template = """
 """
 
 
-user_id = 'user4_5'
+user_id = 'user8'
 directories = {}
 for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
     task_dir_name = os.path.basename(task_dir)
@@ -113,11 +113,14 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
 
         data['screenshot'] = {}
         for one_img in glob.glob(task_dir + '/*_annotated.png'):
-            img_name = os.path.basename(one_img)
-            idx_key = int(img_name.split('_')[0])
-            img_path = f".{one_img.split(user_id)[-1]}"
-            data['screenshot'][idx_key] = {'img': img_path, 'info': {'rel': str(task_json['relations'][idx_key]),
-                                                                    'act': str(task_json['actions'][idx_key])}}
+            try:
+                img_name = os.path.basename(one_img)
+                idx_key = int(img_name.split('_')[0])
+                img_path = f".{one_img.split(user_id)[-1]}"
+                data['screenshot'][idx_key] = {'img': img_path, 'info': {'rel': str(task_json['relations'][idx_key]),
+                                                                        'act': str(task_json['actions'][idx_key])}}
+            except:
+                break
 
         if os.path.exists(task_dir + '/automation_error.json'):
             with open(task_dir + '/automation_error.json', 'r', encoding='utf-8') as error:

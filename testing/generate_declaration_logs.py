@@ -94,6 +94,7 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
     #     continue
     data = {}
     with open(task_dir + '/task.json', 'r', encoding='utf-8') as file:
+        print(task_dir)
         task_json = json.load(file)
         data['task'] = task_json['task_description']
         data['task_type'] = task_json['task_type']
@@ -110,10 +111,13 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
 
         data['screenshot'] = {}
         for one_img in glob.glob(task_dir + '/*_annotated.png'):
-            img_name = os.path.basename(one_img)
-            idx_key = int(img_name.split('_')[0])
-            data['screenshot'][idx_key] = {'img': one_img, 'info': {'rel': str(task_json['relations'][idx_key]),
-                                                                    'act': str(task_json['actions'][idx_key])}}
+            try:
+                img_name = os.path.basename(one_img)
+                idx_key = int(img_name.split('_')[0])
+                data['screenshot'][idx_key] = {'img': one_img, 'info': {'rel': str(task_json['relations'][idx_key]),
+                                                                        'act': str(task_json['actions'][idx_key])}}
+            except:
+                break
 
         if os.path.exists(task_dir + '/declaration_error.json'):
             with open(task_dir + '/declaration_error.json', 'r', encoding='utf-8') as error:

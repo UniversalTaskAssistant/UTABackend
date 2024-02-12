@@ -27,12 +27,27 @@ class TaskList:
 
         self.__base_prompt_app_match = 'Given an app list {app_list}, and an app name {app_name} needed by a phone user, please select the most relevant app package name from the app list.' \
                                        '!!!Note:\n' \
-                                       '1. ONLY use this JSON format to provide your answer: {{"AppPackage": ["<selected app package from the app list>"], "Reason": "<one-sentence reason for selection>"}}' \
+                                       '1. ONLY use this JSON format to provide your answer: {{"AppPackage": "<selected app package from the app list>", "Reason": "<one-sentence reason for selection>"}}' \
                                        '2. If no app package in the app list directly matches the given app name, select the one that seems most relevant as "AppPackage".' \
                                        '3. The result must contains "AppPackage" key. \n' \
                                        '!!!Example:\n' \
                                        '1. {{"AppPackage": "com.android.settings", "Reason": "The app name Android Settings is related to the app package com.android.settings."}}\n' \
                                        '2. {{"AppPackage": "com.android.camera2", "Reason": "The app name Camera is related to the app package com.android.camera2."}}'
+
+    @staticmethod
+    def wrap_task_info(task):
+        """
+        Wrap up task info to put in the fm prompt
+        Args:
+            task (Task)
+        Return:
+            prompt (str): The wrapped prompt
+        """
+        prompt = ''
+        if len(task.user_clarify) > 0:
+            prompt += '!!!Context:\n'
+            prompt += '(Historical information for the task clarification:' + str(task.conversation_pure_clarification) + ')\n'
+        return prompt
 
     @staticmethod
     def transfer_to_dict(resp):
@@ -64,8 +79,10 @@ class TaskList:
             task_match (dict): {"RelatedTasks": [] or "None", "Reason":}
         """
         try:
+            prompt = self.wrap_task_info(task)
+            prompt += self.__base_prompt_task_match.format(task=task.task_description)
             conversation = [{'role': 'system', 'content': SYSTEM_PROMPT},
-                            {"role": "user", "content": self.__base_prompt_task_match.format(task=task.task_description)}]
+                            {"role": "user", "content": prompt}]
             resp = self.__model_manager.send_fm_conversation(conversation)
             task.res_task_match = self.transfer_to_dict(resp)
             task.res_task_match['Proc'] = 'TaskMatch'

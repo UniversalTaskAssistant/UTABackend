@@ -122,14 +122,18 @@ def task_automation(max_try=20):
                 save_error(action["Exception"], action["Traceback"], "automation_error")
                 break
 
+            if 'complete' in action['Action'].lower():
+                break
+            elif "user decision" in action['Action'].lower():
+                input("Do the necessary operation and press Enter to continue...")
+                continue
+
             annotate_screenshot = annotate_ui_operation(ui_data, action)
             screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
             SystemConnector().save_img(annotate_screenshot, screen_path)
             # with open(screen_path, 'wb') as fp:
             #     fp.write(annotate_screenshot)
 
-            if 'complete' in action['Action'].lower():
-                break
             device.take_action(action=action, ui_data=ui_data, show=False)
             time.sleep(2)  # wait the action to be done
             ui_id += 1
@@ -167,11 +171,11 @@ for task_idx, task in enumerate(task_list2):
     # if task_idx not in [0, 9, 13, 21, 24, 25, 26, 27, 28, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 51, 53, 54, 55,
     #                     56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 72, 81, 82, 83, 85, 86, 87, 89, 92, 93, 95]:
     #     continue
-    # if task_idx not in [4]:
+    # if task_idx not in [3]:
     #     continue
     # if task_idx < 5:
     #     continue
-    if not 0 <= task_idx < 5:
+    if not 15 <= task_idx < 20:
         continue
     task_id = f"task{task_idx + 1}"
 
@@ -182,6 +186,6 @@ for task_idx, task in enumerate(task_list2):
     device.go_homepage()
     user, task_obj = uta.instantiate_user_task(user_id, task_id)
     device.reboot_app(task_obj.involved_app_package)
-    task_automation(max_try=20)
+    task_automation(max_try=10)
 
 device.disconnect()

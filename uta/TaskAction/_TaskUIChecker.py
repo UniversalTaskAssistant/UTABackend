@@ -78,10 +78,10 @@ class _TaskUIChecker:
         """
         prompt = '!!!Context:\n'
         prompt += '(Keyboard active: ' + str(task.keyboard_active) + ').\n'
-        if len(task.user_clarify) > 0:
-            prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + ')\n'
-        if len(task.subtasks) > 0:
-            prompt += '(Potential subtasks and steps to complete the task: ' + str(task.subtasks) + '.)\n'
+        # if len(task.user_clarify) > 0:
+        #     prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + ')\n'
+        # if len(task.subtasks) > 0:
+        #     prompt += '(Potential subtasks and steps to complete the task: ' + str(task.subtasks) + '.)\n'
         return prompt
 
     @staticmethod

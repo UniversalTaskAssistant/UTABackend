@@ -236,7 +236,7 @@ def test_device():
     # print(wm)
 
     # print(device.get_app_list_on_the_device())
-    device.launch_app('com.android.dialer')
+    device.launch_app('com.android.settings')
     print(device.get_current_package_and_activity_name())
     # print(device.get_device())
     # print(device.get_device_name())
@@ -449,12 +449,12 @@ if __name__ == '__main__':
     # test_local()
     # test_systemcomnnector()
     # test_uiprocessor()
-    test_task_declarator()
+    # test_task_declarator()
 
     # test_googleplay()
     # test_appmanager()
 
-    # test_device()
+    test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
