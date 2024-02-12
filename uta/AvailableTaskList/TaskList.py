@@ -11,9 +11,9 @@ class TaskList:
                                     'View the notifications', 'Delete notifications', 'Make the text size of device bigger/smaller', 'Change the date', 'Change the time',
                                     'Hide/show name when calling', 'Block/unblock a number', 'Stop my phone from receiving calls, texts, or emails', 'Add contact information to the lock screen',
                                     'Use a photo as background',
-                                    'Take a photo using Google Photo', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
+                                    'Take a photo using Camera', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
                                     'Access Gmail App', 'Open and view files ', 'Share a file from Files app', 'Delete a file from Files app']
-        self.app_list = ['Android Settings'] * 22 + ["Phone Camera"] * 5 + ["Gmail"] + ["Android File"] * 3
+        self.app_list = ['Android Settings'] * 22 + ["Phone Camera"] + ["Google Photo"] * 4 + ["Gmail"] + ["Android File"] * 3
 
         self.__model_manager = model_manager
         self.__base_prompt_task_match = 'Given the task {task}, select 0 to 3 most related tasks from the available task list.\n' \
