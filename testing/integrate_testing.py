@@ -125,6 +125,12 @@ def task_automation(max_try=20):
             # ui_data = SystemConnector().load_ui_data(pjoin(ui_path, f"{i}.png"), pjoin(ui_path, f"{i}.xml"), resolution)
             # ui_data.elements = ui_tree
 
+            annotate_screenshot = annotate_ui_operation(ui_data, action)
+            screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
+            SystemConnector().save_img(annotate_screenshot, screen_path)
+            # with open(screen_path, 'wb') as fp:
+            #     fp.write(annotate_screenshot)
+
             if action.get("Action") is not None and "error" in action["Action"].lower():
                 save_error(action["Exception"], action["Traceback"], "automation_error")
                 break
@@ -134,12 +140,6 @@ def task_automation(max_try=20):
             elif "user decision" in action['Action'].lower():
                 input("Do the necessary operation and press Enter to continue...")
                 continue
-
-            annotate_screenshot = annotate_ui_operation(ui_data, action)
-            screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
-            SystemConnector().save_img(annotate_screenshot, screen_path)
-            # with open(screen_path, 'wb') as fp:
-            #     fp.write(annotate_screenshot)
 
             device.take_action(action=action, ui_data=ui_data, show=False)
             time.sleep(2)  # wait the action to be done
@@ -180,8 +180,8 @@ for task_idx, task in enumerate(task_list3):
     #     continue
     # if task_idx not in [3]:
     #     continue
-    # if task_idx < 5:
-    #     continue
+    if task_idx < 2:
+        continue
     # if not 20 <= task_idx < 40:
     #     continue
     task_id = f"task{task_idx + 1}"

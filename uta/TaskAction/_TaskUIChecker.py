@@ -23,6 +23,7 @@ class _TaskUIChecker:
                                '- This UI has been proved as a related UI to the task, you have to perform one of the given action.\n' \
                                '- Select "Input" only if the keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
                                '- Ensure the chosen action supports the element (clickable to click or scrollable to scroll). \n' \
+                               '- If current UI is related to search settings, you should firstly try to search for relevant options, if no result after tryings, then choose to go back.\n' \
                                '- If current UI is related to phone settings, and there is a searching bar, you should firstly try to search relevant options in the searching bar.\n' \
                                '- If not None, then Element Id must in an integer.\n' \
                                '!!!Examples:\n' \
@@ -60,7 +61,8 @@ class _TaskUIChecker:
                                  '- Responses must adhere to this JSON format: {{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<reason>"}}.\n' \
                                  '- If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
                                  '- App {involved_app_package} is selected by user to finish this task, and now the app has been opened and current UI is one of the UI in the app.\n' \
-                                 '- If current UI is related to phone settings, and there is a searching bar, you should firstly try to search relevant options in the searching bar.\n' \
+                                 '- If current UI is related to phone settings, and there is a searching bar, you should firstly try to search for relevant options in the searching bar.\n' \
+                                 '- If current UI is related to search settings, you should firstly try to search for relevant options, if no result after tryings, then choose to go back.\n' \
                                  '- You must return "Relation" and "Element Id" in you returned json format result. If not None, then Element Id must in an integer.\n' \
                                  '!!!Examples: \n' \
                                  '{{"Relation": "Indirectly related", "Element Id": 2, "Reason": "The current UI is the home screen of the messaging app, but there\'s no direct element related to turning off vibration for texts. The task of turning off vibration for texts might require navigating to the settings of the messenger but there\'s no direct option visible in the hierarchy. However, the search bar (Element Id: 2) could possibly lead to settings or options related to vibration, hence it should be clicked to proceed to the task."}}.\n'
