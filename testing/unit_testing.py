@@ -7,7 +7,7 @@ from uta.ModelManagement.FMModel import _OpenAI
 from uta.ModelManagement.VisionModel import _GoogleOCR, _IconClassifier
 
 from uta.SystemConnection import _Local, SystemConnector
-from uta.UIProcessing import UIProcessor
+from uta.UIProcessing import UIProcessor, _UIChecker
 from uta.TaskDeclearation import TaskDeclarator
 from testing.Device import Device
 
@@ -304,12 +304,12 @@ def test_taskuichecker():
     new_prompt += task_ui_checker.wrap_task_info_after(task)
     print(2, new_prompt)
 
-    res = {'content': '{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}'}
-    res = task_ui_checker.transfer_to_dict(res)
-    print(res)
-    res = {'content': '{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}\n'}
-    res = task_ui_checker.transfer_to_dict(res)
-    print(res)
+    # res = {'content': '{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}'}
+    # res = task_ui_checker.transfer_to_dict(res)
+    # print(res)
+    # res = {'content': '{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}\n'}
+    # res = task_ui_checker.transfer_to_dict(res)
+    # print(res)
 
     task.involved_app_package = "com.google.android.youtube"
     res = task_ui_checker.check_ui_relation(gui, task, printlog=True)
@@ -433,8 +433,29 @@ def test_tasklist():
     tasklist = TaskList(model_manager)
 
     task = Task("1", "1", "Open the camera.")
+
+    res = tasklist.match_task_to_list(task)
+    print(res)
+
     task.involved_app = "Android Camera"
     res = tasklist.match_app_to_applist(task, app_list)
+    print(res)
+
+    task = Task("1", "1", "Create a pin for the device")
+    res = tasklist.match_task_to_list(task)
+    print(res)
+
+
+def test_uichecker():
+    system_connector = SystemConnector()
+    model_manager = ModelManager()
+    ui_checker = _UIChecker(model_manager)
+
+    screenshot = DATA_PATH + 'user1/task1/0.png'
+    xml_file = DATA_PATH + 'user1/task1/0.xml'
+    ui_data = system_connector.load_ui_data(screenshot_file=screenshot, xml_file=xml_file)
+
+    res = ui_checker.check_ui_decision_page(ui_data)
     print(res)
 
 
@@ -454,7 +475,7 @@ if __name__ == '__main__':
     # test_googleplay()
     # test_appmanager()
 
-    test_device()
+    # test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
@@ -462,3 +483,4 @@ if __name__ == '__main__':
 
     # test_app_list()
     # test_tasklist()
+    test_uichecker()

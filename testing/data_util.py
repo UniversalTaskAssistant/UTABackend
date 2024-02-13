@@ -135,3 +135,6 @@ task_list = [
 model = ModelManager()
 task_list_class = TaskList(model)
 task_list2 = task_list_class.available_task_list
+
+selected_idx3 = [0, 2, 4, 5, 6, 8, 10, 12, 14, 15, 17, 18, 19, 20, 21, 22, 26, 27, 29]
+task_list3 = [task_list2[one_idx] for one_idx in selected_idx3]

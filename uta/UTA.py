@@ -63,7 +63,8 @@ class UTA:
                 task.task_description = user_msg
         else:
             if user_msg:
-                if len(task.res_task_match) == 0:
+                if task.res_task_match.get('State') and 'related' in task.res_task_match['State'].lower() or \
+                        task.res_task_match.get('State') is None and 'related' in str(task.res_task_match).lower():
                     task.clarification_user_msg = user_msg
                 else:
                     task.selected_task = user_msg
@@ -77,6 +78,7 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
+
     def fetch_available_task_list(self):
         """
         Fetch the current available task list
@@ -105,6 +107,7 @@ class UTA:
                 return match_app
 
             declare_resp = self.task_list.match_task_to_list(task)
+            self.system_connector.save_task(task)
             return declare_resp
         except Exception as e:
             error_trace = traceback.format_exc()
@@ -117,6 +120,7 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
+
     def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
         """
         Process ui dato
@@ -168,7 +172,7 @@ class UTA:
                 return ui, action
 
             # 2. act step
-            task.conversation_automation = []   # clear up the conversation of previous ui
+            task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui(ui, task, printlog)
             # if the current UI is unrelated, search for other apps
@@ -193,4 +197,5 @@ class UTA:
 
 if __name__ == '__main__':
     uta = UTA()
-    uta.automate_task('user1', 'task3', ui_img_file='../data/user1/task3/0.png', ui_xml_file='../data/user1/task3/0.xml')
+    uta.automate_task('user1', 'task3', ui_img_file='../data/user1/task3/0.png',
+                      ui_xml_file='../data/user1/task3/0.xml')

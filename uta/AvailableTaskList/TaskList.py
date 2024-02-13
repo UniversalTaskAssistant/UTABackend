@@ -11,7 +11,7 @@ class TaskList:
                                     'Hide/show name when calling', 'Block/unblock a number', 'Stop my phone from receiving calls, texts, or emails', 'Add contact information to the lock screen',
                                     'Use a photo as background',
                                     'Take a photo using Camera', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
-                                    'Access Gmail App', 'Open and view files ', 'Share a file from Files app', 'Delete a file from Files app']
+                                    'Access Gmail App', 'Open and view files', 'Share a file from Files app', 'Delete a file from Files app']
         self.app_list = ['Android Settings'] * 22 + ["Phone Camera"] + ["Google Photo"] * 4 + ["Gmail"] + ["Android File"] * 3
 
         self.__system_prompt_task_match = 'You are an Android mobile assistant, you can only perform the following list of tasks:\n' + str(self.available_task_list) + '\n'\
@@ -56,6 +56,20 @@ class TaskList:
                 resp_dict[key] = value
             return resp_dict
 
+    @staticmethod
+    def wrap_task_info(task):
+        """
+        Wrap up task info to put in the fm prompt
+        Args:
+            task (Task)
+        Return:
+            prompt (str): The wrapped prompt
+        """
+        prompt = ''
+        if task.clarification_user_msg is not None and len(task.clarification_user_msg) > 0:
+            prompt += '\nUser\'s answer for the last question: ' + task.clarification_user_msg + '.\n'
+        return prompt
+
     def match_task_to_list(self, task):
         """
         Try to find 0-3 related tasks in the available task list for the given user task
@@ -68,6 +82,7 @@ class TaskList:
             if len(task.conversation_tasklist) == 0:
                 task.conversation_tasklist = [{'role': 'system', 'content': self.__system_prompt_task_match}]
             prompt = self.__base_prompt_task_match.format(task=task.task_description)
+            prompt += self.wrap_task_info(task)
             task.conversation_tasklist.append({"role": "user", "content": prompt})
             resp = self.__model_manager.send_fm_conversation(task.conversation_tasklist)
             task.conversation_tasklist.append(resp)
