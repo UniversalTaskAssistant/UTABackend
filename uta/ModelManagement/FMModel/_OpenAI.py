@@ -57,7 +57,7 @@ class _OpenAI:
             start = time.time()
             if printlog:
                 print('*** Asking ***\n', conversation)
-            resp = openai.chat.completions.create(model=self._model, messages=conversation)
+            resp = openai.chat.completions.create(model=self._model, messages=conversation, temperature=0.0, seed=42)
             resp = dict(resp.choices[0].message)
             msg = {'role': resp['role'], 'content': resp['content']}
             if runtime:

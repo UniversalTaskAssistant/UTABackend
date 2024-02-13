@@ -299,7 +299,7 @@ def test_taskuichecker():
     gui.element_tree = tree
 
     task = Task("1", "1", 'Open the youtube')
-    new_prompt = task_ui_checker.wrap_task_info_before(task)
+    new_prompt = task_ui_checker.wrap_task_context(task)
     print(1, new_prompt)
     new_prompt += task_ui_checker.wrap_task_info_after(task)
     print(2, new_prompt)
