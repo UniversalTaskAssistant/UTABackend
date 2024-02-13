@@ -78,7 +78,6 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
-
     def fetch_available_task_list(self):
         """
         Fetch the current available task list
@@ -120,7 +119,6 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
-
     def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
         """
         Process ui dato
@@ -161,8 +159,8 @@ class UTA:
 
             # 1. process ui
             ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id,
-                                                                    task_id))
+            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
+            # check user decision page
             ui_check = self.ui_processor.check_ui_decision_page(ui)
             if ui_check.get('Component') and 'none' not in ui_check['Component'].lower() or \
                     ui_check.get('Component') is None and 'none' not in str(ui_check).lower():
