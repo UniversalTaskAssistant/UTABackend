@@ -9,19 +9,19 @@ class _UIChecker:
     def __init__(self, model_manager):
         self.__model_manager = model_manager
         self.__system_prompt = 'You are a mobile assistant. Given an UI, you should check if it contains any of the following components that require user decisions:\n' \
-                             '1. UI Modal: A window or dialog box overlaying on the top of main content showing Alerts, Confirmations or Instructions.\n' \
-                             '2. User Permission: Dialog box asking for user permission to perform app functionalities.\n' \
-                             '3. Login Page: Requiring for account login before using app.\n' \
-                             '4. Form: Requiring user to fill in private data.\n' \
-                             '!!!Respond to the following points:\n' \
-                             '1. "Component": if the UI contains any of the given components, if not, answer "None".\n' \
-                             '2. "Explanation": one-sentence explanation of your decision. \n' \
-                             '!!!Note:\n' \
-                             '- ONLY use this JSON format to provide your answer: {{"Component": "<Component>", "Explanation": "<Explanation>"}}\n' \
-                             '- Do not include EditText for search settings.\n' \
-                             '!!!Example:\n' \
-                             '1. {{"Component": "User Permission", "Explanation": "This UI asks user permission to access photo"}}\n' \
-                             '2. {{"Component": "None", "Explanation": "No mentioned components in this UI"}}'
+                               '1. UI Modal: A window or dialog box overlaying on the top of main content showing Alerts, Confirmations or Instructions.\n' \
+                               '2. User Permission: Dialog box asking for user permission to perform app functionalities.\n' \
+                               '3. Login Page: Requiring for account login before using app.\n' \
+                               '4. Form: Requiring user to fill in private data.\n' \
+                               '!!!Respond to the following points:\n' \
+                               '1. "Component": if the UI contains any of the given components, if not, answer "None".\n' \
+                               '2. "Explanation": one-sentence explanation of your decision. \n' \
+                               '!!!Note:\n' \
+                               '- ONLY use this JSON format to provide your answer: {{"Component": "<Component>", "Explanation": "<Explanation>"}}\n' \
+                               '- Do not include EditText for search settings.\n' \
+                               '!!!Example:\n' \
+                               '1. {{"Component": "User Permission", "Explanation": "This UI asks user permission to access photo"}}\n' \
+                               '2. {{"Component": "None", "Explanation": "No mentioned components in this UI"}}'
 
     @staticmethod
     def transfer_to_dict(resp):
@@ -55,8 +55,7 @@ class _UIChecker:
         """
         try:
             conversation = [{'role': 'system', 'content': self.__system_prompt},
-                            {'role': 'user', 'content': f'Here is the view hierarchy of a UI '
-                                                        f'containing various UI blocks and elements:\n'
+                            {'role': 'user', 'content': f'Here is the view hierarchy of a UI :\n'
                                                         f'{str(ui_data.element_tree)}\n'}]
             resp = self.__model_manager.send_fm_conversation(conversation)
             special_compo = self.transfer_to_dict(resp)
