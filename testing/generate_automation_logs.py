@@ -91,7 +91,7 @@ html_template = """
 """
 
 
-user_id = 'user9'
+user_id = 'user10'
 directories = {}
 for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
     task_dir_name = os.path.basename(task_dir)
@@ -114,6 +114,7 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
         data['screenshot'] = {}
         for one_img in glob.glob(task_dir + '/*_annotated.png'):
             try:
+
                 img_name = os.path.basename(one_img)
                 idx_key = int(img_name.split('_')[0])
                 img_path = f".{one_img.split(user_id)[-1]}"

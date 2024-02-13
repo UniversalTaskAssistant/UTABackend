@@ -18,10 +18,11 @@ class _TaskUIChecker:
                                '4. Select "Input" only if the Keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
                                '5. Ensure the chosen action supports the element (clickable to click or scrollable to scroll). \n' \
                                '6. If current UI is related to search settings, you should firstly try to search for relevant options, if no result after tryings, then choose to go back.\n' \
-                               '7. Notice the search bar, option button and nav-tab, they could lead to proceeding the task even the current UI is not related.' \
+                               '7. Notice the search bar, option button and nav-tab, they could lead to proceeding the task even the current UI is not related.\n' \
+                               '8. When entering the searching keywords, try to use single word that you have the most confidence to get related options.\n' \
                                '!!!Examples:\n' \
                                '1. {{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}. \n' \
-                               '2. {{"Action": "Input", "Element Id": "4", "Input Text": "Download Trump", "Reason": "Type in the name to follow the account."}}.\n' \
+                               '2. {{"Action": "Input", "Element Id": "4", "Input Text": "wallpaper", "Reason": "use word \"wallpaper\" to search ways of setting background."}}.\n' \
                                '3. {{"Action": "Scroll", "Element Id": "3", "Reason": "Scroll down to view more elements"}}\n'
 
         self.__back_prompt = 'Is there an element in the current UI that can be clicked to navigate back or close the current unrelated UI to proceed the task "{task}"? \n' \
@@ -34,7 +35,7 @@ class _TaskUIChecker:
                              '- Select a clickable element from the UI hierarchy. \n' \
                              '- If not None, then Element Id must be an integer.\n' \
                              '!!!Examples: \n' \
-                             '1. {{"Can": "Yes", "Element Id": 2, "Reason": "Navigates to the previous screen"}.\n' \
+                             '1. {{"Can": "Yes", "Element Id": 2, "Reason": "Navigates to the previous screen"}}.\n' \
                              '2. {{"Can": "No", "Element Id": "None", "Reason": "No back button present, please search youtube for video watching"}}.\n'
 
         self.__relation_prompt = 'What is the relation between this UI and the task "{task}" and why? ' \
@@ -48,6 +49,7 @@ class _TaskUIChecker:
                                  '2. Respond only in this JSON format: {{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<one-sentence reason>"}}.\n' \
                                  '3. Notice the search bar, option button and nav-tab, they could lead to proceeding the task even the current UI is not related.\n' \
                                  '4. If the Keyboard is active, then this UI is about to input content, and should be carefully considered as related even though there is no related elements.\n' \
+                                 '5. If in the previous step the search bar is clicked for searching things, then in this step the relation should be "Directly related" and searching keyword should be entered.\n' \
                                  '!!!Output Examples: \n' \
                                  '{{"Relation": "Indirectly related", "Element Id": 2, "Reason": "The current UI has a search bar to search for "Turn on voice"."}}.\n'
 
