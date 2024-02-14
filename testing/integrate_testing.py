@@ -164,7 +164,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user9'
+user_id = 'user12'
 # init device
 device = Device()
 device.connect()
@@ -187,7 +187,7 @@ for task_idx, task in enumerate(task_list3):
     task_id = f"task{task_idx + 1}"
 
     # task declaration
-    # task_declaration(task, max_try=10)
+    task_declaration(task, max_try=10)
 
     # task automation
     device.go_homepage()

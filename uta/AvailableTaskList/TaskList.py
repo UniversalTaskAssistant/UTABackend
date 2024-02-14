@@ -5,14 +5,42 @@ import re
 class TaskList:
     def __init__(self, model_manager):
         self.available_task_list = ['Create a pin for the device', 'Change the pin for the device', 'Create the fingerprint for device', 'Change the fingerprint for device',
-                                    'Turn on/off the haptics', 'Increase/decrease the volume', 'Change the ringtone', 'Change the tesxtone', 'Turn on/off vibration for text',
+                                    'Turn on/off the haptics', 'Increase/decrease the volume', 'Change the ringtone', 'Turn on/off vibration for text',
                                     'Turn on/off vibration for calls', 'Turn on/off lock screen sound', 'Turn on/off the text sound',
-                                    'View the notifications', 'Delete notifications', 'Make the text size of device bigger/smaller', 'Change the date', 'Change the time',
+                                    'View the notifications', 'Make the text size of device bigger/smaller', 'Change the date', 'Change the time',
                                     'Hide/show name when calling', 'Block/unblock a number', 'Stop my phone from receiving calls, texts, or emails', 'Add contact information to the lock screen',
-                                    'Use a photo as background',
-                                    'Take a photo using Camera', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
-                                    'Access Gmail App', 'Open and view files', 'Share a file from Files app', 'Delete a file from Files app']
-        self.app_list = ['Android Settings'] * 22 + ["Phone Camera"] + ["Google Photo"] * 4 + ["Gmail"] + ["Android File"] * 3
+                                    'Take a photo using Camera',
+                                    'Use a photo as background', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
+                                    'Access Gmail App', 'Open and view files', 'Share a file from Files app']
+        self.app_list = ['Android Settings'] * 19 + ["Phone Camera"] + ["Google Photo"] * 5 + ["Gmail"] + ["Android File"] * 2
+        self.step_list = ["Find and tap Settings > Lock screen > Screen lock > PIN.",
+                          "Tap Settings > Tap Lock screen > Tap Screen lock. If presented, enter the current PIN or Pattern > Tap PIN.",
+                          "Tap the Settings icon on your Android device and tap Lock screen. Scroll down and tap Screen lock type.",
+                          "Open your phone's Settings app > Tap Security & Fingerprint. Fingerprint > Scan your current fingerprint or use your backup screen lock method > Make the change you want. To delete a fingerprint, next to the fingerprint, tap Delete .",
+                          "Open Settings . Scroll down and select Accessibility. Tap Vibration and haptics.",
+                          "Go to Settings, Sounds and Vibration, Volume.",
+                          "Go to Settings > Sound and vibration > Ringtone.",
+                          "Open your device's Settings app  > Tap Accessibility > Tap Vibration & haptic strength.",
+                          "Open your device's Settings app  > Tap Accessibility > Tap Vibration & haptic strength.",
+                          "Tap on Settings > Tap on Sound & vibration.",
+                          "Settings > Sound & vibration > Default notification sound",
+                          "go to Settings and tap Notifications",
+                          "On your device, open the Settings app > Search and select Font size.",
+                          "open Settings > Date and Time.",
+                          "open Settings > Date and Time.",
+                          "open Settings, search and select Caller ID.",
+                          "Open your Phone app . · Tap More More . · Tap Settings and then Blocked numbers",
+                          "Open the Settings app on your phone, then scroll down and select Sound & vibration. > Select Do Not Disturb.",
+                          "Start by opening Settings > Tap Display > Tap Lock screen.",
+                          "Open the Camera",
+                          "Open up your phone's Gallery app > Find the photo you want to use and open it > Tap the three dots in the top-right and select \"Use as\".",
+                          "Open Google Photos",
+                          "Open Google Photos > Click the photo you want to delete",
+                          "Select an image in Google Photos and tap the Edit button.",
+                          "On your mobile device, open the Google Photos app  > Sign in to your Google Account > Select a photo, album or video > Tap Share .",
+                          "Open Gmail",
+                          "Open Files",
+                          "Open Files > Select the File > Tap the three dots in the top-right and select \"Send file\"."]
 
         self.__system_prompt_task_match = 'You are an Android mobile assistant, you can only perform the following list of tasks:\n' + str(self.available_task_list) + '\n'\
                                'Given a user intention, try to select 3 most related tasks that match the user intention.\n' \

@@ -42,6 +42,7 @@ class Task(_Data):
         self.relations = []                 # List of relations associated with this task.
         self.except_elements_ids = []       # List of except elements that have been tried and proved to be not related to the task
         self.actions = []                   # List of step objects associated with this task.
+        self.step_hint = None
 
         # App recommendation
         self.related_app = None             # Related app to complete the task

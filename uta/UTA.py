@@ -69,6 +69,7 @@ class UTA:
                 else:
                     task.selected_task = user_msg
                     task.involved_app = self.task_list.app_list[self.task_list.available_task_list.index(user_msg)]
+                    task.step_hint = self.task_list.step_list[self.task_list.available_task_list.index(user_msg)]
         self.cur_user = user
         self.cur_task = task
         return user, task
