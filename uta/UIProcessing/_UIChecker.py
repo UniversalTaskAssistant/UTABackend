@@ -16,12 +16,13 @@ class _UIChecker:
                                '!!!Respond to the following points:\n' \
                                '1. "Component": if the UI contains any of the given components, if not, answer "None".\n' \
                                '2. "Explanation": one-sentence explanation of your decision. \n' \
+                               '3. "Required action": required action for the user to proceed (e.g., dismiss the box, allow permission, fill in info)' \
                                '!!!Note:\n' \
-                               '1. ONLY use this JSON format to provide your answer: {{"Component": "<Component>", "Explanation": "<Explanation>"}}\n' \
+                               '1. ONLY use this JSON format to provide your answer: {{"Component": "<Component>", "Explanation": "<Explanation>", "Required action": "<Required action"}}\n' \
                                '2. Do not include EditText for search settings.\n' \
                                '!!!Example:\n' \
-                               '1. {{"Component": "User Permission", "Explanation": "This UI asks user permission to access photo"}}\n' \
-                               '2. {{"Component": "None", "Explanation": "No mentioned components in this UI"}}'
+                               '1. {{"Component": "User Permission", "Explanation": "This UI asks user permission to access photo", "Required action": "Allow or deny the permission"}}\n' \
+                               '2. {{"Component": "None", "Explanation": "No mentioned components in this UI"}}\n'
 
     @staticmethod
     def transfer_to_dict(resp):
