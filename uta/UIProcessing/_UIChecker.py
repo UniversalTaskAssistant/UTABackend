@@ -17,8 +17,8 @@ class _UIChecker:
                                '1. "Component": if the UI contains any of the given components, if not, answer "None".\n' \
                                '2. "Explanation": one-sentence explanation of your decision. \n' \
                                '!!!Note:\n' \
-                               '- ONLY use this JSON format to provide your answer: {{"Component": "<Component>", "Explanation": "<Explanation>"}}\n' \
-                               '- Do not include EditText for search settings.\n' \
+                               '1. ONLY use this JSON format to provide your answer: {{"Component": "<Component>", "Explanation": "<Explanation>"}}\n' \
+                               '2. Do not include EditText for search settings.\n' \
                                '!!!Example:\n' \
                                '1. {{"Component": "User Permission", "Explanation": "This UI asks user permission to access photo"}}\n' \
                                '2. {{"Component": "None", "Explanation": "No mentioned components in this UI"}}'
