@@ -16,8 +16,7 @@ class _TaskUIChecker:
                                '2. The "Input Text" is the content of Input action, the Element Id is an integer. \n' \
                                '3. This UI has been proved as a related UI to the task, you have to choose one of the given actions.\n' \
                                '4. Ensure the chosen action supports the element (clickable to click or scrollable to scroll). \n' \
-                               '5. Notice the search bar, option button and nav-tab, they could lead to proceeding the task even the current UI is not related.\n' \
-                               '6. Select "Input" only if the Keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
+                               '5. Select "Input" only if the Keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
                                '!!!Examples:\n' \
                                '1. {{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}. \n' \
                                '2. {{"Action": "Input", "Element Id": "4", "Input Text": "wallpaper", "Reason": "use word \"wallpaper\" to search ways of setting background."}}.\n' \
@@ -45,11 +44,8 @@ class _TaskUIChecker:
                                  '!!!Notes: \n' \
                                  '1. If the relation is related, give the Element Id (int) of the related element, otherwise give "None" for the Element Id.\n' \
                                  '2. Respond only in this JSON format: {{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<one-sentence reason>"}}.\n' \
-                                 '3. Notice the search bar, option button and nav-tab, they could lead to proceeding the task even the current UI is not related.\n' \
-                                 '4. If the Keyboard is active, then this UI is about to input content, and should be carefully considered as related even though there is no related elements.\n' \
-                                 '5. If in the previous step the search bar is clicked for searching things, then in this step the relation should be "Directly related" and searching keyword should be entered.\n' \
-                                 '6. If the keyword does not search anything, and you decide to search with another word, please clear the searching bar first. \n' \
-                                 '7. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
+                                 '3. If in the previous step the search bar is clicked for searching things, then in this step the relation should be "Directly related" and searching keyword should be entered.\n' \
+                                 '4. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
                                  '!!!Output Examples: \n' \
                                  '{{"Relation": "Indirectly related", "Element Id": 2, "Reason": "The current UI has a search bar to search for "Turn on voice"."}}.\n'
 
