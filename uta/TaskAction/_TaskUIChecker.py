@@ -41,7 +41,7 @@ class _TaskUIChecker:
                                  '1. Directly related: This UI contains a clickable or scrollable element directly related to proceeding the task but has not reached the final page for the task. \n' \
                                  '2. Indirectly related: This UI presents no directly related element to the task, but it has some elements leads to a related UI or elements for the task (e.g., Option button). \n' \
                                  '3. Unrelated: This UI does not relate to the task or sub-tasks at all. \n' \
-                                 '4. Complete: This is the final UI page to complete the task.\n' \
+                                 '4. Almost Complete: The task can be completed with one more action, which should be performed manually by the user. This option should be selected if the next action directly completes the task (e.g., the final step to increase volume).\n' \
                                  '!!!Notes: \n' \
                                  '1. If the relation is related, give the Element Id (int) of the related element, otherwise give "None" for the Element Id.\n' \
                                  '2. Respond only in this JSON format: {{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<one-sentence reason>"}}.\n' \
@@ -49,6 +49,7 @@ class _TaskUIChecker:
                                  '4. If the Keyboard is active, then this UI is about to input content, and should be carefully considered as related even though there is no related elements.\n' \
                                  '5. If in the previous step the search bar is clicked for searching things, then in this step the relation should be "Directly related" and searching keyword should be entered.\n' \
                                  '6. If the keyword does not search anything, and you decide to search with another word, please clear the searching bar first. \n' \
+                                 '7. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
                                  '!!!Output Examples: \n' \
                                  '{{"Relation": "Indirectly related", "Element Id": 2, "Reason": "The current UI has a search bar to search for "Turn on voice"."}}.\n'
 
@@ -87,7 +88,7 @@ class _TaskUIChecker:
         """
         prompt = ''
         if len(task.actions) > 0:
-            prompt += '!!!Action history for this task - MUST NOT repeat in future:\n ' + str(task.actions) + '.\n'
+            prompt += '!!!Action history for this task - MUST NOT REPEAT PREVIOUS ACTIONS:\n ' + str(task.actions) + '.\n'
         return prompt
 
     @staticmethod
