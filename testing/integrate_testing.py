@@ -125,15 +125,15 @@ def task_automation(max_try=20):
             # ui_data = SystemConnector().load_ui_data(pjoin(ui_path, f"{i}.png"), pjoin(ui_path, f"{i}.xml"), resolution)
             # ui_data.elements = ui_tree
 
+            if action.get("Action") is not None and "error" in action["Action"].lower():
+                save_error(action["Exception"], action["Traceback"], "automation_error")
+                break
+
             annotate_screenshot = annotate_ui_operation(ui_data, action)
             screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
             SystemConnector().save_img(annotate_screenshot, screen_path)
             # with open(screen_path, 'wb') as fp:
             #     fp.write(annotate_screenshot)
-
-            if action.get("Action") is not None and "error" in action["Action"].lower():
-                save_error(action["Exception"], action["Traceback"], "automation_error")
-                break
 
             if 'complete' in action['Action'].lower():
                 break
@@ -180,8 +180,8 @@ for task_idx, task in enumerate(task_list3):
     #     continue
     # if task_idx in [0]:
     #     continue
-    if task_idx < 3:
-        continue
+    # if task_idx < 3:
+    #     continue
     # if not 20 <= task_idx < 40:
     #     continue
     task_id = f"task{task_idx + 1}"

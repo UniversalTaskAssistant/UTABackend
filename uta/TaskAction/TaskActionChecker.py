@@ -59,8 +59,10 @@ class TaskActionChecker:
         # [Related UI] => Check action
         else:
             action = self.__task_ui_checker.check_element_action(ui_data, task, printlog)
-            if task.res_action_check.get('Action') and 'none' in task.res_action_check['Action'].lower() or \
-                    task.res_action_check.get('Action') is None and 'none' in str(task.res_action_check).lower():
+            if (task.res_action_check.get('Action') and 'none' in task.res_action_check['Action'].lower() or
+                    task.res_action_check.get('Action') is None and 'none' in str(task.res_action_check).lower()) or \
+                    (task.res_action_check.get('Element Id') and 'none' in str(task.res_action_check['Element Id']).lower() or
+                     task.res_action_check.get('Element Id') is None and 'none' in str(task.res_action_check).lower()):
                 action = {"Action": "Complete", **task.res_relation_check}  # Prevent the Action is None
             else:
                 try:
