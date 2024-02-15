@@ -45,6 +45,14 @@ class TaskActionChecker:
         if task.res_relation_check.get('Relation') and 'complete' in task.res_relation_check['Relation'].lower() or \
                 task.res_relation_check.get('Relation') is None and 'complete' in str(task.res_relation_check).lower():
             action = {"Action": "Complete", **task.res_relation_check}
+            try:
+                bounds = ui_data.elements[int(action['Element Id'])]['bounds']
+                centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+                action['Coordinate'] = centroid
+                action['ElementBounds'] = bounds
+            except Exception as e:
+                print(action)
+                raise e
         # [Unrelated UI] => Check whether the ui can go back or check other app
         elif task.res_relation_check.get('Relation') and 'unrelated' in task.res_relation_check['Relation'].lower() or \
                 task.res_relation_check.get('Relation') is None and 'unrelated' in str(task.res_relation_check).lower():
@@ -60,18 +68,15 @@ class TaskActionChecker:
         else:
             action = self.__task_ui_checker.check_element_action(ui_data, task, printlog)
             if (task.res_action_check.get('Action') and 'none' in task.res_action_check['Action'].lower() or
-                    task.res_action_check.get('Action') is None and 'none' in str(task.res_action_check).lower()) or \
-                    (task.res_action_check.get('Element Id') and 'none' in str(task.res_action_check['Element Id']).lower() or
-                     task.res_action_check.get('Element Id') is None and 'none' in str(task.res_action_check).lower()):
+                    task.res_action_check.get('Action') is None and 'none' in str(task.res_action_check).lower()):
                 action = {"Action": "Complete", **task.res_relation_check}  # Prevent the Action is None
-            else:
-                try:
-                    bounds = ui_data.elements[int(action['Element Id'])]['bounds']
-                    centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-                    action['Coordinate'] = centroid
-                    action['ElementBounds'] = bounds
-                except Exception as e:
-                    print(action)
-                    raise e
+            try:
+                bounds = ui_data.elements[int(action['Element Id'])]['bounds']
+                centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+                action['Coordinate'] = centroid
+                action['ElementBounds'] = bounds
+            except Exception as e:
+                print(action)
+                raise e
         task.actions.append(action)
         return action
