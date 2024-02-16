@@ -235,9 +235,9 @@ def test_device():
     # wm = device.get_device_resolution()
     # print(wm)
 
-    # print(device.get_app_list_on_the_device())
-    device.launch_app('com.android.settings')
-    print(device.get_current_package_and_activity_name())
+    print(device.get_app_list_on_the_device())
+    # device.launch_app('com.android.settings')
+    # print(device.get_current_package_and_activity_name())
     # print(device.get_device())
     # print(device.get_device_name())
     # print(device.check_keyboard_active())
@@ -475,7 +475,7 @@ if __name__ == '__main__':
     # test_googleplay()
     # test_appmanager()
 
-    # test_device()
+    test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
@@ -483,4 +483,4 @@ if __name__ == '__main__':
 
     # test_app_list()
     # test_tasklist()
-    test_uichecker()
+    # test_uichecker()

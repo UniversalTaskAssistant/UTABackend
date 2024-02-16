@@ -99,7 +99,8 @@ def task_declaration(msg, max_try=20):
             elif (dec.get('State') and 'match' in dec['State'].lower() or
                      dec.get('State') is None and 'match' in str(dec).lower()):
                 print(dec)
-                msg = dec["RelatedTasks"][0]
+                # msg = dec["RelatedTasks"][0]
+                msg = input('Input your Task:')
             else:
                 raise ValueError(f"illegal condition: {dec}")
         except Exception as e:
@@ -166,7 +167,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user17'
+user_id = 'user18'
 # init device
 device = Device()
 device.connect()
@@ -180,7 +181,7 @@ for task_idx, task in enumerate(task_list3):
     # if task_idx not in [0, 9, 13, 21, 24, 25, 26, 27, 28, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 51, 53, 54, 55,
     #                     56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 72, 81, 82, 83, 85, 86, 87, 89, 92, 93, 95]:
     #     continue
-    if task_idx not in [0]:
+    if task_idx not in [19]:
         continue
     # if task_idx < 3:
     #     continue
@@ -189,7 +190,7 @@ for task_idx, task in enumerate(task_list3):
     task_id = f"task{task_idx + 1}"
 
     # task declaration
-    task_declaration(task, max_try=10)
+    # task_declaration(task, max_try=10)
 
     # task automation
     device.go_homepage()

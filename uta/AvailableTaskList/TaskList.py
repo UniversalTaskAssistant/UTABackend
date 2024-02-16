@@ -11,8 +11,8 @@ class TaskList:
                                     'Hide/show name when calling', 'Stop my phone from receiving calls, texts, or emails', 'Add contact information to the lock screen',
                                     'Block/unblock a number', 'Take a photo using Camera',
                                     'Use a photo as background', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
-                                    'Access Gmail App', 'Open and view files', 'Share a file from Files app']
-        self.app_list = ['Android Settings'] * 18 + ['Dialer'] + ["Phone Camera"] + ["Google Photo"] * 5 + ["Gmail"] + ["Android documents"] * 2
+                                    'Access Gmail App', 'Open and view files', 'Share a file from Files app', 'Start a new meeting using Zoom', 'Join a meeting using Zoom', 'Schedule a meeting using Zoom']
+        self.app_list = ['Android Settings'] * 18 + ['Dialer'] + ["Phone Camera"] + ["Google Photo"] * 5 + ["Gmail"] + ["Android documents"] * 2 + ["Zoom"] * 3
         self.step_list = ["Open Settings > search Lock > tap Screen lock option > tap Screen lock > tap PIN > the task is Almost Completed and STOP THE TASK.",
                           "Open Settings > search Lock > tap Screen lock option > tap Screen lock > tap PIN > the task is Almost Completed and STOP THE TASK.",
                           "Open Settings > search Fingerprint > tap related option > the task is Almost Completed and STOP THE TASK.",
@@ -40,7 +40,10 @@ class TaskList:
                           "Open Google Photos app  > Sign in to your Google Account > Select a photo, album or video > the task is Almost Completed and STOP THE TASK.",
                           "Open Gmail",
                           "Open Files",
-                          "Open Files > click the File > Tap the more options > the task is Almost Completed and STOP THE TASK."]
+                          "Open Files > click the File > Tap the more options > the task is Almost Completed and STOP THE TASK.",
+                          "Open Zoom > sign in/sign up if needed > click New Meeting ImageView > click Start a meeting > the task is Almost Completed and STOP THE TASK.",
+                          "Open Zoom > sign in/sign up if needed > click Join ImageView > click Join button > the task is Almost Completed and STOP THE TASK.",
+                          "Open Zoom > sign in/sign up if needed > click Schedule ImageView > click Done > the task is Almost Completed and STOP THE TASK."]
 
         self.__system_prompt_task_match = 'You are an Android mobile assistant, you can only perform the following list of tasks:\n' + str(self.available_task_list) + '\n'\
                                'Given a user intention, try to select 3 most related tasks that match the user intention.\n' \
