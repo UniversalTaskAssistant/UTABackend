@@ -84,6 +84,14 @@ class UTA:
         """
         return self.task_list.available_task_list
 
+    def fetch_task_info_list(self):
+        """
+        Fetch the info of current available task list
+        Return:
+            task_info_list (list): list of task descriptions (string)
+        """
+        return self.task_list.task_info_list
+
     def declare_task(self, user_id, task_id, user_msg):
         """
         Declare the task.

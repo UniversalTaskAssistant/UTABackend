@@ -13,6 +13,16 @@ class TaskList:
                                     'Use a photo as background', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
                                     'Access Gmail App', 'Open and view files', 'Share a file from Files app', 'Start a new meeting using Zoom', 'Join a meeting using Zoom', 'Schedule a meeting using Zoom',
                                     'Send greetings to my friend Mulong via Whatsapp']
+        self.task_info_list = [('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
+                               ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
+                               ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
+                               ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
+                               ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
+                               ('Communications', 'Feasible'), ('Photography', 'Feasible'),
+                               ('Photography', 'Feasible'), ('Photography', 'Feasible'), ('Photography', 'Feasible'), ('Photography', 'Feasible'), ('Photography', 'Feasible'),
+                               ('Business', 'Feasible'), ('Tools', 'Feasible'), ('Tools', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'),
+                               ('Social', 'Feasible'),]
+
         self.app_list = ['Android Settings'] * 18 + ['Dialer'] + ["Phone Camera"] + ["Google Photo"] * 5 + ["Gmail"] + ["Android documents"] * 2 + ["Zoom"] * 3 + ["Whatsapp"]
         self.step_list = ["Open Settings > search Lock > tap Screen lock option > tap Screen lock > tap PIN > the task is Almost Completed and STOP THE TASK.",
                           "Open Settings > search Lock > tap Screen lock option > tap Screen lock > tap PIN > the task is Almost Completed and STOP THE TASK.",
