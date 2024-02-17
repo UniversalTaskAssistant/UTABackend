@@ -57,7 +57,7 @@ class UTA:
         task = self.system_connector.load_task(user_id=user_id, task_id=task_id)
         # if the task does not exist, creat a new one within the user's folder
         if not task:
-            task = Task(task_id=task_id, user_id=user_id)
+            task = Task(task_id=task_id, user_id=user_id, task_description=user_msg)
         else:
             if user_msg:
                 if task.res_task_match.get('State') and 'related' in task.res_task_match['State'].lower() or \
@@ -65,7 +65,6 @@ class UTA:
                     task.clarification_user_msg = user_msg
                 else:
                     task.selected_task = user_msg
-                    task.task_description = user_msg
                     task.involved_app = self.task_list.app_list[self.task_list.available_task_list.index(user_msg)]
                     task.step_hint = self.task_list.step_list[self.task_list.available_task_list.index(user_msg)]
         self.cur_user = user

@@ -153,7 +153,7 @@ class _TaskUIChecker:
             print('* Check UI and Task Relation *')
             # Format base prompt
             prompt = self.wrap_task_context(task)
-            prompt += self.__relation_prompt.format(task=task.task_description)
+            prompt += self.__relation_prompt.format(task=task.selected_task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_relation_check = self.transfer_to_dict(resp)
@@ -176,7 +176,7 @@ class _TaskUIChecker:
         try:
             print('* Check UI Action and Target Element *')
             # Format base prompt
-            prompt = self.__action_prompt.format(task=task.task_description)
+            prompt = self.__action_prompt.format(task=task.selected_task)
             # prompt += self.wrap_task_history(task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
@@ -200,7 +200,7 @@ class _TaskUIChecker:
         try:
             print('* Check Any Action to Go Back to Related UI *')
             # Format base prompt
-            prompt = self.__back_prompt.format(task=task.task_description)
+            prompt = self.__back_prompt.format(task=task.selected_task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_go_back_check = self.transfer_to_dict(resp)
