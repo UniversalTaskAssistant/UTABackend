@@ -12,7 +12,7 @@ class TaskList:
                                     'Block/unblock a number', 'Take a photo using Camera',
                                     'Use a photo as background', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
                                     'Access Gmail App', 'Open and view files', 'Share a file from Files app', 'Start a new meeting using Zoom', 'Join a meeting using Zoom', 'Schedule a meeting using Zoom',
-                                    'Send greetings to my friend Mulong via Whatsapp']
+                                    'Send greetings to my friend via Whatsapp']
         self.task_info_list = [('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
                                ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
                                ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
@@ -28,7 +28,7 @@ class TaskList:
                                     'Create a pin for the device', 'Create the fingerprint for device', 'Change the ringtone', 'Make the text size of device bigger/smaller', 'Change the date',
                                     'Use a photo as background', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
                                     'Start a new meeting using Zoom', 'Join a meeting using Zoom', 'Schedule a meeting using Zoom', 'View an email', 'Tag an email', 'Delete an email',
-                                    'Send greetings to my friend Mulong via Whatsapp', 'Do voice calls to Mulong via Whatsapp', 'Create groups in Whatsapp', 'Adjust privacy features in Whatsapp']
+                                    'Send greetings to my friend via Whatsapp', 'Do voice calls to Mulong via Whatsapp', 'Create groups in Whatsapp', 'Adjust privacy features in Whatsapp']
         self.hard_code_task_info_list = [('Communications', 'Infeasible'), ('Communications', 'Infeasible'), ('Communications', 'Infeasible'), ('Communications', 'Infeasible'), ('Communications', 'Feasible'),
                                          ('Tools', 'Infeasible'), ('Tools', 'Infeasible'), ('Tools', 'Infeasible'), ('Tools', 'Feasible'), ('Tools', 'Feasible'),
                                          ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
