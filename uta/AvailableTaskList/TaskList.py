@@ -23,6 +23,19 @@ class TaskList:
                                ('Business', 'Feasible'), ('Tools', 'Feasible'), ('Tools', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'),
                                ('Social', 'Feasible'),]
 
+        self.hard_code_task_list = ['Create a new contact', 'Edit a contact', 'Export contacts', 'Create contact group', 'Block/unblock a number',
+                                    'Delete downloaded file', 'Move file to another categories', 'Back up files to Cloud Storage', 'Open and view files', 'Share a file from Files app',
+                                    'Create a pin for the device', 'Create the fingerprint for device', 'Change the ringtone', 'Make the text size of device bigger/smaller', 'Change the date',
+                                    'Use a photo as background', 'View a photo using Google Photo', 'Delete a photo using Google Photo', 'Edit a photo using Google Photo', 'Share a photo using Google Photo',
+                                    'Start a new meeting using Zoom', 'Join a meeting using Zoom', 'Schedule a meeting using Zoom', 'View an email', 'Tag an email', 'Delete an email',
+                                    'Send greetings to my friend Mulong via Whatsapp', 'Do voice calls to Mulong via Whatsapp', 'Create groups in Whatsapp', 'Adjust privacy features in Whatsapp']
+        self.hard_code_task_info_list = [('Communications', 'Infeasible'), ('Communications', 'Infeasible'), ('Communications', 'Infeasible'), ('Communications', 'Infeasible'), ('Communications', 'Feasible'),
+                                         ('Tools', 'Infeasible'), ('Tools', 'Infeasible'), ('Tools', 'Infeasible'), ('Tools', 'Feasible'), ('Tools', 'Feasible'),
+                                         ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
+                                         ('Photography', 'Feasible'), ('Photography', 'Feasible'), ('Photography', 'Feasible'), ('Photography', 'Feasible'), ('Photography', 'Feasible'),
+                                         ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Infeasible'), ('Business', 'Infeasible'),
+                                         ('Social', 'Feasible'), ('Social', 'Infeasible'), ('Social', 'Infeasible'), ('Social', 'Infeasible'), ]
+
         self.app_list = ['Android Settings'] * 18 + ['Dialer'] + ["Phone Camera"] + ["Google Photo"] * 5 + ["Gmail"] + ["Android documents"] * 2 + ["Zoom"] * 3 + ["Whatsapp"]
         self.step_list = ["Open Settings > search Lock > tap Screen lock option > tap Screen lock > tap PIN > the task is Almost Completed and STOP THE TASK.",
                           "Open Settings > search Lock > tap Screen lock option > tap Screen lock > tap PIN > the task is Almost Completed and STOP THE TASK.",
