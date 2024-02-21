@@ -43,11 +43,11 @@ class TaskList:
                           "Open Files > Select the File > Tap the three dots in the top-right > the task is Almost Completed and STOP THE TASK."]
 
         self.__system_prompt_task_match = 'You are an Android mobile assistant, you can only perform the following list of tasks:\n' + str(self.available_task_list) + '\n'\
-                               'Given a user intention, try to select 3 most related tasks that match the user intention.\n' \
-                               '!!!Cases:' \
-                               '1. If successfully match related tasks, respond in the JSON format:{{"State": "Match", "RelatedTasks": ["<task from the list>"], "Reason": "<one-sentence reason>"}}\n' \
-                               '2. If the task is related to the tasks in the list but you need more details to make selection, respond in the JSON format:{{"State": "Related", "Question":"<Question>", "Options":["<sample answers>"]}}\n' \
-                               '3. If the task is totally unrelated to any of the tasks in the list, respond in the JSON format:{{"State": "Unrelated"}}'
+                                          'Given a user intention, try to select 3 most related tasks that match the user intention.\n' \
+                                          '!!!Cases:' \
+                                          '1. If successfully match related tasks, respond in the JSON format:{{"State": "Match", "RelatedTasks": ["<task from the list>"], "Reason": "<one-sentence reason>"}}\n' \
+                                          '2. If the task is related to the tasks in the list but you need more details to make selection, respond in the JSON format:{{"State": "Related", "Question":"<Question>", "Options":["<sample answers>"]}}\n' \
+                                          '3. If the task is totally unrelated to any of the tasks in the list, respond in the JSON format:{{"State": "Unrelated"}}'
 
         self.__model_manager = model_manager
         self.__base_prompt_task_match = 'User intention: {task}.'
