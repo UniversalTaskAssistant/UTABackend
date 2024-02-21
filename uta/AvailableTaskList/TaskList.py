@@ -37,7 +37,7 @@ class TaskList:
                                          ('Social', 'Feasible'), ('Social', 'Infeasible'), ('Social', 'Infeasible'), ('Social', 'Infeasible'), ]
 
         self.app_list = ['Android Settings'] * 18 + ['Dialer'] + ["Phone Camera"] + ["Google Photo"] * 5 + ["Gmail"] + ["Android documents"] * 2 + ["Zoom"] * 3 + ["Whatsapp"]
-        self.step_list = ["Tap search bar > search Lock > tap Screen lock Textview > tap Screen lock > tap PIN > the task is Almost Completed and STOP THE TASK.",
+        self.step_list = ["Tap search bar > search Lock > tap Screen lock Textview > tap Screen lock > when you see Numeric TextView, the task is Almost Completed and STOP THE TASK.",
                           "Open Settings > search Lock > tap Screen lock option > tap Screen lock > tap PIN > the task is Almost Completed and STOP THE TASK.",
                           "Open Settings > search Fingerprint > tap related option > the task is Almost Completed and STOP THE TASK.",
                           "Open Settings > search Fingerprint > tap related option > the task is Almost Completed and STOP THE TASK.",

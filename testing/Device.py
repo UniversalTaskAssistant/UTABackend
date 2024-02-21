@@ -150,7 +150,7 @@ class Device:
         Returns:
             A dictionary with 'package_name' and 'activity_name'.
         """
-        dumpsys_output = self.__adb_device.shell('dumpsys activity activities | grep mResumedActivity')
+        dumpsys_output = self.__adb_device.shell('dumpsys activity activities | grep ResumedActivity')
         package_and_activity = dumpsys_output.split('u0 ')[1].split('}')[0]
         package_name, activity_name = package_and_activity.split('/')
         print('Package name:', package_name, 'Activity name:', activity_name)
