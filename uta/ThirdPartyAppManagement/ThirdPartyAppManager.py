@@ -143,7 +143,7 @@ class ThirdPartyAppManager:
         try:
             print('* Check Related App *')
             # Format base prompt
-            prompt = self.__availability_check_prompt.format(task=task.task_description, app_list='; '.join(app_list))
+            prompt = self.__availability_check_prompt.format(task=task.selected_task, app_list='; '.join(app_list))
             if len(task.user_clarify) > 0:
                 prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + '.)\n'
             if len(task.subtasks) > 0:

@@ -10,17 +10,21 @@ class _TaskUIChecker:
         # Initialize the base prompt template
         self.__action_prompt = 'What is the appropriate action to the related element for proceeding the task in the current UI. \n' \
                                '!!!Action Options:\n' \
-                               '1. Click; 2.Input (Input text); 3.Scroll (Vertically scroll the element); 4.Swipe (Horizontally swipe the element); 5. None (The task is completed).\n' \
+                               '1. Click; 2.Input (Input text); 3.Scroll (Vertically scroll the element); 4.Swipe (Horizontally swipe the element); 5. None (The task is almost completed).\n' \
                                '!!!Notes:\n' \
                                '1. Respond only in this JSON format: {{"Action": "<type>", "Element Id": "<id>", "Input Text": "<text>", "Reason": "<why>"}}. \n' \
                                '2. The "Input Text" is the content of Input action, the Element Id is an integer. \n' \
                                '3. This UI has been proved as a related UI to the task, you have to choose one of the given actions.\n' \
                                '4. Ensure the chosen action supports the element (clickable to click or scrollable to scroll). \n' \
                                '5. Select "Input" only if the Keyboard is active; otherwise, first activate the keyboard by clicking a relevant element (e.g., input bar).\n' \
+                               '6. Delete the words in searching bar before next search trying. Use different words for searches conducted at different times.\n' \
+                               '7. Do NOT repeat previous actions as they have been tried.\n' \
+                               '8. If Action is "None", indicating the task is almost completed, you must provide the Element Id required for the final step and describe its operation in the Reason.' \
                                '!!!Examples:\n' \
                                '1. {{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}. \n' \
-                               '2. {{"Action": "Input", "Element Id": "4", "Input Text": "wallpaper", "Reason": "use word \"wallpaper\" to search ways of setting background."}}.\n' \
-                               '3. {{"Action": "Scroll", "Element Id": "3", "Reason": "Scroll down to view more elements"}}\n'
+                               '2. {{"Action": "Input", "Element Id": "4", "Input Text": "wallpaper", "Reason": "use word \"wallpaper\" to search ways of setting background"}}.\n' \
+                               '3. {{"Action": "Scroll", "Element Id": "3", "Reason": "Scroll down to view more elements"}}\n' \
+                               '4. {{"Action": "None", "Element Id": "5", "Reason": "Swipe the volume bar to finsh task \"Adjust volume\""}}\n'
 
         self.__back_prompt = 'Is there an element in the current UI that can be clicked to navigate back or close the current unrelated UI to proceed the task "{task}"? \n' \
                              '!!!Answer the following three questions:\n' \
@@ -42,13 +46,16 @@ class _TaskUIChecker:
                                  '3. Unrelated: This UI does not relate to the task or sub-tasks at all. \n' \
                                  '4. Almost Complete: This UI is the final page or the task can be completed with one more action, which should be performed manually by the user. This option should be selected if the next action directly completes the task (e.g., the final step to increase volume).\n' \
                                  '!!!Notes: \n' \
-                                 '1. If the relation is related, give the Element Id (int) of the related element, otherwise give "None" for the Element Id.\n' \
+                                 '1. If the relation is related/almost complete, give the Element Id (int) of the related element, otherwise give "None" for the Element Id.\n' \
                                  '2. Respond only in this JSON format: {{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<one-sentence reason>"}}.\n' \
                                  '3. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
                                  '4. If this UI has keyboard active or is about input content in the bar, mark this UI as "Directly related". \n' \
                                  '5. If in the previous step the search bar is clicked for searching things, mark this UI as "Directly related" to enter search keywords.\n' \
+                                 '6. Delete the words in searching bar before next search trying.\n' \
+                                 '7. Do NOT try to repeat previous actions as they have been tried.\n' \
+                                 '8. If Relation is "Almost Complete", you must provide the Element Id required for the final step and describe its operation in the Reason.' \
                                  '!!!Output Examples: \n' \
-                                 '{{"Relation": "Indirectly related", "Element Id": 2, "Reason": "The current UI has a search bar to search for "Turn on voice"."}}.\n'
+                                 '{{"Relation": "Indirectly related", "Element Id": 2, "Reason": "The current UI has a search bar to search for \"Turn on voice\""}}.\n'
 
     '''
     **************
@@ -146,7 +153,7 @@ class _TaskUIChecker:
             print('* Check UI and Task Relation *')
             # Format base prompt
             prompt = self.wrap_task_context(task)
-            prompt += self.__relation_prompt.format(task=task.task_description)
+            prompt += self.__relation_prompt.format(task=task.selected_task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_relation_check = self.transfer_to_dict(resp)
@@ -169,8 +176,8 @@ class _TaskUIChecker:
         try:
             print('* Check UI Action and Target Element *')
             # Format base prompt
-            prompt = self.__action_prompt.format(task=task.task_description)
-            prompt += self.wrap_task_history(task)
+            prompt = self.__action_prompt.format(task=task.selected_task)
+            # prompt += self.wrap_task_history(task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_action_check = self.transfer_to_dict(resp)
@@ -193,7 +200,7 @@ class _TaskUIChecker:
         try:
             print('* Check Any Action to Go Back to Related UI *')
             # Format base prompt
-            prompt = self.__back_prompt.format(task=task.task_description)
+            prompt = self.__back_prompt.format(task=task.selected_task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_go_back_check = self.transfer_to_dict(resp)

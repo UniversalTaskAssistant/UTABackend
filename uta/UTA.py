@@ -57,10 +57,7 @@ class UTA:
         task = self.system_connector.load_task(user_id=user_id, task_id=task_id)
         # if the task does not exist, creat a new one within the user's folder
         if not task:
-            task = Task(task_id=task_id, user_id=user_id)
-            # set the user message as the task description for a new task
-            if user_msg:
-                task.task_description = user_msg
+            task = Task(task_id=task_id, user_id=user_id, task_description=user_msg)
         else:
             if user_msg:
                 if task.res_task_match.get('State') and 'related' in task.res_task_match['State'].lower() or \
@@ -85,7 +82,15 @@ class UTA:
         Return:
             available_task_list (list): list of task descriptions (string)
         """
-        return self.task_list.available_task_list
+        return self.task_list.available_task_list, self.task_list.task_info_list
+
+    def fetch_hardcode_task_list(self):
+        """
+        Fetch the hard code task list
+        Return:
+            hard_code_task_list (list): list of task descriptions (string)
+        """
+        return self.task_list.hard_code_task_list, self.task_list.hard_code_task_info_list
 
     def declare_task(self, user_id, task_id, user_msg):
         """
