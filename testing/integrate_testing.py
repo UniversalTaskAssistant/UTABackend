@@ -167,7 +167,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user20'
+user_id = 'user26'
 # init device
 device = Device()
 device.connect()
@@ -180,8 +180,8 @@ uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 for task_idx, task in enumerate(task_list3):
     # if task_idx not in [0, 9, 13, 21, 24, 25, 26, 27, 28, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 51, 53, 54, 55,
     #                     56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 72, 81, 82, 83, 85, 86, 87, 89, 92, 93, 95]:
-    #     continue
-    if task_idx not in [22]:
+    #     continue![](../data/user20 - Copy/task1/0_annotated.png)
+    if task_idx in [0, 22]:
         continue
     # if task_idx < 3:
     #     continue

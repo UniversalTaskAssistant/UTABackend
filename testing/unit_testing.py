@@ -232,8 +232,8 @@ def test_device():
     # print(device.is_connected())
     device.connect()
 
-    # wm = device.get_device_resolution()
-    # print(wm)
+    wm = device.get_device_resolution()
+    print(wm)
 
     print(device.get_app_list_on_the_device())
     # device.launch_app('com.android.settings')
