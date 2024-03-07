@@ -90,7 +90,7 @@ class UTA:
         Return:
             hard_code_task_list (list): list of task descriptions (string)
         """
-        return self.task_list.hard_code_task_list, self.task_list.hard_code_task_info_list
+        return self.task_list.available_task_list, self.task_list.task_info_list
 
     def declare_task(self, user_id, task_id, user_msg):
         """

@@ -49,6 +49,9 @@ html_template = """
     <th>Task</th>
     <th>Task Type</th>
     <th>Sub-Tasks</th>
+    <th>Involved App</th>
+    <th>Involved Package</th>
+    <th>Step Hint</th>
     <th>Fail</th>
     <th>Records</th>
   </tr>
@@ -61,6 +64,9 @@ html_template = """
       <td rowspan="3">{{data['task']}}</td>
       <td rowspan="3">{{data['task_type']}}</td>
       <td rowspan="3">{{data['subtasks']}}</td>
+      <td rowspan="3">{{data['involved_app']}}</td>
+      <td rowspan="3">{{data['involved_app_package']}}</td>
+      <td rowspan="3">{{data['step_hint']}}</td>
       <td rowspan="3"><input type="radio" onclick="togglePink(this.parentNode)"></td>
       <!-- Loop for conversation assistant -->
       {% for (conv_id, conversation) in data['conversation_clarification']|dictsort %}
@@ -86,7 +92,7 @@ html_template = """
 </html>
 """
 
-user_id = 'user8'
+user_id = 'user28'
 directories = {}
 for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
     task_dir_name = os.path.basename(task_dir)
@@ -99,6 +105,9 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
         data['task'] = task_json['task_description']
         data['task_type'] = task_json['task_type']
         data['subtasks'] = str(task_json['subtasks'])
+        data['involved_app'] = task_json['involved_app']
+        data['involved_app_package'] = task_json['involved_app_package']
+        data['step_hint'] = task_json['step_hint']
         data['conversation_clarification'] = {}
 
         for i in range(0, len(task_json['conversation_clarification']) - 1, 2):
