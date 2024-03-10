@@ -50,8 +50,11 @@ html_template = """
     <th>Task</th>
     <th>Task Type</th>
     <th>Sub-Tasks</th>
+    <th>Involved App</th>
+    <th>Involved Package</th>
+    <th>Step Hint</th>
     <th>Fail</th>
-    <th colspan="20">Records</th>
+    <th>Records</th>
   </tr>
 
   <!-- Loop over tasks -->
@@ -61,6 +64,9 @@ html_template = """
       <td rowspan="3">{{data['task']}}</td>
       <td rowspan="3">{{data['task_type']}}</td>
       <td rowspan="3">{{data['subtasks']}}</td>
+      <td rowspan="3">{{data['involved_app']}}</td>
+      <td rowspan="3">{{data['involved_app_package']}}</td>
+      <td rowspan="3">{{data['step_hint']}}</td>
       <td rowspan="3"><input type="radio" onclick="togglePink(this.parentNode)"></td>
       {% for (key, screenshot) in data['screenshot']|dictsort %}
         <td>
@@ -73,8 +79,7 @@ html_template = """
       {% for (key, screenshot) in data['screenshot']|dictsort %}
         <td>
           <input type="radio" onclick="togglePink(this.parentNode)">
-          <p>Relation: {{screenshot['info']['rel']}}</p>
-          <p>Action: {{screenshot['info']['act']}}</p>
+          <p>Relation & Action: {{screenshot['info']['rel']}}</p>
         </td>
       {% endfor %}
     </tr>
@@ -91,7 +96,7 @@ html_template = """
 """
 
 
-user_id = 'user31'
+user_id = 'user32'
 directories = {}
 for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
     task_dir_name = os.path.basename(task_dir)
@@ -118,8 +123,7 @@ for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
                 img_name = os.path.basename(one_img)
                 idx_key = int(img_name.split('_')[0])
                 img_path = f".{one_img.split(user_id)[-1]}"
-                data['screenshot'][idx_key] = {'img': img_path, 'info': {'rel': str(task_json['relations'][idx_key]),
-                                                                        'act': str(task_json['actions'][idx_key])}}
+                data['screenshot'][idx_key] = {'img': img_path, 'info': {'rel': str(task_json['relations'][idx_key])}}
             except:
                 break
 

@@ -222,6 +222,8 @@ class Device:
             self.input_text(action['Input Text'])
         elif 'launch' in action_type:
             self.launch_app(action['App'])
+        elif 'back' in action_type:
+            self.go_back()
         else:
             raise ValueError(f"No expected action returned from model, returned action: {action_type}")
 

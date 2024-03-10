@@ -8,51 +8,43 @@ class _TaskUIChecker:
         self.__model_manager = model_manager
 
         # Initialize the base prompt template
-        self.__action_prompt = 'What is the appropriate action to the related element for proceeding the task in the current UI. \n' \
-                               '!!!Action Options:\n' \
-                               '1. Click; 2.Input (Input text); 3.Scroll (Vertically scroll the element); 4.Swipe (Horizontally swipe the element); 5. None (The task is almost completed).\n' \
-                               '!!!Notes:\n' \
-                               '1. Respond only in this JSON format: {{"Action": "<type>", "Element Id": "<id>", "Input Text": "<text>", "Reason": "<why>"}}. \n' \
-                               '2. The "Input Text" is the content of Input action, the Element Id is an integer. \n' \
-                               '3. This UI has been proved as a related UI to the task, you have to choose one of the given actions.\n' \
-                               '4. Delete the words in searching bar before next search trying. Use different words for searches conducted at different times.\n' \
-                               '5. Do NOT repeat previous actions as they have been tried.\n' \
-                               '6. If Action is "None", indicating the task is almost completed, you must provide the Element Id required for the final step and describe its operation in the Reason.' \
-                               '!!!Examples:\n' \
-                               '1. {{"Action": "Click", "Element Id": "3", "Reason": "Open Settings to access task settings"}}. \n' \
-                               '2. {{"Action": "Input", "Element Id": "4", "Input Text": "wallpaper", "Reason": "use word \"wallpaper\" to search ways of setting background"}}.\n' \
-                               '3. {{"Action": "Scroll", "Element Id": "3", "Reason": "Scroll down to view more elements"}}\n' \
-                               '4. {{"Action": "None", "Element Id": "5", "Reason": "Swipe the volume bar to finsh task \"Adjust volume\""}}\n'
-
-        self.__back_prompt = 'Is there an element in the current UI that can be clicked to navigate back or close the current unrelated UI to proceed the task "{task}"? \n' \
-                             '!!!Answer the following three questions:\n' \
-                             '1. "Yes" or "No" - whether such a go-back/close element exists. \n' \
-                             '2. Element Id - provide the ID if "Yes", else "None". \n' \
-                             '3. Reason - a brief explanation. \n' \
-                             '!!!Notes: \n' \
-                             '- ONLY use this JSON format to provide your answer: {{"Can": "<Yes or No>", "Element Id": "<ID or None>", "Reason": "<description>"}}.\n' \
-                             '- Select a clickable element from the UI hierarchy. \n' \
-                             '- If not None, then Element Id must be an integer.\n' \
-                             '!!!Examples: \n' \
-                             '1. {{"Can": "Yes", "Element Id": 2, "Reason": "Navigates to the previous screen"}}.\n' \
-                             '2. {{"Can": "No", "Element Id": "None", "Reason": "No back button present, please search youtube for video watching"}}.\n'
-
-        self.__relation_prompt = 'What is the relation between this UI and the task "{task}" and why? ' \
+        self.__relation_prompt = 'What is the relation between this UI and the task "{task}" and why?\n' \
                                  '!!!Relation Options:\n'\
-                                 '1. Directly related: This UI contains a clickable/scrollable/swipeable element directly related to proceeding the task but has not reached the final page for the task. \n' \
-                                 '2. Indirectly related: This UI presents no directly related element to the task, but it has some elements leads to a related UI or elements for the task (e.g., Option button, search bar). \n' \
-                                 '3. Unrelated: This UI does not relate to the task or sub-tasks at all. \n' \
-                                 '4. Almost Complete: This UI is the final page or the task can be completed with one more action, which should be performed manually by the user. This option should be selected if the next action directly completes the task (e.g., the final step to increase volume).\n' \
-                                 '!!!Notes: \n' \
-                                 '1. If the relation is related/almost complete, give the Element Id (int) of the related element, otherwise give "None" for the Element Id.\n' \
-                                 '2. Respond only in this JSON format: {{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<one-sentence reason>"}}.\n' \
-                                 '3. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
-                                 '4. Delete all the words in searching bar before start a new search trying.\n' \
-                                 '5. Do NOT try to repeat previous actions as they have been tried.\n' \
-                                 '6. If Relation is "Almost Complete", you must provide the Element Id required for the final step and describe its operation in the Reason.' \
-                                 '!!!Output Examples: \n' \
-                                 '{{"Relation": "Indirectly related", "Element Id": 2, "Reason": "The current UI has a search bar to search for \"Turn on voice\""}}.\n'
-
+                                 '1. Almost Complete: The UI is at the final stage, with only one action left to complete the task. This status applies if the next action directly concludes the task (e.g., finalizing a setting adjustment).\n' \
+                                 '2. Directly related: The UI contains elements (clickable, scrollable, swipeable) that are essential for advancing the task, but it isn\'t the task\'s final step.\n' \
+                                 '3. Indirectly related: Although the UI doesn\'t have direct elements for the task, it includes elements that lead to the relevant UI or task (e.g., a settings button, search bar).\n' \
+                                 '4. Unrelated: The UI is irrelevant to the task or any sub-tasks.\n' \
+                                 '!!!Notes:\n' \
+                                 '- For Almost Complete, include the element ID for the final action and a brief reason.\n' \
+                                 '- For Directly or Indirectly Related, check if the UI contains:\n' \
+                                 '-- UI Modal: Overlay windows (e.g., alerts, confirmations).\n' \
+                                 '-- User Permission: Permissions request dialogs.\n' \
+                                 '-- Login Page: Login requirements.\n' \
+                                 '-- Form: Personal data input forms.\n' \
+                                 '-- If present, describe the component, provide a reason, and specify the user\'s required action.\n' \
+                                 '- For Unrelated scenarios, try to find which element in the current UI can be clicked to navigate back or close the current unrelated UI to proceed the task, suggest "Back" as the action.\n\n' \
+                                 'Response Format:\n' \
+                                 '1. If Almost Complete, use:\n' \
+                                 '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>"}}\n' \
+                                 '2. If Directly or Indirectly Related and components are present, use:\n' \
+                                 '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>", "Component": "<component>", "Explanation": "<explanation>", "Required action": "<action>"}}\n' \
+                                 '3. If Directly or Indirectly Related without specific components, specify the action to proceed (Click, Input, Scroll, Swipe) and, if applicable, the input text:\n' \
+                                 '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>", "Action": "<type>", "Input Text": "<text>"}}\n' \
+                                 '4. If Unrelated, use:\n' \
+                                 '{{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<reason>", "Action": "Back"}}\n\n' \
+                                 'Examples:\n' \
+                                 '- Indirectly Related with User Permission Component:\n' \
+                                 '{{"Relation": "Indirectly related", "Element Id": "2", "Reason": "The UI has a search bar to find \'Turn on voice\'", "Component": "User Permission", "Explanation": "Asks for photo access permission", "Required action": "Allow or deny"}}\n' \
+                                 '- Directly Related with Action:\n' \
+                                 '{{"Relation": "Directly related", "Element Id": "3", "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click"}}\n' \
+                                 '- Unrelated with Back Action:\n' \
+                                 '{{"Relation": "Unrelated", "Element Id": "3", "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n\n' \
+                                 '!!!Additional Notes:\n' \
+                                 '1. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
+                                 '2. Delete all the words in searching bar before start a new search trying.\n' \
+                                 '3. Do NOT try to repeat previous actions as they have been tried.\n' \
+                                 '4. If the relation is related/almost complete, give the Element Id (int) of the related element\n' \
+                                 '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n'
     '''
     **************
     *** Basics ***
@@ -75,20 +67,6 @@ class _TaskUIChecker:
         #     prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + ')\n'
         # if len(task.subtasks) > 0:
         #     prompt += '(Potential subtasks and steps to complete the task: ' + str(task.subtasks) + '.)\n'
-        return prompt
-
-    @staticmethod
-    def wrap_task_history(task):
-        """
-        Wrap up task info to put in the fm prompt
-        Args:
-            task (Task)
-        Return:
-            prompt (str): The wrapped prompt
-        """
-        prompt = ''
-        if len(task.actions) > 0:
-            prompt += '!!!Action history for this task - MUST NOT REPEAT PREVIOUS ACTIONS:\n ' + str(task.actions) + '.\n'
         return prompt
 
     @staticmethod
@@ -155,53 +133,6 @@ class _TaskUIChecker:
             task.res_relation_check = self.transfer_to_dict(resp)
             print(task.res_relation_check)
             return task.res_relation_check
-        except Exception as e:
-            print(resp)
-            raise e
-
-    def check_element_action(self, ui_data, task, printlog=False):
-        """
-        Determines the appropriate action and target element in the UI for a given task.
-        Args:
-            ui_data (UIData): UI data
-            task (Task): Task object containing task description for which back navigation is being checked.
-            printlog (bool): If True, enables logging of outputs.
-        Returns:
-            FM response (dict): {"Action":"Input", "Element Id":3, "Description":, "Reason":, "Input Text": "Download Trump"}
-        """
-        try:
-            print('* Check UI Action and Target Element *')
-            # Format base prompt
-            prompt = self.__action_prompt.format(task=task.selected_task)
-            # prompt += self.wrap_task_history(task)
-            # Ask FM
-            resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-            task.res_action_check = self.transfer_to_dict(resp)
-            print(task.res_action_check)
-            return task.res_action_check
-        except Exception as e:
-            print(resp)
-            raise e
-
-    def check_ui_go_back_availability(self, ui_data, task, printlog=False):
-        """
-        Checks if there is an element in the UI that can be clicked to navigate back in relation to a given task.
-        Args:
-            ui_data (UIData): UI data
-            task (Task): Task object containing task description for which back navigation is being checked.
-            printlog (bool): If True, enables logging of outputs.
-        Returns:
-            FM response (dict): {"Can":"Yes", "Element Id": 2, "Reason":, "Description":"Click on the "go back" element"}
-        """
-        try:
-            print('* Check Any Action to Go Back to Related UI *')
-            # Format base prompt
-            prompt = self.__back_prompt.format(task=task.selected_task)
-            # Ask FM
-            resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-            task.res_go_back_check = self.transfer_to_dict(resp)
-            print(task.res_go_back_check)
-            return task.res_go_back_check
         except Exception as e:
             print(resp)
             raise e

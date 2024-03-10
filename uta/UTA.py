@@ -76,6 +76,7 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
+
     def fetch_available_task_list(self):
         """
         Fetch the current available task list
@@ -125,6 +126,7 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
+
     def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
         """
         Process ui dato
@@ -165,33 +167,28 @@ class UTA:
 
             # 1. process ui
             ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
+            self.system_connector.save_ui_data(ui,
+                                               output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
 
             # 2. act step
             task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui(ui, task, printlog)
             # if not complete, check if the UI is user decision page
-            if action['Action'] != 'Complete':
-                # check user decision page
-                ui_check = self.ui_processor.check_ui_decision_page(ui)
-                if ui_check.get('Component') and 'none' not in ui_check['Component'].lower() or \
-                        ui_check.get('Component') is None and 'none' not in str(ui_check).lower():
-                    action = {"Action": "User Decision", **ui_check}
-                    task.relations.append({"Relation": "None", "Element Id": "None", "Reason": "None"})
-                    task.actions.append(action)
-                    return ui, action
-            # if the current UI is unrelated, search for other apps
-            if action['Action'] == 'Other App':
-                related_app = self.app_recommender.check_related_apps(task=task, app_list=user.app_list)
-                if related_app.get('App') and 'none' not in related_app['App'].lower() or \
-                        related_app.get('App') is None and 'none' not in str(related_app).lower():
-                    task.related_app = related_app
-                    action = {"Action": "Launch", "Description": "Launch app", **related_app}
-                else:
-                    action = {"Action": "Infeasible", "Description": "No related app installed.", **related_app}
-                task.actions[-1] = action  # we record the launch action here to instead "other app"
+            if action.get('Component'):
+                action = {"Action": "User Decision", **action}
+                return ui, action
 
+            # if go back and element id, click element
+            if action.get('Action') and action['Action'] == 'Back':
+                if action.get('Element Id') and 'none' not in action['Element Id'].lower() or \
+                        action.get('Element Id') is None and 'none' not in str(action).lower():
+                    action["Action"] = "Click"
+
+            # if complete
+            if action.get('Relation') and 'complete' in action['Relation'].lower() or \
+                        action.get('Relation') is None and 'complete' in str(action).lower():
+                action["Action"] = "Complete"
             self.system_connector.save_task(task)
             return ui, action
         except Exception as e:

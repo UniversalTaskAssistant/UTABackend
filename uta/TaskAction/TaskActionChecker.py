@@ -41,10 +41,11 @@ class TaskActionChecker:
         # Check ui task relation
         relation = self.__task_ui_checker.check_ui_relation(ui_data, task, printlog)
         task.relations.append(relation)
+        action = relation
         # [Complete] => Finish
-        if task.res_relation_check.get('Relation') and 'complete' in task.res_relation_check['Relation'].lower() or \
-                task.res_relation_check.get('Relation') is None and 'complete' in str(task.res_relation_check).lower():
-            action = {"Action": "Complete", **task.res_relation_check}
+        if task.res_relation_check.get('Relation') and 'unrelated' not in task.res_relation_check['Relation'].lower() or \
+                task.res_relation_check.get('Relation') is None and 'unrelated' not in str(task.res_relation_check).lower():
+
             try:
                 bounds = ui_data.elements[int(action['Element Id'])]['bounds']
                 centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
@@ -53,30 +54,4 @@ class TaskActionChecker:
             except Exception as e:
                 print(action)
                 raise e
-        # [Unrelated UI] => Check whether the ui can go back or check other app
-        elif task.res_relation_check.get('Relation') and 'unrelated' in task.res_relation_check['Relation'].lower() or \
-                task.res_relation_check.get('Relation') is None and 'unrelated' in str(task.res_relation_check).lower():
-            # 1. Check if it can go back to a related gui
-            go_back = self.__task_ui_checker.check_ui_go_back_availability(ui_data, task, printlog)
-            if task.res_go_back_check.get('Can') and 'yes' in task.res_go_back_check['Can'].lower() or \
-                    task.res_go_back_check.get('Can') is None and 'yes' in str(task.res_go_back_check).lower():
-                action = {"Action": "Click", **go_back}  # avoid to directly refer the key in response as not stable
-            # 2. Check if it can find another related app
-            else:
-                action = {"Action": "Other App", **go_back}
-        # [Related UI] => Check action
-        else:
-            action = self.__task_ui_checker.check_element_action(ui_data, task, printlog)
-            if (task.res_action_check.get('Action') and 'none' in task.res_action_check['Action'].lower() or
-                    task.res_action_check.get('Action') is None and 'none' in str(task.res_action_check).lower()):
-                action = {"Action": "Complete", **task.res_relation_check}  # Prevent the Action is None
-            try:
-                bounds = ui_data.elements[int(action['Element Id'])]['bounds']
-                centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-                action['Coordinate'] = centroid
-                action['ElementBounds'] = bounds
-            except Exception as e:
-                print(action)
-                raise e
-        task.actions.append(action)
         return action

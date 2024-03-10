@@ -37,11 +37,8 @@ class Task(_Data):
         # Only used when task automation
         self.conversation_automation = []   # List of conversations that occurred during multiple turns of task automation.
         self.res_relation_check = dict()
-        self.res_action_check = dict()
-        self.res_go_back_check = dict()
         self.relations = []                 # List of relations associated with this task.
         self.except_elements_ids = []       # List of except elements that have been tried and proved to be not related to the task
-        self.actions = []                   # List of step objects associated with this task.
         self.step_hint = None
 
         # App recommendation
