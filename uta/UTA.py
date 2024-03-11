@@ -167,8 +167,7 @@ class UTA:
 
             # 1. process ui
             ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-            self.system_connector.save_ui_data(ui,
-                                               output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
+            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
 
             # 2. act step
             task.conversation_automation = []  # clear up the conversation of previous ui
