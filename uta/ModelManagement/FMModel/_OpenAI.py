@@ -61,11 +61,14 @@ class _OpenAI:
             if printlog:
                 print('*** Asking ***\n', conversation)
             resp = openai.chat.completions.create(model=self._model, messages=conversation, temperature=0.0, seed=42)
+            if runtime:
+                usage = resp.usage
+                prompt_tokens = usage.prompt_tokens
+                completion_tokens = usage.completion_tokens
+                print(f"[Request cost - ${'{0:.4f}'.format(prompt_tokens / 1000 * 0.01 + completion_tokens / 1000 * 0.03)}] ",
+                      f"[Run time - {'{:.3f}s'.format(time.time() - start)}]")
             resp = dict(resp.choices[0].message)
             msg = {'role': resp['role'], 'content': resp['content']}
-            if runtime:
-                # as we directly add msg to task.conversation, we cannot add attributes, so just print here
-                print('Runtime: ', '{:.3f}s'.format(time.time() - start))
             if printlog:
                 print('\n*** Answer ***\n', msg, '\n')
             return msg
@@ -146,8 +149,8 @@ class _OpenAI:
 
 
 if __name__ == '__main__':
-    # llm = _OpenAI(model='gpt-3.5-turbo')
-    # llm.send_openai_prompt(prompt='What app can I use to read ebooks?', printlog=True, runtime=False)
+    llm = _OpenAI(model='gpt-3.5-turbo')
+    llm.send_openai_prompt(prompt='What app can I use to read ebooks?', printlog=True, runtime=True)
 
-    fm = _OpenAI()
-    print(fm.send_gpt4_vision_img_paths(prompt='what are in the images?', img_paths=['1.png']))
+    # fm = _OpenAI()
+    # print(fm.send_gpt4_vision_img_paths(prompt='what are in the images?', img_paths=['1.png']))
