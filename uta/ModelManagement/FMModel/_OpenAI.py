@@ -2,6 +2,8 @@ import openai
 import time
 import tiktoken
 from uta.config import *
+import base64
+import requests
 
 
 class _OpenAI:
@@ -9,7 +11,8 @@ class _OpenAI:
         """
         Initialize the Model with default settings.
         """
-        openai.api_key = open(WORK_PATH + 'uta/ModelManagement/FMModel/openaikey.txt', 'r').readline()
+        self.api_key = open(WORK_PATH + 'uta/ModelManagement/FMModel/openaikey.txt', 'r').readline()
+        openai.api_key = self.api_key
         self._model = model
 
     @staticmethod
@@ -58,18 +61,96 @@ class _OpenAI:
             if printlog:
                 print('*** Asking ***\n', conversation)
             resp = openai.chat.completions.create(model=self._model, messages=conversation, temperature=0.0, seed=42)
+            if runtime:
+                usage = resp.usage
+                prompt_tokens = usage.prompt_tokens
+                completion_tokens = usage.completion_tokens
+                print(f"[Request cost - ${'{0:.4f}'.format(prompt_tokens / 1000 * 0.01 + completion_tokens / 1000 * 0.03)}] ",
+                      f"[Run time - {'{:.3f}s'.format(time.time() - start)}]")
             resp = dict(resp.choices[0].message)
             msg = {'role': resp['role'], 'content': resp['content']}
-            if runtime:
-                # as we directly add msg to task.conversation, we cannot add attributes, so just print here
-                print('Runtime: ', '{:.3f}s'.format(time.time() - start))
             if printlog:
                 print('\n*** Answer ***\n', msg, '\n')
             return msg
         except Exception as e:
             raise e
 
+    '''
+    ********************
+    *** Vision Model ***
+    ********************
+    '''
+    def send_gpt4_vision_base64_imgs(self, prompt, base64_imgs):
+        """
+        Use gpt4-v to analyze base64 images
+        Args:
+            prompt (str): Prompt to ask questions
+            base64_imgs (list): List of base64 image(s)
+        Returns:
+            success (bool): False to indicate error
+            content (string): Response content
+        """
+        content = [{
+                "type": "text",
+                "text": prompt
+            }]
+        for base64_img in base64_imgs:
+            content.append({
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/jpeg;base64,{base64_img}"
+                }
+            })
+
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+        payload = {
+            "model": "gpt-4-vision-preview",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": content
+                }
+            ],
+            "max_tokens": 300
+        }
+        start = time.time()
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
+        if "error" not in response:
+            usage = response["usage"]
+            prompt_tokens = usage["prompt_tokens"]
+            completion_tokens = usage["completion_tokens"]
+            print(f"Request cost - ${'{0:.2f}'.format(prompt_tokens / 1000 * 0.01 + completion_tokens / 1000 * 0.03)}; ",
+                  f"Run time - {'{:.3f}s'.format(time.time() - start)}")
+        else:
+            return False, response["error"]["message"]
+        return True, response["choices"][0]["message"]["content"]
+
+    def send_gpt4_vision_img_paths(self, prompt, img_paths):
+        """
+        Read images as base64 and use gpt4-v to analyze images
+        Args:
+            prompt (str): Prompt to ask questions
+            img_paths (list of paths): List of image file path(s)
+        Returns:
+            success (bool): False to indicate error
+            content (string): Response content
+        """
+        def encode_image(image_path):
+            with open(image_path, "rb") as image_file:
+                return base64.b64encode(image_file.read()).decode('utf-8')
+
+        base64_imgs = []
+        for img_path in img_paths:
+            base64_imgs.append(encode_image(img_path))
+        return self.send_gpt4_vision_base64_imgs(prompt, base64_imgs)
+
 
 if __name__ == '__main__':
     llm = _OpenAI(model='gpt-3.5-turbo')
-    llm.send_openai_prompt(prompt='What app can I use to read ebooks?', printlog=True, runtime=False)
+    llm.send_openai_prompt(prompt='What app can I use to read ebooks?', printlog=True, runtime=True)
+
+    # fm = _OpenAI()
+    # print(fm.send_gpt4_vision_img_paths(prompt='what are in the images?', img_paths=['1.png']))

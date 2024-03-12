@@ -63,8 +63,7 @@ class ModelManager:
         Returns:
             message (dict): {'role':'assistant', 'content': '...'}
         """
-        return self.__fm_model.send_openai_prompt(prompt=prompt, system_prompt=system_prompt, printlog=printlog,
-                                                  runtime=runtime)
+        return self.__fm_model.send_openai_prompt(prompt=prompt, system_prompt=system_prompt, printlog=printlog, runtime=runtime)
 
     def send_fm_conversation(self, conversation, printlog=False, runtime=False):
         """
