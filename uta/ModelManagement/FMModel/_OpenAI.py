@@ -5,7 +5,7 @@ from uta.config import *
 
 
 class _OpenAI:
-    def __init__(self, model='gpt-4'):
+    def __init__(self, model='gpt-4-1106-preview'):
         """
         Initialize the Model with default settings.
         """

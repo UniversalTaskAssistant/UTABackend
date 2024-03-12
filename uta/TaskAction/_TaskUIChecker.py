@@ -44,7 +44,8 @@ class _TaskUIChecker:
                                  '2. Delete all the words in searching bar before start a new search trying.\n' \
                                  '3. Do NOT try to repeat previous actions as they have been tried.\n' \
                                  '4. If the relation is related/almost complete, give the Element Id (int) of the related element\n' \
-                                 '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n'
+                                 '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n' \
+                                 '6. If you decide to input text, the Action should be Input.'
     '''
     **************
     *** Basics ***
@@ -99,10 +100,15 @@ class _TaskUIChecker:
                 task.conversation_automation = [{'role': 'system', 'content': SYSTEM_PROMPT},
                                                 {'role': 'user', 'content': f'This is a view hierarchy of a UI:\n'
                                                                             f'{str(ui_data.element_tree)}\n\n{prompt}'}]
+                task.full_automation_conversation += [{'role': 'system', 'content': SYSTEM_PROMPT},
+                                                      {'role': 'user', 'content': f'This is a view hierarchy of a UI:\n'
+                                                      f'{str(ui_data.element_tree)}\n\n{prompt}'}]
             else:
                 task.conversation_automation.append({'role': 'user', 'content': prompt})
+                task.full_automation_conversation.append({'role': 'user', 'content': prompt})
             resp = self.__model_manager.send_fm_conversation(task.conversation_automation, printlog=printlog)
             task.conversation_automation.append(resp)
+            task.full_automation_conversation.append(resp)
             return resp
         except Exception as e:
             print(resp)

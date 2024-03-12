@@ -275,8 +275,8 @@ class Device:
         """
         ele = ui.elements[element_id]
         bounds = ele['bounds']
-        scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-        scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[1])
+        scroll_start = ((bounds[2] + bounds[0]) // 2, 2000)
+        scroll_end = ((bounds[2] + bounds[0]) // 2, 100)
         if show:
             board = ui.ui_screenshot.copy()
             cv2.arrowedLine(board, scroll_start, scroll_end, (255, 0, 255), 8)

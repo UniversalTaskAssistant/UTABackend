@@ -40,8 +40,10 @@ def annotate_ui_operation(ui, recommended_action):
         #     cv2.circle(board, scroll_end, 20, (255, 0, 255), 8)
         #     annotated_screenshot = board
         elif 'scroll' in action_type:
-            scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[3])
-            scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+            # scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[3])
+            # scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
+            scroll_end = ((bounds[2] + bounds[0]) // 2, 2000)
+            scroll_start = ((bounds[2] + bounds[0]) // 2, 100)
             board = ui.ui_screenshot.copy()
             cv2.circle(board, scroll_start, 20, (255, 0, 255), 8)
             cv2.circle(board, scroll_end, 20, (255, 0, 255), 8)
@@ -167,7 +169,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user32'
+user_id = 'user38'
 # init device
 device = Device()
 device.connect()
@@ -181,13 +183,13 @@ for task_idx, task in enumerate(task_list2):
     # if task_idx not in [0, 9, 13, 21, 24, 25, 26, 27, 28, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 51, 53, 54, 55,
     #                     56, 57, 58, 59, 60, 61, 62, 64, 65, 66, 72, 81, 82, 83, 85, 86, 87, 89, 92, 93, 95]:
     #     continue![](../data/user20 - Copy/task1/0_annotated.png)
-    # if task_idx not in [14]:
+    # if task_idx not in [15]:
     #     continue
     # if task_idx < 3:
     #     continue
     # if not 20 <= task_idx < 40:
     #     continue
-    if task_info_list2[task_idx][1] == 'Infeasible':
+    if task_info_list2[task_idx][1] != 'Infeasible-test':
         continue
     task_id = f"task{task_idx + 1}"
 
