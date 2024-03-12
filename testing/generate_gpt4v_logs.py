@@ -6,7 +6,6 @@ from jinja2 import Template
 
 from uta.config import *
 
-
 # HTML/CSS/JS Template
 html_template = """
 <!DOCTYPE html>
@@ -74,7 +73,7 @@ html_template = """
         </td>
       {% endfor %}
     </tr>
-    
+
     <tr>
       {% for (key, screenshot) in data['screenshot']|dictsort %}
         <td>
@@ -96,53 +95,51 @@ html_template = """
 """
 
 
-user_id = 'user40'
+user_id = '31'
+user = 'user' + user_id
 directories = {}
-for task_dir in glob.glob(pjoin(DATA_PATH, user_id) + '/task*'):
-    task_dir_name = os.path.basename(task_dir)
-    data = {}
-    with open(task_dir + '/task.json', 'r', encoding='utf-8') as file:
-        task_json = json.load(file)
-        data['task'] = task_json['task_description']
-        data['task_type'] = task_json['task_type']
-        data['subtasks'] = str(task_json['subtasks'])
-        data['conversation_clarification'] = {}
+with open(pjoin(WORK_PATH, f'old_test_data/test/gpt-v/result{user_id}.json')) as filr:
+    gpt4v_json = json.load(filr)
+    for task_dir in glob.glob(pjoin(DATA_PATH, user) + '/task*'):
+        task_dir_name = os.path.basename(task_dir)
+        data = {}
+        with open(task_dir + '/task.json', 'r', encoding='utf-8') as file:
+            task_json = json.load(file)
+            data['task'] = task_json['task_description']
+            data['task_type'] = task_json['task_type']
+            data['subtasks'] = str(task_json['subtasks'])
+            data['conversation_clarification'] = {}
 
-        for i in range(0, len(task_json['conversation_clarification']) - 1, 2):
-            data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
-                                                     'user': str(task_json['conversation_clarification'][i + 1])}
-        i = len(task_json['conversation_clarification']) - 1
-        if i >= 0:
-            data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
-                                                     'user': str(task_json['conversation_clarification'][i])}
+            for i in range(0, len(task_json['conversation_clarification']) - 1, 2):
+                data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
+                                                         'user': str(task_json['conversation_clarification'][i + 1])}
+            i = len(task_json['conversation_clarification']) - 1
+            if i >= 0:
+                data['conversation_clarification'][i] = {'assistant': str(task_json['conversation_clarification'][i]),
+                                                         'user': str(task_json['conversation_clarification'][i])}
 
-        data['screenshot'] = {}
-        for one_img in glob.glob(task_dir + '/*_annotated.png'):
-            try:
+            data['screenshot'] = {}
+            for one_img in glob.glob(task_dir + '/*_annotated.png'):
+                try:
+                    img_name = os.path.basename(one_img)
+                    idx_key = int(img_name.split('_')[0])
+                    img_path = f".{one_img.split(user)[-1]}"
+                    data['screenshot'][idx_key] = {'img': img_path, 'info': {'rel': str(gpt4v_json[task_dir_name]
+                                                                                        [img_name.replace('_annotated', '')])}}
+                except:
+                    break
 
-                img_name = os.path.basename(one_img)
-                idx_key = int(img_name.split('_')[0])
-                img_path = f".{one_img.split(user_id)[-1]}"
-                data['screenshot'][idx_key] = {'img': img_path, 'info': {'rel': str(task_json['relations'][idx_key])}}
-            except:
-                break
-
-        if os.path.exists(task_dir + '/automation_error.json'):
-            with open(task_dir + '/automation_error.json', 'r', encoding='utf-8') as error:
-                error_json = json.load(error)
-                data['error'] = error_json['traceback']
-        else:
             data['error'] = "No error."
 
-    if len(data) > 0:
-        directories[task_dir_name] = data
+        if len(data) > 0:
+            directories[task_dir_name] = data
 
 # Generate the final HTML
 template = Template(html_template)
 html = template.render(directories=directories)
 
 # Write the HTML file
-with open(pjoin(DATA_PATH, user_id) + '/automation_logs.html', 'w', encoding='utf-8') as file:
+with open(pjoin(DATA_PATH, user) + '/gpt4v_logs.html', 'w', encoding='utf-8') as file:
     file.write(html)
 
 # Notify user

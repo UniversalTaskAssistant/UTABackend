@@ -1,5 +1,8 @@
 import cv2
 import time
+from testing import data_util
+import glob
+import tqdm
 
 from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
@@ -459,6 +462,26 @@ def test_uichecker():
     print(res)
 
 
+def test_gpt4v():
+    fm = _OpenAI()
+    json_write_path = WORK_PATH + 'old_test_data/test/gpt-v/result31.json'
+
+    root_dir = DATA_PATH + '/user31'
+    saved_file = {}
+    for one_dir in tqdm.tqdm(glob.glob(root_dir + '/task*')):
+        saved_file[one_dir.split('\\')[-1]] = {}
+        task = _Local().load_json(one_dir + '/task.json')
+        task_desc = task['task_description']
+        prompt = data_util.gpt4v_prompt.format(task=task_desc)
+        for one_ui in glob.glob(one_dir + '/*.png'):
+            if 'annotated' in one_ui:
+                continue
+            result = fm.send_gpt4_vision_img_paths(prompt=prompt, img_paths=[one_ui])
+            saved_file[one_dir.split('\\')[-1]][one_ui.split('\\')[-1]] = result
+
+        _Local().save_json(saved_file, json_write_path)
+
+
 if __name__ == '__main__':
     # test_task()
 
@@ -475,7 +498,7 @@ if __name__ == '__main__':
     # test_googleplay()
     # test_appmanager()
 
-    test_device()
+    # test_device()
     # get_package()
     # test_taskuichecker()
     # test_actionchecker()
@@ -484,3 +507,5 @@ if __name__ == '__main__':
     # test_app_list()
     # test_tasklist()
     # test_uichecker()
+
+    test_gpt4v()

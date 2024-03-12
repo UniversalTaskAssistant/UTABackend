@@ -169,7 +169,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user38'
+user_id = 'user40'
 # init device
 device = Device()
 device.connect()
@@ -189,7 +189,7 @@ for task_idx, task in enumerate(task_list2):
     #     continue
     # if not 20 <= task_idx < 40:
     #     continue
-    if task_info_list2[task_idx][1] != 'Infeasible-test':
+    if task_info_list2[task_idx][1] != 'Feasible':
         continue
     task_id = f"task{task_idx + 1}"
 

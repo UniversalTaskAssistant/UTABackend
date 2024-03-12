@@ -71,6 +71,21 @@ class _TaskUIChecker:
         return prompt
 
     @staticmethod
+    def wrap_task_history(task):
+        """
+        Wrap up task info to put in the fm prompt
+        Args:
+            task (Task)
+        Return:
+            prompt (str): The wrapped prompt
+        """
+        prompt = ''
+        if len(task.relations) > 0:
+            prompt += '!!!Action history for this task - MUST NOT REPEAT PREVIOUS ACTIONS:\n ' + str(
+                task.relations) + '.\n'
+        return prompt
+
+    @staticmethod
     def transfer_to_dict(resp):
         """
         Transfer string model returns to dict format
@@ -133,6 +148,7 @@ class _TaskUIChecker:
             print('* Check UI and Task Relation *')
             # Format base prompt
             prompt = self.wrap_task_context(task)
+            prompt += self.wrap_task_history(task)
             prompt += self.__relation_prompt.format(task=task.selected_task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)

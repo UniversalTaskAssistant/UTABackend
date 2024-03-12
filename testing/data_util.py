@@ -12,126 +12,46 @@ selected_idx = [2, 8, 27, 38, 47, 48, 53, 56, 59, 84, 85, 99, 100, 119, 124, 125
 app_list = [app_list[i] for i in selected_idx]
 print(app_list)
 
-# this is test tasks version 1
-# task_list = ['Open Language Setting page of my mobile', 'Open Youtube app for me', 'I want to enlarge the font size of my phone',
-#              'I want to boost volume', 'I want to open auto-read function',
-#              'I want to add a contact number, the name is Mulong Xie and phone number is 0450674929',
-#              'I want to set a special ringtone for the call of my friend Mulong',
-#              'I want to listen radio about world news',
-#              'I want to take a photo', 'I want to edit the last photo and add text "hello" in it',
-#              'I want to open my bluetooth', 'I want to look at my album', 'tell me today\'s weather',
-#              'I want to open my wifi', 'I need to open my hotspot',
-#              'I want to set Mulong as a quick-dial number, there should be a icon on the screen that I can directly call him by pressing it',
-#              'I want to take note "I like apple", and I want the phone use sound to read it for me',
-#              'I want to translate the "I like apple" into French', 'I need to go to the nearest market',
-#              'I want to see a youtube introducing canberra raiders', 'please tell me what time it is now in voice',
-#              'Can you help me clean my phone\'s memory?',
-#              'I want to cook a pasta for my son, I totally have no idea']
-
-# this is jasmine test version 1
-# task_list = [
-#     "Create a PIN for my phone.",
-#     "I need to set up a passcode.",
-#     "Can you help me configure a PIN?",
-#     "I need to change my phone's PIN now.",
-#     "Show me how to reset my phone's PIN.",
-#     "I want to update my phone PIN.",
-#     "Help me change my phone's PIN.",
-#     "Guide me in changing my phone's PIN.",
-#     "I want to add a fingerprint to my phone.",
-#     "Show me how to put a new fingerprint on my phone.",
-#     "I need to set up an extra fingerprint on my phone.",
-#     "Help me add a fingerprint for my phone's security.",
-#     "Guide me in adding another fingerprint to unlock my phone.",
-#     "I need to delete a fingerprint from my phone.",
-#     "Show me how to remove a fingerprint from my phone's settings.",
-#     "Help me take off a fingerprint from my phone.",
-#     "Guide me through removing a fingerprint on my phone.",
-#     "I want to erase a fingerprint from my phone's security features.",
-#     "I want to change my fingerprint",
-#     "I want to add a fingerprint",
-#     "I want to remove a fingerprint",
-#     "Change my notification alert",
-#     "Change my message alert",
-#     "Announce notification",
-#     "Do not announce notification",
-#     "I want to turn on haptics",
-#     "I want to turn off haptics",
-#     "Increase the volume",
-#     "decrease the volume",
-#     "Increase the notification volume",
-#     "decrease the notification volume",
-#     "Increase the alert volume",
-#     "Increase the alert volume",
-#     "Increase the notification volume",
-#     "decrease the notification volume",
-#     "Change the ringtone",
-#     "Change the texttone",
-#     "Turn on vibration for text",
-#     "Turn off vibration for text",
-#     "Turn on vibration for calls",
-#     "Turn off vibration for calls",
-#     "Turn on lock screen sound",
-#     "Turn off lock screen sound",
-#     "Turn on the text sound",
-#     "Turn off the text sound",
-#     "Show my notifications",
-#     "Delete all my notifications",
-#     "Make the text size bigger",
-#     "Make the text size smaller",
-#     "I want to change the text size to the smallest",
-#     "I want to change the text size to the biggest",
-#     "Change the date to today",
-#     "Change the time to current",
-#     "Change the time to 12-hour format",
-#     "Change the time to 24-hour format",
-#     "I want to access quick setting",
-#     "Hide my name when calling",
-#     "Show my name when calling",
-#     "Block a number",
-#     "unblock a number",
-#     "Block unknown numbers",
-#     "Stop my phone from receiving calls, texts, or emails",
-#     "Add my contact information to lockscreen",
-#     "Open Camera",
-#     "Take a photo",
-#     "Take a selfie",
-#     "Open Gallery",
-#     "View photos",
-#     "Access my photo album",
-#     "Display my images",
-#     "Take me to the photos app",
-#     "View the photo taken recently",
-#     "Remove this picture, please.",
-#     "Erase this photo from my phone.",
-#     "Trash this picture.",
-#     "Can you get rid of this photo for me?",
-#     "Erase this entire album,.",
-#     "Remove the photo collection.",
-#     "Can you delete this album for me?",
-#     "Eliminate this set of pictures.",
-#     "I'd like to get rid of this entire photo folder.",
-#     "I want to edit the photo I just took",
-#     "I want to crop of this photo",
-#     "I want to adjust brightness of this photo",
-#     "I want to change contrast of this photo",
-#     "I want to change exposure this photo",
-#     "I want to change balance of this photo",
-#     "I want to share this photo to Mom",
-#     "I want to share this photo through email",
-#     "Change my wallpaper using this photo",
-#     "Change my lock screen to this photo",
-#     "Open email inbox",
-#     "I want to see unread emails",
-#     "I want to check my files",
-#     "I want to open a file called: Nearby Share",
-#     "Share file named Google to Mom",
-#     "Share file named Google through email",
-#     "Delete a file called: Google",
-#     "I want to save all the files from this email"
-# ]
-
 model = ModelManager()
 task_list_class = TaskList(model)
 task_list2 = task_list_class.available_task_list
 task_info_list2 = task_list_class.task_info_list
+
+gpt4v_prompt = 'What is the relation between this UI and the task "{task}" and why?\n' \
+             '!!!Relation Options:\n'\
+             '1. Almost Complete: The UI is at the final stage, with only one action left to complete the task. This status applies if the next action directly concludes the task (e.g., finalizing a setting adjustment).\n' \
+             '2. Directly related: The UI contains elements (clickable, scrollable, swipeable) that are essential for advancing the task, but it isn\'t the task\'s final step.\n' \
+             '3. Indirectly related: Although the UI doesn\'t have direct elements for the task, it includes elements that lead to the relevant UI or task (e.g., a settings button, search bar).\n' \
+             '4. Unrelated: The UI is irrelevant to the task or any sub-tasks.\n' \
+             '!!!Notes:\n' \
+             '- For Almost Complete, include the element ID for the final action and a brief reason.\n' \
+             '- For Directly or Indirectly Related, check if the UI contains:\n' \
+             '-- UI Modal: Overlay windows (e.g., alerts, confirmations).\n' \
+             '-- User Permission: Permissions request dialogs.\n' \
+             '-- Login Page: Login requirements.\n' \
+             '-- Form: Personal data input forms.\n' \
+             '-- If present, describe the component, provide a reason, and specify the user\'s required action.\n' \
+             '- For Unrelated scenarios, try to find which element in the current UI can be clicked to navigate back or close the current unrelated UI to proceed the task, suggest "Back" as the action.\n\n' \
+             'Response Format:\n' \
+             '1. If Almost Complete, use:\n' \
+             '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>"}}\n' \
+             '2. If Directly or Indirectly Related and components are present, use:\n' \
+             '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>", "Component": "<component>", "Explanation": "<explanation>", "Required action": "<action>"}}\n' \
+             '3. If Directly or Indirectly Related without specific components, specify the action to proceed (Click, Input, Scroll, Swipe) and, if applicable, the input text:\n' \
+             '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>", "Action": "<type>", "Input Text": "<text>"}}\n' \
+             '4. If Unrelated, use:\n' \
+             '{{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<reason>", "Action": "Back"}}\n\n' \
+             'Examples:\n' \
+             '- Indirectly Related with User Permission Component:\n' \
+             '{{"Relation": "Indirectly related", "Element Id": "2", "Reason": "The UI has a search bar to find \'Turn on voice\'", "Component": "User Permission", "Explanation": "Asks for photo access permission", "Required action": "Allow or deny"}}\n' \
+             '- Directly Related with Action:\n' \
+             '{{"Relation": "Directly related", "Element Id": "3", "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click"}}\n' \
+             '- Unrelated with Back Action:\n' \
+             '{{"Relation": "Unrelated", "Element Id": "3", "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n\n' \
+             '!!!Additional Notes:\n' \
+             '1. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
+             '2. Delete all the words in searching bar before start a new search trying.\n' \
+             '3. Do NOT try to repeat previous actions as they have been tried.\n' \
+             '4. If the relation is related/almost complete, give the Element Id (int) of the related element\n' \
+             '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n' \
+             '6. If you decide to input text, the Action should be Input.'
