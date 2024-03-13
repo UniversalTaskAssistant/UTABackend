@@ -2,6 +2,7 @@ from uta.config import *
 from uta.UIProcessing._UIPreProcessor import _UIPreProcessor
 from uta.UIProcessing._UIAnalyser import _UIAnalyser
 from uta.UIProcessing._UIChecker import _UIChecker
+from uta.UIProcessing._UIUtil import _UIUtil
 
 
 class UIProcessor:
@@ -11,59 +12,46 @@ class UIProcessor:
         self.__ui_preprocessor = _UIPreProcessor()
         self.__ui_analyser = _UIAnalyser(self.__model_manager)
         self.__ui_checker = _UIChecker(self.__model_manager)
+        self.__ui_util = _UIUtil()
 
     '''
     ***********************
     *** Process UI Info ***
     ***********************
     '''
-    def ui_vh_xml_cvt_to_json(self, ui_data):
+    def preprocess_ui(self, ui_data):
         """
-        Convert xml vh to json format for easier processing
+        Process a UI, including
+            1. Convert vh to tidy and formatted json
+            2. Extract basic UI info (elements) and store as dicts
         Args:
             ui_data (UIData): ui data for processing
         Returns:
             ui_data.ui_vh_json (dict): VH in a tidy json format
-        """
-        print('* Reformat xml vh *')
-        self.__ui_preprocessor.ui_vh_xml_cvt_to_json(ui_data=ui_data)
-
-    def ui_info_extraction(self, ui_data):
-        """
-        Extract elements from raw view hierarchy Json file and store them as dictionaries
-        Args:
-            ui_data (UIData): ui data for processing
-        Returns:
             ui_data.elements; ui_data.elements_leaves (list of dicts)
         """
-        print('* Extract ui elements from vh *')
+        self.__ui_preprocessor.ui_vh_xml_cvt_to_json(ui_data=ui_data)
         self.__ui_preprocessor.ui_info_extraction(ui_data=ui_data)
+        return ui_data
 
-    def ui_analysis_elements_description(self, ui_data, ocr=True, cls=True):
+    def analyze_ui(self, ui_data, ocr=True, cls=False):
         """
-        Extract description for UI elements through 'text', 'content-desc', 'classification' and 'caption'
+        Analyze ui to generate description for elements and hierarchical element tree
+            1. Analyze UI element to attach description
+            2. Build element tree based on the prev to represent the UI
         Args:
             ui_data (UIData): Target UI data for analysis
             ocr (bool): True to turn on ocr for the whole UI image
             cls (bool): True to turn on UI element classification
         Returns:
             ui_data.element['description']: 'description' attribute in element
-        """
-        print('* Analyse descriptions for elements *')
-        self.__ui_analyser.ui_analysis_elements_description(ui_data=ui_data, ocr=ocr, cls=cls)
-
-    def ui_build_element_tree(self, ui_data):
-        """
-        Build a hierarchical element tree with a few key attributes to represent the vh
-        Args:
-            ui_data (UIData): Target UI data for analysis
-        Returns:
             ui_data.element_tree (dict): structural element tree
         """
-        print('* Organize simplified element tree *')
+        self.__ui_analyser.ui_analysis_elements_description(ui_data=ui_data, ocr=ocr, cls=cls)
         self.__ui_analyser.ui_build_element_tree(ui_data)
+        return ui_data
 
-    def process_ui(self, ui_data, show=False):
+    def process_ui(self, ui_data, show=False, ocr=True, cls=False):
         """
         Process a UI, including
             1. Convert vh to tidy and formatted json
@@ -73,14 +61,14 @@ class UIProcessor:
         Args:
             ui_data (UIData): UI data before processing
             show (bool): True to show processing result on window
+            ocr (bool): True to turn on ocr for the whole UI image
+            cls (bool): True to turn on UI element classification
         Returns:
              ui_data (UIData): UI data after processing
         """
-        print('\n *** Process UI ***')
-        self.ui_vh_xml_cvt_to_json(ui_data)
-        self.ui_info_extraction(ui_data)
-        self.ui_analysis_elements_description(ui_data)
-        self.ui_build_element_tree(ui_data)
+        print('*** Process UI ***')
+        self.preprocess_ui(ui_data)
+        self.analyze_ui(ui_data, ocr=ocr, cls=cls)
         if show:
             ui_data.show_all_elements()
         return ui_data
@@ -101,6 +89,23 @@ class UIProcessor:
         """
         print('* Check if UI requires user decision *')
         return self.__ui_checker.check_ui_decision_page(ui_data)
+
+    '''
+    ****************
+    *** UI Utils ***
+    ****************
+    '''
+    def annotate_elements_with_id(self, ui_data, only_leaves=True, show=True):
+        """
+        Annotate elements on the ui screenshot using IDs
+        Args:
+            ui_data (UIData): Target UIData
+            only_leaves (bool): True to just show element_leaves
+            show (bool): True to show the result
+        Returns:
+            annotated_img (cv2 image): Annotated UI screenshot
+        """
+        return self.__ui_util.annotate_elements_with_id(ui_data=ui_data, only_leaves=only_leaves, show=show)
 
 
 if __name__ == '__main__':
