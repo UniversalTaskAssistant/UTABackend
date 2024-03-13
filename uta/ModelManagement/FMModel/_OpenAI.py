@@ -80,12 +80,13 @@ class _OpenAI:
     *** Vision Model ***
     ********************
     '''
-    def send_gpt4_vision_base64_imgs(self, prompt, base64_imgs):
+    def send_gpt4_vision_base64_imgs(self, prompt, base64_imgs, printlog=False):
         """
         Use gpt4-v to analyze base64 images
         Args:
             prompt (str): Prompt to ask questions
             base64_imgs (list): List of base64 image(s)
+            printlog (bool): True to printout detailed intermediate result of llm
         Returns:
             success (bool): False to indicate error
             content (string): Response content
@@ -114,7 +115,9 @@ class _OpenAI:
                     "content": content
                 }
             ],
-            "max_tokens": 300
+            "max_tokens": 300,
+            "temperature": 0.0,
+            "seed": 42
         }
         start = time.time()
         response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
@@ -122,18 +125,20 @@ class _OpenAI:
             usage = response["usage"]
             prompt_tokens = usage["prompt_tokens"]
             completion_tokens = usage["completion_tokens"]
-            print(f"Request cost - ${'{0:.2f}'.format(prompt_tokens / 1000 * 0.01 + completion_tokens / 1000 * 0.03)}; ",
-                  f"Run time - {'{:.3f}s'.format(time.time() - start)}")
+            if printlog:
+                print(f"Request cost - ${'{0:.2f}'.format(prompt_tokens / 1000 * 0.01 + completion_tokens / 1000 * 0.03)}; ",
+                      f"Run time - {'{:.3f}s'.format(time.time() - start)}")
         else:
             return False, response["error"]["message"]
         return True, response["choices"][0]["message"]["content"]
 
-    def send_gpt4_vision_img_paths(self, prompt, img_paths):
+    def send_gpt4_vision_img_paths(self, prompt, img_paths, printlog=False):
         """
         Read images as base64 and use gpt4-v to analyze images
         Args:
             prompt (str): Prompt to ask questions
             img_paths (list of paths): List of image file path(s)
+            printlog (bool): True to printout detailed intermediate result of llm
         Returns:
             success (bool): False to indicate error
             content (string): Response content
@@ -145,7 +150,7 @@ class _OpenAI:
         base64_imgs = []
         for img_path in img_paths:
             base64_imgs.append(encode_image(img_path))
-        return self.send_gpt4_vision_base64_imgs(prompt, base64_imgs)
+        return self.send_gpt4_vision_base64_imgs(prompt, base64_imgs, printlog=printlog)
 
 
 if __name__ == '__main__':

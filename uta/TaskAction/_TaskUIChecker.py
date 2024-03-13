@@ -129,6 +129,21 @@ class _TaskUIChecker:
             print(resp)
             raise e
 
+    def check_ui_task_gpt4v(self, ui_data, task, prompt, printlog=False):
+        """
+        Check UI and Task by prompt through foundation gpt4v model
+        """
+        try:
+            task.conversation_automation.append({'role': 'user', 'content': prompt})
+            task.full_automation_conversation.append({'role': 'user', 'content': prompt})
+            resp = self.__model_manager.send_fm_conversation(task.conversation_automation, printlog=printlog)
+            task.conversation_automation.append(resp)
+            task.full_automation_conversation.append(resp)
+            return resp
+        except Exception as e:
+            print(resp)
+            raise e
+
     '''
     *********************
     *** Task-UI Check ***
@@ -152,6 +167,29 @@ class _TaskUIChecker:
             prompt += self.__relation_prompt.format(task=task.selected_task)
             # Ask FM
             resp = self.check_ui_task(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+            task.res_relation_check = self.transfer_to_dict(resp)
+            print(task.res_relation_check)
+            return task.res_relation_check
+        except Exception as e:
+            print(resp)
+            raise e
+
+    def check_ui_relation_gpt4v(self, ui_data, task, printlog=False):
+        """
+        Checks the relation between a given ui and a task.
+        Args:
+            ui_data (UIData): UI data
+            task (Task): Task object containing task description for which back navigation is being checked.
+            printlog (bool): If True, enables logging of outputs.
+        Returns:
+            FM response (dict): {"Relation":, "Reason":}
+        """
+        try:
+            print('* Check UI and Task Relation *')
+            # Format base prompt
+            prompt = self.__relation_prompt.format(task=task.selected_task)
+            # Ask FM
+            resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_relation_check = self.transfer_to_dict(resp)
             print(task.res_relation_check)
             return task.res_relation_check

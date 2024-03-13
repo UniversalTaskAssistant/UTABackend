@@ -142,6 +142,52 @@ class UTA:
         self.ui_processor.process_ui(ui, show=show)
         return ui
 
+    def automate_task_vision(self, user_id, task_id, ui_img_file, printlog=False):
+        """
+        Identify the action on the current ui to automate the task based on GPT-4V
+        Args:
+            user_id (str): ui id
+            task_id (str): task id
+            ui_xml_file (path): VH xml file path
+            printlog (bool): If True, enables logging of outputs.
+        Returns:
+            Action (dict): {"Action": }
+        """
+        try:
+            # 0. retrieve task info
+            user, task = self.instantiate_user_task(user_id, task_id)
+
+            # 1. process ui
+            ui_data = self.process_ui_data(ui_img_file, user.device_resolution)
+
+            # 2. act step
+            task.conversation_automation = []  # clear up the conversation of previous ui
+            # check action on the UI by checking the relation and target elements
+            action = self.task_action_checker.action_on_ui(ui_data, task, printlog)
+            # if not complete, check if the UI is user decision page
+            if action.get('Component'):
+                action = {"Action": "User Decision", **action}
+                return ui_data, action
+
+            # if go back and element id, click element
+            if action.get('Action') and action['Action'] == 'Back':
+                if action.get('Element Id') and 'none' not in action['Element Id'].lower() or \
+                        action.get('Element Id') is None and 'none' not in str(action).lower():
+                    action["Action"] = "Click"
+
+            # if complete
+            if action.get('Relation') and 'complete' in action['Relation'].lower() or \
+                    action.get('Relation') is None and 'complete' in str(action).lower():
+                action["Action"] = "Complete"
+            self.system_connector.save_task(task)
+            return ui_data, action
+
+        except Exception as e:
+            error_trace = traceback.format_exc()
+            action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}
+            print(action)
+            return None, action
+
     def automate_task(self, user_id, task_id, ui_img_file, ui_xml_file,
                       package_name=None, activity_name=None, keyboard_active=False, printlog=False):
         """

@@ -78,6 +78,19 @@ class ModelManager:
         """
         return self.__fm_model.send_openai_conversation(conversation=conversation, printlog=printlog, runtime=runtime)
 
+    def send_gpt4_vision_img_paths(self, prompt, img_paths, printlog=False):
+        """
+        Read images as base64 and use gpt4-v to analyze images
+        Args:
+            prompt (str): Prompt to ask questions
+            img_paths (list of paths): List of image file path(s)
+            printlog (bool): True to printout detailed intermediate result of llm
+        Returns:
+            success (bool): False to indicate error
+            content (string): Response content
+        """
+        return self.__fm_model.send_gpt4_vision_img_paths(prompt=prompt, img_paths=img_paths, printlog=printlog)
+
 
 if __name__ == '__main__':
     model_mg = ModelManager()
