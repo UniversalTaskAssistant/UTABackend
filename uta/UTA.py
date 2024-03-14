@@ -138,13 +138,13 @@ class UTA:
         Return:
             annotated_ui (image): ui with processing results
         """
-        ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
-        ui = self.ui_processor.preprocess_ui(ui)
+        ui = self.system_connector.load_ui_data(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
+        self.ui_processor.preprocess_ui(ui)
         annotated_elements_ui = self.ui_processor.annotate_elements_with_id(ui)
         ui.annotated_elements_screenshot = annotated_elements_ui
         return ui
 
-    def automate_task_vision(self, user_id, task_id, ui_img_file, ui_xml_file, printlog=False):
+    def automate_task_vision(self, user_id, task_id, ui_img_file, ui_xml_file, keyboard_active=False, printlog=False):
         """
         Identify the action on the current ui to automate the task based on GPT-4V
         Args:
@@ -158,10 +158,13 @@ class UTA:
         try:
             # 0. retrieve task info
             user, task = self.instantiate_user_task(user_id, task_id)
+            task.keyboard_active = keyboard_active
 
             # 1. process ui
             ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
+            output_dir = pjoin(self.system_connector.user_data_root, user_id, task_id)
+            self.system_connector.save_ui_data(ui, output_dir=output_dir)
+            ui.annotated_elements_screenshot_path = pjoin(output_dir, ui.ui_id + '_annotated_elements.png')
 
             # 2. act step
             task.conversation_automation = []  # clear up the conversation of previous ui
@@ -216,7 +219,8 @@ class UTA:
 
             # 1. process ui
             ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
+            output_dir = pjoin(self.system_connector.user_data_root, user_id, task_id)
+            self.system_connector.save_ui_data(ui, output_dir=output_dir)
 
             # 2. act step
             task.conversation_automation = []  # clear up the conversation of previous ui

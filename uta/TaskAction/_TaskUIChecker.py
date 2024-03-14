@@ -61,7 +61,7 @@ class _TaskUIChecker:
                                      '-- Login Page: Login requirements.\n' \
                                      '-- Form: Personal data input forms.\n' \
                                      '-- If present, describe the component, provide a reason, and specify the user\'s required action.\n' \
-                                     '- For Unrelated scenarios, try to find which element in the current UI can be clicked to navigate back or close the current unrelated UI to proceed the task, suggest "Back" as the action.\n\n' \
+                                     '- For Unrelated scenarios, try to find which element (by element Id shown in the UI) in the current UI can be clicked to navigate back or close the current unrelated UI to proceed the task, suggest "Back" as the action.\n\n' \
                                      'Response Format:\n' \
                                      '1. If Almost Complete, use:\n' \
                                      '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>"}}\n' \
@@ -80,11 +80,11 @@ class _TaskUIChecker:
                                      '{{"Relation": "Unrelated", "Element Id": "3", "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n\n' \
                                      '!!!Additional Notes:\n' \
                                      '1. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
-                                     '2. Delete all the words in searching bar before start a new search trying.\n' \
-                                     '3. Do NOT try to repeat previous actions as they have been tried.\n' \
-                                     '4. If the relation is related/almost complete, give the Element Id (int) of the related element\n' \
-                                     '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n' \
-                                     '6. If you decide to input text, the Action should be Input.'
+                                     '2. Try to use the most convenient way to finish the task, please make use of the search bar with flexibility.\n' \
+                                     '3. If the relation is related/almost complete, give the Element Id (int, shown in the UI) of the related element\n' \
+                                     '4. If Relation is almost complete, you must provide the Element Id (int, shown in the UI) required for the final step and describe its operation in the Reason.\n' \
+                                     '5. If you decide to input text, the Action should be Input.\n' \
+                                     '6. Before the Input action, you need to select Click action to active the keyboard first.'
     '''
     **************
     *** Basics ***
@@ -175,7 +175,8 @@ class _TaskUIChecker:
         try:
             task.conversation_automation.append({'role': 'user', 'content': prompt})
             task.full_automation_conversation.append({'role': 'user', 'content': prompt})
-            resp = self.__model_manager.send_gpt4_vision_img_paths(prompt=prompt, img_paths=[ui_data.annotated_elements_screenshot], printlog=printlog)
+            resp = self.__model_manager.send_gpt4_vision_img_paths(prompt=prompt, img_paths=[ui_data.annotated_elements_screenshot_path], printlog=printlog)
+            resp = {'role': 'assistant', 'content': resp[1]}
             task.conversation_automation.append(resp)
             task.full_automation_conversation.append(resp)
             return resp
@@ -226,7 +227,9 @@ class _TaskUIChecker:
         try:
             print('* Check UI and Task Relation *')
             # Format base prompt
-            prompt = self.__relation_prompt_gpt4v.format(task=task.selected_task)
+            prompt = self.wrap_task_context(task)
+            prompt += self.wrap_task_history(task)
+            prompt += self.__relation_prompt_gpt4v.format(task=task.selected_task, keyboard_active=task.keyboard_active)
             # Ask FM
             resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_relation_check = self.transfer_to_dict(resp)

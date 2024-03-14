@@ -70,13 +70,12 @@ class _UIUtil:
         else:
             elements = ui_data.elements
         # draw bounding box
-        for ele in elements:
-            left, top, right, bottom = ele['bounds']
-            cv2.rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3)
+        # for ele in elements:
+        #     left, top, right, bottom = ele['bounds']
+        #     cv2.rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3)
         # annotate elements
         for i, ele in enumerate(elements):
             left, top, right, bottom = ele['bounds']
-            cv2.rectangle(board, (left, top), (right, bottom), (0,250,0), 3)
             try:
                 # mark on the top if possible
                 board = ps.putBText(board, str(ele['id']), text_offset_x=(left + right) // 2, text_offset_y=top - 5,

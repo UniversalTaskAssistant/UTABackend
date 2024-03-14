@@ -112,6 +112,42 @@ def task_declaration(msg, max_try=20):
             break
 
 
+def task_automation_vision(max_try=20):
+    ui_id = 0
+    for i in range(max_try):
+        try:
+            ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id,
+                                                                       output_dir=pjoin(DATA_PATH, user_id, task_id))
+            ui_data, action = uta.automate_task_vision(user_id=user_id, task_id=task_id, ui_img_file=ui_img,
+                                                ui_xml_file=ui_xml, printlog=False)
+
+
+            if action.get("Action") is not None and "error" in action["Action"].lower():
+                save_error(action["Exception"], action["Traceback"], "automation_error")
+                break
+
+            annotate_screenshot = annotate_ui_operation(ui_data, action)
+            screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
+            SystemConnector().save_img(annotate_screenshot, screen_path)
+            # with open(screen_path, 'wb') as fp:
+            #     fp.write(annotate_screenshot)
+
+            if 'complete' in action['Action'].lower():
+                break
+            elif "user decision" in action['Action'].lower():
+                input("Do the necessary operation and press Enter to continue...")
+                continue
+
+            device.take_action(action=action, ui_data=ui_data, show=False)
+            time.sleep(2)  # wait the action to be done
+            ui_id += 1
+        except Exception as e:
+            print(e)
+            error_trace = traceback.format_exc()  # Get the stack trace
+            save_error(e, error_trace, "automation_error")
+            break
+
+
 def task_automation(max_try=20):
     ui_id = 0
     for i in range(max_try):
@@ -169,7 +205,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user40'
+user_id = 'user42'
 # init device
 device = Device()
 device.connect()
@@ -200,6 +236,6 @@ for task_idx, task in enumerate(task_list2):
     device.go_homepage()
     user, task_obj = uta.instantiate_user_task(user_id, task_id)
     device.reboot_app(task_obj.involved_app_package)
-    task_automation(max_try=10)
+    task_automation_vision(max_try=10)
 
 device.disconnect()

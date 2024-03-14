@@ -20,7 +20,7 @@ class TaskList:
                                ('Communications', 'Feasible'), ('Communications', 'Feasible'), ('Communications', 'Feasible'),
                                ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'),
                                ('Business', 'Feasible'), ('Business', 'Infeasible'), ('Business', 'Infeasible'),
-                               ('Media & Video', 'Infeasible-test'), ('Media & Video', 'Infeasible-test'), ('Media & Video', 'Infeasible-test'),
+                               ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'),
                                ('Media & Video', 'Infeasible'), ('Media & Video', 'Infeasible'), ('Media & Video', 'Infeasible'),
                                ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible'),
                                ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible')]

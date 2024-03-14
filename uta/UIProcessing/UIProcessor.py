@@ -95,7 +95,7 @@ class UIProcessor:
     *** UI Utils ***
     ****************
     '''
-    def annotate_elements_with_id(self, ui_data, only_leaves=True, show=True):
+    def annotate_elements_with_id(self, ui_data, only_leaves=True, show=False):
         """
         Annotate elements on the ui screenshot using IDs
         Args:

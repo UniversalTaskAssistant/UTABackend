@@ -1,5 +1,7 @@
 import os
 from os.path import join as pjoin
+from PIL import Image
+import io
 
 from uta.SystemConnection._Local import _Local
 from uta.DataStructures import *
@@ -115,13 +117,18 @@ class SystemConnector:
             os.makedirs(output_dir)
             print('- Create ui folder', output_dir, '-')
         output_file_path_element_tree = pjoin(output_dir, ui_data.ui_id + '_uitree.json')
-        self.save_json(ui_data.element_tree, output_file_path_element_tree)
+        self.save_json(ui_data.elements, output_file_path_element_tree)
         print('- Export ui elements to file', output_file_path_element_tree, '-')
 
         # save annotated screenshot
-        if ui_data.annotated_elements_screenshot:
+        if ui_data.annotated_elements_screenshot is not None:
             output_annotated_elements_screenshoot = pjoin(output_dir, ui_data.ui_id + '_annotated_elements.png')
-            self.save_img(ui_data.annotated_elements_screenshot, output_annotated_elements_screenshoot)
+            annotated_elements_screenshot = ui_data.annotated_elements_screenshot
+            annotated_elements_screenshot = Image.fromarray(annotated_elements_screenshot.astype('uint8'))
+            buffer = io.BytesIO()
+            annotated_elements_screenshot.save(buffer, format="PNG")
+            img_bytes = buffer.getvalue()
+            self.save_img(img_bytes, output_annotated_elements_screenshoot)
             print('- Export annotated elements screenshot to file', output_annotated_elements_screenshoot, '-')
 
 
