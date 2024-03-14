@@ -130,24 +130,6 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
-    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
-        """
-        Process ui dato
-        Args:
-            ui_img_file (path): Screenshot image path
-            ui_xml_file (path): VH xml file path
-            device_resolution (tuple): Device resolution
-            show (bool): True to show the detection result
-        Return:
-            annotated_ui (image): ui with processing results
-        """
-        ui = self.system_connector.load_ui_data(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
-        self.ui_processor.preprocess_ui(ui)
-
-        annotated_elements_ui = self.ui_processor.annotate_elements_with_id(ui)
-        ui.annotated_elements_screenshot = annotated_elements_ui
-        return ui
-
     def automate_task_vision(self, user_id, task_id, ui_img_file, ui_xml_file, keyboard_active=False, printlog=False):
         """
         Identify the action on the current ui to automate the task based on GPT-4V
@@ -175,21 +157,7 @@ class UTA:
             task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui_vision(ui, task, printlog)
-            # if not complete, check if the UI is user decision page
-            if action.get('Component'):
-                action = {"Action": "User Decision", **action}
-                return ui, action
-
-            # if go back and element id, click element
-            if action.get('Action') and action['Action'] == 'Back':
-                if action.get('Element Id') and 'none' not in action['Element Id'].lower() or \
-                        action.get('Element Id') is None and 'none' not in str(action).lower():
-                    action["Action"] = "Click"
-
-            # if complete
-            if action.get('Relation') and 'complete' in action['Relation'].lower() or \
-                    action.get('Relation') is None and 'complete' in str(action).lower():
-                action["Action"] = "Complete"
+            self.set_action(action)
             self.system_connector.save_task(task)
             return ui, action
 
@@ -231,21 +199,7 @@ class UTA:
             task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui(ui, task, printlog)
-            # if not complete, check if the UI is user decision page
-            if action.get('Component'):
-                action = {"Action": "User Decision", **action}
-                return ui, action
-
-            # if go back and element id, click element
-            if action.get('Action') and action['Action'] == 'Back':
-                if action.get('Element Id') and 'none' not in action['Element Id'].lower() or \
-                        action.get('Element Id') is None and 'none' not in str(action).lower():
-                    action["Action"] = "Click"
-
-            # if complete
-            if action.get('Relation') and 'complete' in action['Relation'].lower() or \
-                        action.get('Relation') is None and 'complete' in str(action).lower():
-                action["Action"] = "Complete"
+            self.set_action(action)
             self.system_connector.save_task(task)
             return ui, action
         except Exception as e:
@@ -253,6 +207,39 @@ class UTA:
             action = {"Action": "Error at the backend.", "Exception": e, "Traceback": error_trace}
             print(action)
             return None, action
+
+    @staticmethod
+    def set_action(action):
+        # if not complete, check if the UI is user decision page
+        if action.get('Component'):
+            action = {"Action": "User Decision", **action}
+
+        # if go back and element id, click element
+        if action.get('Action') and action['Action'] == 'Back':
+            if action.get('Element Id') and 'none' not in action['Element Id'].lower() or \
+                    action.get('Element Id') is None and 'none' not in str(action).lower():
+                action["Action"] = "Click"
+
+        # if complete
+        if action.get('Relation') and 'complete' in action['Relation'].lower() or \
+                action.get('Relation') is None and 'complete' in str(action).lower():
+            action["Action"] = "Complete"
+
+    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
+        """
+        Process ui dato
+        Args:
+            ui_img_file (path): Screenshot image path
+            ui_xml_file (path): VH xml file path
+            device_resolution (tuple): Device resolution
+            show (bool): True to show the detection result
+        Return:
+            annotated_ui (image): ui with processing results
+        """
+        ui = self.system_connector.load_ui_data(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
+        self.ui_processor.preprocess_ui(ui)
+        ui.annotated_elements_screenshot = self.ui_processor.annotate_elements_with_id(ui)
+        return ui
 
 
 if __name__ == '__main__':
