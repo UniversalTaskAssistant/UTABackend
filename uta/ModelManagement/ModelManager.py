@@ -1,6 +1,6 @@
 from uta.ModelManagement.OpenAI import _OpenAI
 from uta.ModelManagement.GoogleOCR import _GoogleOCR
-from uta.ModelManagement.IconCls import _IconClassifier
+# from uta.ModelManagement.IconCls import _IconClassifier
 
 
 class ModelManager:
