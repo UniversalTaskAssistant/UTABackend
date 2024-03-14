@@ -79,12 +79,12 @@ class _UIUtil:
             cv2.rectangle(board, (left, top), (right, bottom), (0,250,0), 3)
             try:
                 # mark on the top if possible
-                board = ps.putBText(board, str(i), text_offset_x=(left + right) // 2, text_offset_y=top - 5,
+                board = ps.putBText(board, str(ele['id']), text_offset_x=(left + right) // 2, text_offset_y=top - 5,
                                     vspace=10, hspace=10, font_scale=1, thickness=2, background_RGB=(10,10,10),
                                     text_RGB=(200,200,200), alpha=0.55)
             except ValueError as e:
                 # else mark on the bottom
-                board = ps.putBText(board, str(i), text_offset_x=(left + right) // 2, text_offset_y=bottom,
+                board = ps.putBText(board, str(ele['id']), text_offset_x=(left + right) // 2, text_offset_y=bottom,
                                     vspace=10, hspace=10, font_scale=1, thickness=2, background_RGB=(10,10,10),
                                     text_RGB=(200,200,200), alpha=0.55)
         if show:

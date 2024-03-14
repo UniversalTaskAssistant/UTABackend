@@ -18,6 +18,7 @@ class UIData(_Data):
 
         # UI info
         self.ui_screenshot = cv2.resize(cv2.imread(screenshot_file), ui_resize)   # ui screenshot
+        self.annotated_elements_screenshot = None
         self.ui_vh_json = None      # ui vh json, after processing
 
         # UI elements

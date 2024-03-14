@@ -136,13 +136,15 @@ class UTA:
             device_resolution (tuple): Device resolution
             show (bool): True to show the detection result
         Return:
-            ui (UIData): ui data with processing results
+            annotated_ui (image): ui with processing results
         """
         ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
-        self.ui_processor.process_ui(ui, show=show)
+        ui = self.ui_processor.preprocess_ui(ui)
+        annotated_elements_ui = self.ui_processor.annotate_elements_with_id(ui)
+        ui.annotated_elements_screenshot = annotated_elements_ui
         return ui
 
-    def automate_task_vision(self, user_id, task_id, ui_img_file, printlog=False):
+    def automate_task_vision(self, user_id, task_id, ui_img_file, ui_xml_file, printlog=False):
         """
         Identify the action on the current ui to automate the task based on GPT-4V
         Args:
@@ -158,16 +160,17 @@ class UTA:
             user, task = self.instantiate_user_task(user_id, task_id)
 
             # 1. process ui
-            ui_data = self.process_ui_data(ui_img_file, user.device_resolution)
+            ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
+            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
 
             # 2. act step
             task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
-            action = self.task_action_checker.action_on_ui(ui_data, task, printlog)
+            action = self.task_action_checker.action_on_ui_vision(ui, task, printlog)
             # if not complete, check if the UI is user decision page
             if action.get('Component'):
                 action = {"Action": "User Decision", **action}
-                return ui_data, action
+                return ui, action
 
             # if go back and element id, click element
             if action.get('Action') and action['Action'] == 'Back':
@@ -180,7 +183,7 @@ class UTA:
                     action.get('Relation') is None and 'complete' in str(action).lower():
                 action["Action"] = "Complete"
             self.system_connector.save_task(task)
-            return ui_data, action
+            return ui, action
 
         except Exception as e:
             error_trace = traceback.format_exc()

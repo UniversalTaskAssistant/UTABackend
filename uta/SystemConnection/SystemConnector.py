@@ -118,6 +118,13 @@ class SystemConnector:
         self.save_json(ui_data.element_tree, output_file_path_element_tree)
         print('- Export ui elements to file', output_file_path_element_tree, '-')
 
+        # save annotated screenshot
+        if ui_data.annotated_elements_screenshot:
+            output_annotated_elements_screenshoot = pjoin(output_dir, ui_data.ui_id + '_annotated_elements.png')
+            self.save_img(ui_data.annotated_elements_screenshot, output_annotated_elements_screenshoot)
+            print('- Export annotated elements screenshot to file', output_annotated_elements_screenshoot, '-')
+
+
     '''
     ****************
     *** Local IO ***
