@@ -54,13 +54,14 @@ class _UIUtil:
         return SequenceMatcher(None, str(ui_data1.element_tree), str(ui_data2.element_tree)).ratio()
 
     @staticmethod
-    def annotate_elements_with_id(ui_data, only_leaves=True, show=True):
+    def annotate_elements_with_id(ui_data, only_leaves=True, show=True, draw_bound=False):
         """
         Annotate elements on the ui screenshot using IDs
         Args:
             ui_data (UIData): Target UIData
             only_leaves (bool): True to just show element_leaves
             show (bool): True to show the result
+            draw_bound (bool): True to draw bounding box of elements
         Returns:
             annotated_img (cv2 image): Annotated UI screenshot
         """
@@ -70,9 +71,10 @@ class _UIUtil:
         else:
             elements = ui_data.elements
         # draw bounding box
-        # for ele in elements:
-        #     left, top, right, bottom = ele['bounds']
-        #     cv2.rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3)
+        if draw_bound:
+            for ele in elements:
+                left, top, right, bottom = ele['bounds']
+                cv2.rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3)
         # annotate elements
         for i, ele in enumerate(elements):
             left, top, right, bottom = ele['bounds']

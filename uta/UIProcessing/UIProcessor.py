@@ -94,16 +94,17 @@ class UIProcessor:
     *** UI Utils ***
     ****************
     '''
-    def annotate_elements_with_id(self, ui_data, only_leaves=True, show=False):
+    def annotate_elements_with_id(self, ui_data, only_leaves=True, show=False, draw_bound=False):
         """
         Annotate elements on the ui screenshot using IDs
         Args:
             ui_data (UIData): Target UIData
             only_leaves (bool): True to just show element_leaves
             show (bool): True to show the result
+            draw_bound (bool): True to draw bounding box of elements
         Returns:
             annotated_img (cv2 image): Annotated UI screenshot
         """
         print('* Annotate elements with their IDs on the screenshot image *')
-        return self.__ui_util.annotate_elements_with_id(ui_data=ui_data, only_leaves=only_leaves, show=show)
+        return self.__ui_util.annotate_elements_with_id(ui_data=ui_data, only_leaves=only_leaves, show=show, draw_bound=draw_bound)
 

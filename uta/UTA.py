@@ -225,7 +225,7 @@ class UTA:
                 action.get('Relation') is None and 'complete' in str(action).lower():
             action["Action"] = "Complete"
 
-    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
+    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False, annotate_bound=False):
         """
         Process ui dato
         Args:
@@ -233,12 +233,13 @@ class UTA:
             ui_xml_file (path): VH xml file path
             device_resolution (tuple): Device resolution
             show (bool): True to show the detection result
+            annotate_bound (bool): True to draw bounding boxes for elements in annotation
         Return:
             annotated_ui (image): ui with processing results
         """
         ui = self.system_connector.load_ui_data(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
         self.ui_processor.preprocess_ui(ui)
-        ui.annotated_elements_screenshot = self.ui_processor.annotate_elements_with_id(ui)
+        ui.annotated_elements_screenshot = self.ui_processor.annotate_elements_with_id(ui, show=show, draw_bound=annotate_bound)
         return ui
 
 
