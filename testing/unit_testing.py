@@ -6,8 +6,8 @@ import tqdm
 
 from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
-from uta.ModelManagement.FMModel import _OpenAI
-from uta.ModelManagement.VisionModel import _GoogleOCR, _IconClassifier
+from uta.ModelManagement.OpenAI import _OpenAI
+from uta.ModelManagement.GoogleOCR import _GoogleOCR, _IconClassifier
 
 from uta.SystemConnection import _Local, SystemConnector
 from uta.UIProcessing import UIProcessor, _UIChecker

@@ -1,5 +1,6 @@
-from uta.ModelManagement.FMModel import _OpenAI
-from uta.ModelManagement.VisionModel import _VisionModel
+from uta.ModelManagement.OpenAI import _OpenAI
+from uta.ModelManagement.GoogleOCR import _GoogleOCR
+from uta.ModelManagement.IconCls import _IconClassifier
 
 
 class ModelManager:
@@ -7,8 +8,9 @@ class ModelManager:
         """
         Initializes a ModelManager instance with vision model and fm model.
         """
-        self.__vision_model = _VisionModel()
         self.__fm_model = _OpenAI()
+        self.__google_ocr = _GoogleOCR()
+        # self.__icon_cls = _IconClassifier()
 
     '''
     ********************
@@ -23,7 +25,7 @@ class ModelManager:
         Returns:
             The detected text annotations or None if no text is found.
         """
-        return self.__vision_model.detect_text_ocr(img_path)
+        return self.__google_ocr.detect_text_ocr(img_path)
 
     def classify_icons(self, imgs):
         """
@@ -33,7 +35,7 @@ class ModelManager:
         Returns:
             List of predictions with class names and probabilities.
         """
-        return self.__vision_model.classify_icons(imgs)
+        return self.__icon_cls.classify_icons(imgs)
 
     '''
     *****************
@@ -78,6 +80,11 @@ class ModelManager:
         """
         return self.__fm_model.send_openai_conversation(conversation=conversation, printlog=printlog, runtime=runtime)
 
+    '''
+    **************************
+    *** Large Vision Model ***
+    **************************
+    '''
     def send_gpt4_vision_img_paths(self, prompt, img_paths, printlog=False):
         """
         Read images as base64 and use gpt4-v to analyze images
