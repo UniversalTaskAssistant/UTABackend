@@ -1,15 +1,14 @@
 import cv2
-from difflib import SequenceMatcher
 from uta.DataStructures._Data import _Data
 
 
 class UIData(_Data):
-    def __init__(self, screenshot_file, xml_file=None, ui_resize=(1080, 2280)):
+    def __init__(self, screenshot_file, xml_file=None, resolution=(1080, 2280)):
         """
         Args:
             screenshot_file (path): .png or .jpg file path of the UI screenshot
             xml_file (path): .xml file path of the UI vh
-            ui_resize (tuple): Specify the size/resolution of the UI
+            resolution (tuple): Specify the size/resolution of the UI
         """
         super().__init__()
         self.screenshot_file = screenshot_file
@@ -17,7 +16,7 @@ class UIData(_Data):
         self.ui_id = screenshot_file.replace('/', '\\').split('\\')[-1].split('.')[0]
 
         # UI info
-        self.ui_screenshot = cv2.resize(cv2.imread(screenshot_file), ui_resize)   # ui screenshot
+        self.ui_screenshot = cv2.resize(cv2.imread(screenshot_file), resolution)   # ui screenshot
         self.annotated_elements_screenshot = None
         self.annotated_elements_screenshot_path = None
         self.ui_vh_json = None      # ui vh json, after processing
@@ -29,48 +28,6 @@ class UIData(_Data):
         self.element_tree = None    # structural element tree, dict type
         self.blocks = []            # list of blocks from element tree
         self.ocr_text = []          # UI ocr detection result, list of __texts {}
-
-    def get_ui_element_node_by_id(self, ele_id):
-        """
-        Return UI element by its id
-        Args:
-            ele_id (str or int): The element ID
-        Returns:
-            Element node (dict): If found, otherwise None
-        """
-        def search_node_by_id(node, ele_id):
-            '''
-            Recursively search for node by element id, if not matched for current node, look into its children
-            '''
-            if node['id'] == ele_id:
-                return node
-            if node['id'] > ele_id:
-                return None
-            if 'children' in node:
-                last_child = None
-                for child in node['children']:
-                    if child['id'] == ele_id:
-                        return child
-                    if child['id'] > ele_id:
-                        break
-                    last_child = child
-                return search_node_by_id(last_child, ele_id)
-
-        ele_id = int(ele_id)
-        if ele_id >= len(self.elements):
-            print('No element with id', ele_id, 'is found')
-            return None
-        return search_node_by_id(self.element_tree, ele_id)
-
-    def check_ui_tree_similarity(self, ui_data2):
-        """
-        Compute the similarity between two uis by checking their element trees
-        Args:
-            ui_data2 (UIData): The comparing ui
-        Returns:
-            similarity (float): The similarity between two trees
-        """
-        return SequenceMatcher(None, str(self.element_tree), str(ui_data2.element_tree)).ratio()
 
     '''
     *********************

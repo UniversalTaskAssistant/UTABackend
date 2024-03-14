@@ -6,7 +6,7 @@ class _UIAnalyser:
     """
     Analyze UI raw data for element description and element tree
     """
-    def __init__(self, model_manager):
+    def __init__(self, model_manager=None):
         self.__model_manager = model_manager
 
     '''
@@ -14,7 +14,7 @@ class _UIAnalyser:
     *** UI Analysis ***
     *******************
     '''
-    def ui_analysis_elements_description(self, ui_data, ocr=True, cls=True):
+    def ui_analysis_elements_description(self, ui_data, ocr=True, cls=False):
         """
         Extract description for UI elements through 'text', 'content-desc', 'classification' and 'caption'
         Args:
@@ -24,17 +24,14 @@ class _UIAnalyser:
         Returns:
             ui_data.element['description']: 'description' attribute in element
         """
-        # print('--- Analyze UI elements ---')
-        # use ocr to detect text
-        s1 = time.time()
-        if ocr: self.ocr_detect_ui_text(ui_data)
-        print('OCR Time: %.3fs' % (time.time() - s1))
-        # classify non-text elements
-        s2 = time.time()
-        if cls: self.classify_elements(ui_data)
-        print('CLs Time: %.3fs' % (time.time() - s2))
-        # extract element description from 'text', 'content-desc', 'icon-cls' and 'caption'
-        for ele in ui_data.elements_leaves:
+        def extract_element_description(ele):
+            """
+            Extract element description from 'text', 'content-desc', 'icon-cls' and 'caption'
+            Args:
+                ele (dict): UI element
+            Returns:
+                element.description (str): the description of this element
+            """
             description = ''
             # check text
             if 'text' in ele and len(ele['text']) > 0:
@@ -51,9 +48,21 @@ class _UIAnalyser:
                 else:
                     description = None
             ele['description'] = description
-        # save the elements with 'description' attribute
-        # json.dump(ui_data.elements, open(ui_data.output_file_path_elements, 'w', encoding='utf-8'), indent=4)
-        # print('Save elements to', self.output_file_path_elements)
+
+        # print('* Analyse descriptions for elements *')
+        # use ocr to detect text
+        if ocr:
+            s1 = time.time()
+            self.ocr_detect_ui_text(ui_data)
+            print('OCR Time: %.3fs' % (time.time() - s1))
+        # classify non-text elements
+        if cls:
+            s2 = time.time()
+            self.classify_elements(ui_data)
+            print('CLs Time: %.3fs' % (time.time() - s2))
+        # extract element description from 'text', 'content-desc', 'icon-cls' and 'caption'
+        for element in ui_data.elements_leaves:
+            extract_element_description(element)
 
     def ocr_detect_ui_text(self, ui_data):
         """
@@ -118,7 +127,7 @@ class _UIAnalyser:
         Returns:
             ui_data.element_tree (dict): structural element tree
         """
-        # print('--- Generate element tree ---')
+        # print('* Organize simplified element tree *')
         ui_data.element_tree = self.__combine_children_to_tree(ui_data=ui_data, start_element=ui_data.elements[0])
         # json.dump(ui_data.element_tree, open(ui_data.output_file_path_element_tree, 'w'), indent=4)
         # print('Save element tree to', self.output_file_path_element_tree)

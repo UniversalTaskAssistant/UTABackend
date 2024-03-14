@@ -22,6 +22,7 @@ class _UIPreProcessor:
         Returns:
              ui_data.ui_vh_json (dict): VH in a tidy json format
         """
+        # print('* Reformat xml vh *')
         ui_data.ui_vh_json = xmltodict.parse(open(ui_data.xml_file, 'r', encoding='utf-8').read())
         # Tidy up and reformat the json vh into Rico format
         ui_data.ui_vh_json = {'activity': {'root': self.__cvt_node_to_rico_format(ui_data.ui_vh_json['hierarchy']['node'])}}
@@ -80,7 +81,7 @@ class _UIPreProcessor:
         Returns:
             ui_data.elements; ui_data.elements_leaves (list of dicts)
         """
-        # print('--- Extract elements from VH ---')
+        # print('* Extract ui elements from vh *')
         json_vh = ui_data.ui_vh_json
         json_cp = copy.deepcopy(json_vh)
         element_root = json_cp['activity']['root']

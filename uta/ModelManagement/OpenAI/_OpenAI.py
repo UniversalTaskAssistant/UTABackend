@@ -11,7 +11,7 @@ class _OpenAI:
         """
         Initialize the Model with default settings.
         """
-        self.api_key = open(WORK_PATH + 'uta/ModelManagement/FMModel/openaikey.txt', 'r').readline()
+        self.api_key = open(WORK_PATH + 'uta/ModelManagement/OpenAI/openaikey.txt', 'r').readline()
         openai.api_key = self.api_key
         self._model = model
 
@@ -28,6 +28,11 @@ class _OpenAI:
         enc = tiktoken.encoding_for_model(model)
         return len(enc.encode(string))
 
+    '''
+    **********************
+    *** Language Model ***
+    **********************
+    '''
     def send_openai_prompt(self, prompt, system_prompt=None, printlog=False, runtime=True):
         """
         Send single prompt to the llm Model
@@ -126,13 +131,13 @@ class _OpenAI:
             prompt_tokens = usage["prompt_tokens"]
             completion_tokens = usage["completion_tokens"]
             if printlog:
-                print(f"Request cost - ${'{0:.2f}'.format(prompt_tokens / 1000 * 0.01 + completion_tokens / 1000 * 0.03)}; ",
-                      f"Run time - {'{:.3f}s'.format(time.time() - start)}")
+                print(f"[Request cost - ${'{0:.4f}'.format(prompt_tokens / 1000 * 0.01 + completion_tokens / 1000 * 0.03)}] ",
+                      f"[Run time - {'{:.3f}s'.format(time.time() - start)}]")
         else:
             return False, response["error"]["message"]
         return True, response["choices"][0]["message"]["content"]
 
-    def send_gpt4_vision_img_paths(self, prompt, img_paths, printlog=False):
+    def send_gpt4_vision_img_paths(self, prompt, img_paths, printlog=True):
         """
         Read images as base64 and use gpt4-v to analyze images
         Args:
@@ -154,8 +159,8 @@ class _OpenAI:
 
 
 if __name__ == '__main__':
-    llm = _OpenAI(model='gpt-3.5-turbo')
-    llm.send_openai_prompt(prompt='What app can I use to read ebooks?', printlog=True, runtime=True)
+    # llm = _OpenAI(model='gpt-3.5-turbo')
+    # llm.send_openai_prompt(prompt='What app can I use to read ebooks?', printlog=True, runtime=True)
 
-    # fm = _OpenAI()
-    # print(fm.send_gpt4_vision_img_paths(prompt='what are in the images?', img_paths=['1.png']))
+    fm = _OpenAI()
+    print(fm.send_gpt4_vision_img_paths(prompt='what are in the images?', img_paths=[DATA_PATH + 'user1/task1/0.png']))

@@ -1,8 +1,8 @@
 **/__pycache__
 **/.idea
 **/.ipynb_checkpoints
-/uta/ModelManagement/FMModel/openaikey.txt
-/uta/ModelManagement/VisionModel/googleapikey.txt
+/uta/ModelManagement/OpenAI/openaikey.txt
+/uta/ModelManagement/GoogleOCR/googleapikey.txt
 local_test.py
 .DS_Store
 /uta/UIProcessing/GUI.py

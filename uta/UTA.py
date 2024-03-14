@@ -27,6 +27,11 @@ class UTA:
         self.cur_user = None  # User object, current user
         self.cur_task = None  # Task object, current task
 
+    '''
+    *************
+    *** Setup ***
+    *************
+    '''
     def setup_user(self, user_id, device_resolution, app_list):
         """
         Set up folders for user, and store user info into the user.json
@@ -76,7 +81,6 @@ class UTA:
     *** Task Declaration ***
     ************************
     '''
-
     def fetch_available_task_list(self):
         """
         Fetch the current available task list
@@ -126,7 +130,6 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
-
     def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False):
         """
         Process ui dato
@@ -140,6 +143,7 @@ class UTA:
         """
         ui = self.system_connector.load_ui_data(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
         self.ui_processor.preprocess_ui(ui)
+
         annotated_elements_ui = self.ui_processor.annotate_elements_with_id(ui)
         ui.annotated_elements_screenshot = annotated_elements_ui
         return ui
@@ -150,6 +154,7 @@ class UTA:
         Args:
             user_id (str): ui id
             task_id (str): task id
+            ui_img_file (path): screenshot image path
             ui_xml_file (path): VH xml file path
             printlog (bool): If True, enables logging of outputs.
         Returns:
