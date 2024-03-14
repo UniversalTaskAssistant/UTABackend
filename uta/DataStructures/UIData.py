@@ -1,5 +1,4 @@
 import cv2
-from difflib import SequenceMatcher
 from uta.DataStructures._Data import _Data
 
 

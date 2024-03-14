@@ -38,9 +38,9 @@ class ModelManager:
         return self.__icon_cls.classify_icons(imgs)
 
     '''
-    *****************
-    *** LLM Model ***
-    *****************
+    ****************************
+    *** Large Language Model ***
+    ****************************
     '''
     @staticmethod
     def count_token_size(string, model='gpt-3.5-turbo'):
