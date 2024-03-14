@@ -19,6 +19,25 @@ class UIProcessor:
     *** Process UI Info ***
     ***********************
     '''
+    def process_ui(self, ui_data, show=False, ocr=True, cls=False):
+        """
+        Process a UI, including
+            1. Pre-process UI
+            2. Analyze UI
+        Args:
+            ui_data (UIData): UI data before processing
+            show (bool): True to show processing result on window
+            ocr (bool): True to turn on ocr for the whole UI image
+            cls (bool): True to turn on UI element classification
+        Returns:
+            ui_data (UIData): UI data after processing
+        """
+        self.preprocess_ui(ui_data)
+        self.analyze_ui(ui_data, ocr=ocr, cls=cls)
+        if show:
+            ui_data.show_all_elements()
+        return ui_data
+
     def preprocess_ui(self, ui_data):
         """
         Process a UI, including
@@ -51,25 +70,6 @@ class UIProcessor:
         print('* Analyze UI to generate an element tree with element descriptions *')
         self.__ui_analyser.ui_analysis_elements_description(ui_data=ui_data, ocr=ocr, cls=cls)
         self.__ui_analyser.ui_build_element_tree(ui_data)
-        return ui_data
-
-    def process_ui(self, ui_data, show=False, ocr=True, cls=False):
-        """
-        Process a UI, including
-            1. Pre-process UI
-            2. Analyze UI
-        Args:
-            ui_data (UIData): UI data before processing
-            show (bool): True to show processing result on window
-            ocr (bool): True to turn on ocr for the whole UI image
-            cls (bool): True to turn on UI element classification
-        Returns:
-            ui_data (UIData): UI data after processing
-        """
-        self.preprocess_ui(ui_data)
-        self.analyze_ui(ui_data, ocr=ocr, cls=cls)
-        if show:
-            ui_data.show_all_elements()
         return ui_data
 
     '''
