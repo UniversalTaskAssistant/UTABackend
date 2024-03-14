@@ -30,6 +30,7 @@ class UIProcessor:
             ui_data.ui_vh_json (dict): VH in a tidy json format
             ui_data.elements; ui_data.elements_leaves (list of dicts)
         """
+        print('* Pre-process XML VH *')
         self.__ui_preprocessor.ui_vh_xml_cvt_to_json(ui_data=ui_data)
         self.__ui_preprocessor.ui_info_extraction(ui_data=ui_data)
         return ui_data
@@ -47,6 +48,7 @@ class UIProcessor:
             ui_data.element['description']: 'description' attribute in element
             ui_data.element_tree (dict): structural element tree
         """
+        print('* Analyze UI *')
         self.__ui_analyser.ui_analysis_elements_description(ui_data=ui_data, ocr=ocr, cls=cls)
         self.__ui_analyser.ui_build_element_tree(ui_data)
         return ui_data
@@ -66,7 +68,6 @@ class UIProcessor:
         Returns:
              ui_data (UIData): UI data after processing
         """
-        print('*** Process UI ***')
         self.preprocess_ui(ui_data)
         self.analyze_ui(ui_data, ocr=ocr, cls=cls)
         if show:

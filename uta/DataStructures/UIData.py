@@ -29,48 +29,6 @@ class UIData(_Data):
         self.blocks = []            # list of blocks from element tree
         self.ocr_text = []          # UI ocr detection result, list of __texts {}
 
-    def get_ui_element_node_by_id(self, ele_id):
-        """
-        Return UI element by its id
-        Args:
-            ele_id (str or int): The element ID
-        Returns:
-            Element node (dict): If found, otherwise None
-        """
-        def search_node_by_id(node, ele_id):
-            '''
-            Recursively search for node by element id, if not matched for current node, look into its children
-            '''
-            if node['id'] == ele_id:
-                return node
-            if node['id'] > ele_id:
-                return None
-            if 'children' in node:
-                last_child = None
-                for child in node['children']:
-                    if child['id'] == ele_id:
-                        return child
-                    if child['id'] > ele_id:
-                        break
-                    last_child = child
-                return search_node_by_id(last_child, ele_id)
-
-        ele_id = int(ele_id)
-        if ele_id >= len(self.elements):
-            print('No element with id', ele_id, 'is found')
-            return None
-        return search_node_by_id(self.element_tree, ele_id)
-
-    def check_ui_tree_similarity(self, ui_data2):
-        """
-        Compute the similarity between two uis by checking their element trees
-        Args:
-            ui_data2 (UIData): The comparing ui
-        Returns:
-            similarity (float): The similarity between two trees
-        """
-        return SequenceMatcher(None, str(self.element_tree), str(ui_data2.element_tree)).ratio()
-
     '''
     *********************
     *** Visualization ***
