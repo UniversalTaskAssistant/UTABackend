@@ -56,17 +56,15 @@ class UIProcessor:
     def process_ui(self, ui_data, show=False, ocr=True, cls=False):
         """
         Process a UI, including
-            1. Convert vh to tidy and formatted json
-            2. Extract basic UI info (elements) and store as dicts
-            3. Analyze UI element to attach description
-            4. Build element tree based on the prev to represent the UI
+            1. Pre-process UI
+            2. Analyze UI
         Args:
             ui_data (UIData): UI data before processing
             show (bool): True to show processing result on window
             ocr (bool): True to turn on ocr for the whole UI image
             cls (bool): True to turn on UI element classification
         Returns:
-             ui_data (UIData): UI data after processing
+            ui_data (UIData): UI data after processing
         """
         self.preprocess_ui(ui_data)
         self.analyze_ui(ui_data, ocr=ocr, cls=cls)
@@ -108,12 +106,3 @@ class UIProcessor:
         """
         return self.__ui_util.annotate_elements_with_id(ui_data=ui_data, only_leaves=only_leaves, show=show)
 
-
-if __name__ == '__main__':
-    from uta.ModelManagement import ModelManager
-    model_mg = ModelManager()
-    model_mg.initialize_vision_model()
-
-    ui = UIProcessor(model_manager=model_mg)
-    uidata = ui.load_ui_data(screenshot_file=WORK_PATH + 'data/0.png', xml_file=WORK_PATH + 'data/0.xml', ui_resize=(1080, 1920))
-    uidata = ui.process_ui(ui_data=uidata)
