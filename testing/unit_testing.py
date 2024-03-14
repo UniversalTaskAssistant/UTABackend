@@ -141,7 +141,7 @@ def test_uiprocessor():
 
     screenshot = DATA_PATH + 'user1/task6/4.png'
     xml_file = DATA_PATH + 'user1/task6/4.xml'
-    ui_data = UIData(screenshot_file=screenshot, xml_file=xml_file, ui_resize=(1080, 2400))
+    ui_data = UIData(screenshot_file=screenshot, xml_file=xml_file, resolution=(1080, 2400))
     print(ui_data.to_dict())
 
     new_ui = ui_processor.process_ui(ui_data=ui_data, show=True)

@@ -4,12 +4,12 @@ from uta.DataStructures._Data import _Data
 
 
 class UIData(_Data):
-    def __init__(self, screenshot_file, xml_file=None, ui_resize=(1080, 2280)):
+    def __init__(self, screenshot_file, xml_file=None, resolution=(1080, 2280)):
         """
         Args:
             screenshot_file (path): .png or .jpg file path of the UI screenshot
             xml_file (path): .xml file path of the UI vh
-            ui_resize (tuple): Specify the size/resolution of the UI
+            resolution (tuple): Specify the size/resolution of the UI
         """
         super().__init__()
         self.screenshot_file = screenshot_file
@@ -17,7 +17,7 @@ class UIData(_Data):
         self.ui_id = screenshot_file.replace('/', '\\').split('\\')[-1].split('.')[0]
 
         # UI info
-        self.ui_screenshot = cv2.resize(cv2.imread(screenshot_file), ui_resize)   # ui screenshot
+        self.ui_screenshot = cv2.resize(cv2.imread(screenshot_file), resolution)   # ui screenshot
         self.annotated_elements_screenshot = None
         self.ui_vh_json = None      # ui vh json, after processing
 

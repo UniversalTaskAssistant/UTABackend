@@ -138,7 +138,7 @@ class UTA:
         Return:
             annotated_ui (image): ui with processing results
         """
-        ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
+        ui = UIData(screenshot_file=ui_img_file, xml_file=ui_xml_file, resolution=device_resolution)
         ui = self.ui_processor.preprocess_ui(ui)
         annotated_elements_ui = self.ui_processor.annotate_elements_with_id(ui)
         ui.annotated_elements_screenshot = annotated_elements_ui
