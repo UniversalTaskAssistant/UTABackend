@@ -138,6 +138,7 @@ class UTA:
             task_id (str): task id
             ui_img_file (path): screenshot image path
             ui_xml_file (path): VH xml file path
+            keyboard_active (bool): True to indicate the keyboard is active
             printlog (bool): If True, enables logging of outputs.
         Returns:
             Action (dict): {"Action": }
