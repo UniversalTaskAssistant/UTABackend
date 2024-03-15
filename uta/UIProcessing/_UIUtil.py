@@ -1,6 +1,7 @@
 from difflib import SequenceMatcher
 import pyshine as ps
 import cv2
+import numpy as np
 
 
 class _UIUtil:
@@ -65,6 +66,12 @@ class _UIUtil:
         Returns:
             annotated_img (cv2 image): Annotated UI screenshot
         """
+
+        def draw_transparent_border_rectangle(img, left_top, right_bottom, color, thickness, alpha):
+            overlay = np.zeros_like(img, dtype=np.uint8)
+            cv2.rectangle(overlay, left_top, right_bottom, color, thickness)
+            return cv2.addWeighted(overlay, alpha, img, 1, 0)
+
         board = ui_data.ui_screenshot.copy()
         if only_leaves:
             elements = ui_data.elements_leaves
@@ -74,7 +81,8 @@ class _UIUtil:
         if draw_bound:
             for ele in elements:
                 left, top, right, bottom = ele['bounds']
-                cv2.rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3)
+                cv2.rectangle(board, (left, top), (right, bottom), (0, 250, 0), 2)
+                # board = draw_transparent_border_rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3, 0.7)
         # annotate elements
         for i, ele in enumerate(elements):
             left, top, right, bottom = ele['bounds']
