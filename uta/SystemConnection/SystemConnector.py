@@ -1,5 +1,7 @@
 import os
 from os.path import join as pjoin
+
+import cv2
 from PIL import Image
 import io
 
@@ -37,7 +39,8 @@ class SystemConnector:
             print('- Import user info from file', user_file, '-')
             return user
         else:
-            raise FileNotFoundError(f"The user file {user_file} does not exist.")
+            # raise FileNotFoundError(f"The user file {user_file} does not exist.")
+            return None
 
     def save_user(self, user):
         """
@@ -122,15 +125,9 @@ class SystemConnector:
 
         # save annotated screenshot
         if ui_data.annotated_elements_screenshot is not None:
-            output_annotated_elements_screenshoot = pjoin(output_dir, ui_data.ui_id + '_annotated_elements.png')
-            annotated_elements_screenshot = ui_data.annotated_elements_screenshot
-            annotated_elements_screenshot = Image.fromarray(annotated_elements_screenshot.astype('uint8'))
-            buffer = io.BytesIO()
-            annotated_elements_screenshot.save(buffer, format="PNG")
-            img_bytes = buffer.getvalue()
-            self.save_img(img_bytes, output_annotated_elements_screenshoot)
-            print('- Export annotated elements screenshot to file', output_annotated_elements_screenshoot, '-')
-
+            ui_data.annotated_elements_screenshot_path = pjoin(output_dir, ui_data.ui_id + '_annotated_elements.png')
+            cv2.imwrite(ui_data.annotated_elements_screenshot_path, ui_data.annotated_elements_screenshot)
+            print('- Export annotated elements screenshot to file', ui_data.annotated_elements_screenshot_path, '-')
 
     '''
     ****************

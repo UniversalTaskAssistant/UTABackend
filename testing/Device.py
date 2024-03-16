@@ -73,6 +73,7 @@ class Device:
         Returns:
             Binary data of the captured screenshot.
         """
+        print('* Capture screenshot *')
         assert 0 <= recur_time < 3
         screen = self.__adb_device.screencap()
         if recur_time and screen is None:
