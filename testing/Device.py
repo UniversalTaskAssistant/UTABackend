@@ -213,17 +213,17 @@ class Device:
         print('* Perform Action *')
         action_type = action['Action'].lower()
         if 'click' in action_type:
-            self.click_screen(ui_data, int(action['Element Id']), show)
+            return self.click_screen(ui_data, int(action['Element Id']), show)
         elif 'scroll' in action_type:
-            self.up_scroll_screen(ui_data, int(action['Element Id']), show)  # scroll down
+            return self.up_scroll_screen(ui_data, int(action['Element Id']), show)  # scroll down
         elif 'swipe' in action_type:
-            self.left_swipe_screen(ui_data, int(action['Element Id']), show)
+            return self.left_swipe_screen(ui_data, int(action['Element Id']), show)
         elif 'input' in action_type:
-            self.input_text(action['Input Text'])
+            return self.input_text(action['Input Text'])
         elif 'launch' in action_type:
-            self.launch_app(action['App'])
+            return self.launch_app(action['App'])
         elif 'back' in action_type:
-            self.go_back()
+            return self.go_back()
         else:
             raise ValueError(f"No expected action returned from model, returned action: {action_type}")
 
@@ -238,9 +238,9 @@ class Device:
         ele = ui.elements[element_id]
         bounds = ele['bounds']
         centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-        if show:
-            self.mark_circle_on_element_centroid(centroid, ui.ui_screenshot.copy())
         self.__adb_device.input_tap(centroid[0], centroid[1])
+        if show:
+            return self.mark_circle_on_element_centroid(centroid, ui.ui_screenshot.copy())
 
     def long_press_screen(self, ui, element_id, show=False):
         """
@@ -253,9 +253,9 @@ class Device:
         ele = ui.elements[element_id]
         bounds = ele['bounds']
         centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-        if show:
-            self.mark_circle_on_element_centroid(centroid, ui.ui_screenshot.copy())
         self.__adb_device.input_swipe(centroid[0], centroid[1], centroid[0], centroid[1], 3000)
+        if show:
+            return self.mark_circle_on_element_centroid(centroid, ui.ui_screenshot.copy())
 
     def up_scroll_screen(self, ui, element_id, show=False):
         """
@@ -269,9 +269,9 @@ class Device:
         bounds = ele['bounds']
         scroll_start = ((bounds[2] + bounds[0]) // 2, 2000)
         scroll_end = ((bounds[2] + bounds[0]) // 2, 100)
-        if show:
-            self.mark_arrow_for_scroll(scroll_start, scroll_end, ui.ui_screenshot.copy())
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
+        if show:
+            return self.mark_arrow_for_scroll(scroll_start, scroll_end, ui.ui_screenshot.copy())
 
     def down_scroll_screen(self, ui, element_id, show=False):
         """
@@ -285,9 +285,9 @@ class Device:
         bounds = ele['bounds']
         scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[3])
         scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-        if show:
-            self.mark_arrow_for_scroll(scroll_start, scroll_end, ui.ui_screenshot.copy())
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
+        if show:
+            return self.mark_arrow_for_scroll(scroll_start, scroll_end, ui.ui_screenshot.copy())
 
     def right_swipe_screen(self, ui, element_id, show=False):
         """
@@ -302,9 +302,9 @@ class Device:
         bias = 20
         swipe_start = (bounds[0] + bias, (bounds[3] + bounds[1]) // 2)
         swipe_end = (bounds[2], (bounds[3] + bounds[1]) // 2)
-        if show:
-            self.mark_arrow_for_scroll(swipe_start, swipe_end, ui.ui_screenshot.copy())
         self.__adb_device.input_swipe(swipe_start[0], swipe_start[1], swipe_end[0], swipe_end[1], 500)
+        if show:
+            return self.mark_arrow_for_scroll(swipe_start, swipe_end, ui.ui_screenshot.copy())
 
     def left_swipe_screen(self, ui, element_id, show=False):
         """
@@ -319,9 +319,9 @@ class Device:
         bias = 20
         swipe_start = (bounds[2] - bias, (bounds[3] + bounds[1]) // 2)
         swipe_end = (bounds[0], (bounds[3] + bounds[1]) // 2)
-        if show:
-            self.mark_arrow_for_scroll(swipe_start, swipe_end, ui.ui_screenshot.copy())
         self.__adb_device.input_swipe(swipe_start[0], swipe_start[1], swipe_end[0], swipe_end[1], 500)
+        if show:
+            return self.mark_arrow_for_scroll(swipe_start, swipe_end, ui.ui_screenshot.copy())
 
     def input_text(self, text):
         """
@@ -368,6 +368,7 @@ class Device:
         cv2.imshow('tar element', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
         cv2.waitKey()
         cv2.destroyWindow('tar element')
+        return board
 
     @staticmethod
     def mark_arrow_for_scroll(scroll_start, scroll_end, board):
@@ -382,6 +383,7 @@ class Device:
         cv2.imshow('scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
         cv2.waitKey()
         cv2.destroyWindow('scroll')
+        return board
 
 
 if __name__ == '__main__':

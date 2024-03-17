@@ -137,13 +137,14 @@ class UTA:
         task = Task(task_id=task_id, user_id='test', task_description=task_desc)
         task.selected_task = task_desc
         task.keyboard_active = device.check_keyboard_active()
+        output_dir = pjoin(self.system_connector.user_data_root, 'test', task_id)
 
         for i in range(max_try):
             print('\n*** UI ', i, '***')
             # 1. process ui
-            ui_img_file, ui_xml_file = device.cap_and_save_ui_screenshot_and_xml(ui_id=len(task.relations), output_dir=pjoin('data/test', task_id))
+            ui_img_file, ui_xml_file = device.cap_and_save_ui_screenshot_and_xml(ui_id=len(task.relations), output_dir=output_dir)
             ui = self.process_ui_data(ui_img_file, ui_xml_file, device.get_device_resolution(), show=show_ui)
-            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, 'test', task_id))
+            self.system_connector.save_ui_data(ui, output_dir=output_dir)
 
             # 2. check action
             task.conversation_automation = []  # clear up the conversation of previous ui
