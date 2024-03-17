@@ -88,10 +88,10 @@ class SystemConnector:
         task_folder = pjoin(self.user_data_root, task.user_id, task.task_id)
         if not os.path.exists(task_folder):
             os.makedirs(task_folder)
-            print('- Create task folder', task_folder, '-')
+            # print('- Create task folder', task_folder, '-')
         task_file = pjoin(task_folder, 'task.json')
         self.save_json(task.to_dict(), task_file)
-        print('- Export task to file', task_file, '-')
+        # print('- Export task to file', task_file, '-')
 
     @staticmethod
     def load_ui_data(screenshot_file, xml_file=None, ui_resize=(1080, 2280)):
@@ -118,16 +118,16 @@ class SystemConnector:
         # self.save_json(ui_data.elements, output_file_path_elements)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-            print('- Create ui folder', output_dir, '-')
+            # print('- Create ui folder', output_dir, '-')
         output_file_path_element_tree = pjoin(output_dir, ui_data.ui_id + '_uitree.json')
         self.save_json(ui_data.elements, output_file_path_element_tree)
-        print('- Export ui elements to file', output_file_path_element_tree, '-')
+        # print('- Export ui elements to file', output_file_path_element_tree, '-')
 
         # save annotated screenshot
         if ui_data.annotated_elements_screenshot is not None:
             ui_data.annotated_elements_screenshot_path = pjoin(output_dir, ui_data.ui_id + '_annotated_elements.png')
             cv2.imwrite(ui_data.annotated_elements_screenshot_path, ui_data.annotated_elements_screenshot)
-            print('- Export annotated elements screenshot to file', ui_data.annotated_elements_screenshot_path, '-')
+            # print('- Export annotated elements screenshot to file', ui_data.annotated_elements_screenshot_path, '-')
 
     '''
     ****************
