@@ -130,23 +130,35 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
-    def auto_task(self, task_desc, task_id, device, show_ui=False, printlog=False):
+    def auto_task(self, task_desc, task_id, device,
+                  max_try=10, show_ui=False, printlog=False):
         # 0. retrieve task info
-        user, task = self.instantiate_user_task(user_id='test', task_id=task_id, user_msg=task_desc)
+        task = Task(task_id=task_id, user_id='test', task_description=task_desc)
+        task.selected_task = task_desc
         task.keyboard_active = device.check_keyboard_active()
 
-        # 1. process ui
-        ui_img_file, ui_xml_file = device.cap_and_save_ui_screenshot_and_xml(ui_id=len(task.relations), output_dir=pjoin('data/test', task_id))
-        ui = self.process_ui_data(ui_img_file, ui_xml_file, device.get_device_resolution(), show=show_ui)
-        self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, 'test', task_id))
+        for i in range(max_try):
+            print('\n*** UI ', i, '***')
+            # 1. process ui
+            ui_img_file, ui_xml_file = device.cap_and_save_ui_screenshot_and_xml(ui_id=len(task.relations), output_dir=pjoin('data/test', task_id))
+            ui = self.process_ui_data(ui_img_file, ui_xml_file, device.get_device_resolution(), show=show_ui)
+            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, 'test', task_id))
 
-        # 2. act step
-        task.conversation_automation = []  # clear up the conversation of previous ui
-        # check action on the UI by checking the relation and target elements
-        action = self.task_action_checker.action_on_ui_vision(ui, task, printlog)
-        self.set_action(action)
-        self.system_connector.save_task(task)
-        return ui, action
+            # 2. act step
+            task.conversation_automation = []  # clear up the conversation of previous ui
+            # check action on the UI by checking the relation and target elements
+            action = self.task_action_checker.action_on_ui_vision(ui, task, printlog)
+            self.set_action(action)
+            print(action)
+            self.system_connector.save_task(task)
+            if action['Action'] == 'Complete':
+                if action.get('ElementBounds'):
+                    bounds = action['ElementBounds']
+                    device.mark_circle_on_element_centroid(((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2), ui.ui_screenshot.copy())
+                print('*** Task Complete ***')
+                break
+            else:
+                device.take_action(action=action, ui_data=ui, show=True)
 
     def automate_task_vision(self, user_id, task_id, ui_img_file, ui_xml_file, keyboard_active=False, printlog=False):
         """
