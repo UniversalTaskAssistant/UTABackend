@@ -1,3 +1,4 @@
+import time
 from os.path import join as pjoin
 import traceback
 
@@ -131,7 +132,7 @@ class UTA:
     ***********************
     '''
     def auto_task(self, task_desc, task_id, device,
-                  max_try=10, show_ui=False, printlog=False):
+                  max_try=10, show_ui=False, printlog=False, wait_time=3):
         # 0. retrieve task info
         task = Task(task_id=task_id, user_id='test', task_description=task_desc)
         task.selected_task = task_desc
@@ -144,13 +145,15 @@ class UTA:
             ui = self.process_ui_data(ui_img_file, ui_xml_file, device.get_device_resolution(), show=show_ui)
             self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, 'test', task_id))
 
-            # 2. act step
+            # 2. check action
             task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui_vision(ui, task, printlog)
             self.set_action(action)
-            print(action)
             self.system_connector.save_task(task)
+            print(action)
+
+            # 3. perform action
             if action['Action'] == 'Complete':
                 if action.get('ElementBounds'):
                     bounds = action['ElementBounds']
@@ -159,6 +162,8 @@ class UTA:
                 break
             else:
                 device.take_action(action=action, ui_data=ui, show=True)
+            print('* Waiting for loading page *')
+            time.sleep(wait_time)
 
     def automate_task_vision(self, user_id, task_id, ui_img_file, ui_xml_file, keyboard_active=False, printlog=False):
         """
@@ -253,7 +258,7 @@ class UTA:
                 action.get('Relation') is None and 'complete' in str(action).lower():
             action["Action"] = "Complete"
 
-    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False, annotate_bound=False):
+    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False, annotate_bound=True):
         """
         Process ui dato
         Args:
