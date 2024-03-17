@@ -66,7 +66,7 @@ class TaskActionChecker:
         Returns:
             Action (dict): {"Action":, "Element Id":, "Reason":, "Description":, "Input Text":}
         """
-        print('\n*** Check Action on UI *** ')
+        # print('\n*** Check Action on UI *** ')
         # Check ui task relation
         relation = self.__task_ui_checker.check_ui_relation_gpt4v(ui_data, task, printlog)
         task.relations.append(relation)

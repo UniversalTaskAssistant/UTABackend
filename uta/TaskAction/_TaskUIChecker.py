@@ -233,7 +233,7 @@ class _TaskUIChecker:
             # Ask FM
             resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
             task.res_relation_check = self.transfer_to_dict(resp)
-            print(task.res_relation_check)
+            # print(task.res_relation_check)
             return task.res_relation_check
         except Exception as e:
             print(resp)
