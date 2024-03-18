@@ -62,7 +62,7 @@ class Device:
         xml = self.cap_current_ui_hierarchy_xml()
         with open(xml_path, 'w', encoding='utf-8') as fp:
             fp.write(xml)
-        print('- Export UI image and xml to ', screen_path, xml_path, '-')
+        # print('- Export UI image and xml to ', screen_path, xml_path, '-')
         return screen_path, xml_path
 
     def cap_screenshot(self, recur_time=0):
@@ -73,6 +73,7 @@ class Device:
         Returns:
             Binary data of the captured screenshot.
         """
+        print('* Capture screenshot *')
         assert 0 <= recur_time < 3
         screen = self.__adb_device.screencap()
         if recur_time and screen is None:
@@ -209,21 +210,20 @@ class Device:
             ui_data (UIData): UI data containing the element coordinates
             show (bool): If True, displays the annotated action
         """
-        print('*** Perform Action ***')
-        print(action)
+        print('* Perform Action *')
         action_type = action['Action'].lower()
         if 'click' in action_type:
-            self.click_screen(ui_data, int(action['Element Id']), show)
+            return self.click_screen(ui_data, int(action['Element Id']), show)
         elif 'scroll' in action_type:
-            self.up_scroll_screen(ui_data, int(action['Element Id']), show)  # scroll down
+            return self.up_scroll_screen(ui_data, int(action['Element Id']), show)  # scroll down
         elif 'swipe' in action_type:
-            self.left_swipe_screen(ui_data, int(action['Element Id']), show)
+            return self.left_swipe_screen(ui_data, int(action['Element Id']), show)
         elif 'input' in action_type:
-            self.input_text(action['Input Text'])
+            return self.input_text(action['Input Text'])
         elif 'launch' in action_type:
-            self.launch_app(action['App'])
+            return self.launch_app(action['App'])
         elif 'back' in action_type:
-            self.go_back()
+            return self.go_back()
         else:
             raise ValueError(f"No expected action returned from model, returned action: {action_type}")
 
@@ -238,13 +238,9 @@ class Device:
         ele = ui.elements[element_id]
         bounds = ele['bounds']
         centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-        if show:
-            board = ui.ui_screenshot.copy()
-            cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
-            cv2.imshow('click', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
-            cv2.waitKey()
-            cv2.destroyWindow('click')
         self.__adb_device.input_tap(centroid[0], centroid[1])
+        if show:
+            return self.mark_circle_on_element_centroid(centroid, ui.ui_screenshot.copy())
 
     def long_press_screen(self, ui, element_id, show=False):
         """
@@ -257,13 +253,9 @@ class Device:
         ele = ui.elements[element_id]
         bounds = ele['bounds']
         centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-        if show:
-            board = ui.ui_screenshot.copy()
-            cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
-            cv2.imshow('long_press', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
-            cv2.waitKey()
-            cv2.destroyWindow('long_press')
         self.__adb_device.input_swipe(centroid[0], centroid[1], centroid[0], centroid[1], 3000)
+        if show:
+            return self.mark_circle_on_element_centroid(centroid, ui.ui_screenshot.copy())
 
     def up_scroll_screen(self, ui, element_id, show=False):
         """
@@ -277,13 +269,9 @@ class Device:
         bounds = ele['bounds']
         scroll_start = ((bounds[2] + bounds[0]) // 2, 2000)
         scroll_end = ((bounds[2] + bounds[0]) // 2, 100)
-        if show:
-            board = ui.ui_screenshot.copy()
-            cv2.arrowedLine(board, scroll_start, scroll_end, (255, 0, 255), 8)
-            cv2.imshow('up_scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
-            cv2.waitKey()
-            cv2.destroyWindow('up_scroll')
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
+        if show:
+            return self.mark_arrow_for_scroll(scroll_start, scroll_end, ui.ui_screenshot.copy())
 
     def down_scroll_screen(self, ui, element_id, show=False):
         """
@@ -297,13 +285,9 @@ class Device:
         bounds = ele['bounds']
         scroll_end = ((bounds[2] + bounds[0]) // 2, bounds[3])
         scroll_start = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
-        if show:
-            board = ui.ui_screenshot.copy()
-            cv2.arrowedLine(board, scroll_start, scroll_end, (255, 0, 255), 8)
-            cv2.imshow('down_scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
-            cv2.waitKey()
-            cv2.destroyWindow('down_scroll')
         self.__adb_device.input_swipe(scroll_start[0], scroll_start[1], scroll_end[0], scroll_end[1], 500)
+        if show:
+            return self.mark_arrow_for_scroll(scroll_start, scroll_end, ui.ui_screenshot.copy())
 
     def right_swipe_screen(self, ui, element_id, show=False):
         """
@@ -318,13 +302,9 @@ class Device:
         bias = 20
         swipe_start = (bounds[0] + bias, (bounds[3] + bounds[1]) // 2)
         swipe_end = (bounds[2], (bounds[3] + bounds[1]) // 2)
-        if show:
-            board = ui.ui_screenshot.copy()
-            cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
-            cv2.imshow('right_swipe', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
-            cv2.waitKey()
-            cv2.destroyWindow('right_swipe')
         self.__adb_device.input_swipe(swipe_start[0], swipe_start[1], swipe_end[0], swipe_end[1], 500)
+        if show:
+            return self.mark_arrow_for_scroll(swipe_start, swipe_end, ui.ui_screenshot.copy())
 
     def left_swipe_screen(self, ui, element_id, show=False):
         """
@@ -339,13 +319,9 @@ class Device:
         bias = 20
         swipe_start = (bounds[2] - bias, (bounds[3] + bounds[1]) // 2)
         swipe_end = (bounds[0], (bounds[3] + bounds[1]) // 2)
-        if show:
-            board = ui.ui_screenshot.copy()
-            cv2.arrowedLine(board, swipe_start, swipe_end, (255, 0, 255), 8)
-            cv2.imshow('left_swipe', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
-            cv2.waitKey()
-            cv2.destroyWindow('left_swipe')
         self.__adb_device.input_swipe(swipe_start[0], swipe_start[1], swipe_end[0], swipe_end[1], 500)
+        if show:
+            return self.mark_arrow_for_scroll(swipe_start, swipe_end, ui.ui_screenshot.copy())
 
     def input_text(self, text):
         """
@@ -374,6 +350,40 @@ class Device:
         self.__adb_device.shell('input keyevent KEYCODE_HOME')
         # wait a few second to be refreshed
         time.sleep(waiting_time)
+
+    '''
+    ***************
+    *** Utils ***
+    ***************
+    '''
+    @staticmethod
+    def mark_circle_on_element_centroid(centroid, board):
+        """
+        Mark a circle on the target element centroid
+        Args:
+            centroid (tuple): coord of centroid of the element
+            board (img): image to be drawn
+        """
+        cv2.circle(board, (centroid[0], centroid[1]), 20, (255, 0, 255), 8)
+        cv2.imshow('tar element', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
+        cv2.waitKey()
+        cv2.destroyWindow('tar element')
+        return board
+
+    @staticmethod
+    def mark_arrow_for_scroll(scroll_start, scroll_end, board):
+        """
+        Show arrow for the scroll
+        Args:
+            scroll_start (tuple): start point
+            scroll_end (tuple): end point
+            board (img): image to be drawn
+        """
+        cv2.arrowedLine(board, scroll_start, scroll_end, (255, 0, 255), 8)
+        cv2.imshow('scroll', cv2.resize(board, (board.shape[1] // 3, board.shape[0] // 3)))
+        cv2.waitKey()
+        cv2.destroyWindow('scroll')
+        return board
 
 
 if __name__ == '__main__':

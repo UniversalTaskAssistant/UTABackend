@@ -43,15 +43,18 @@ class UIProcessor:
         Process a UI, including
             1. Convert vh to tidy and formatted json
             2. Extract basic UI info (elements) and store as dicts
+            3. Build element tree
         Args:
             ui_data (UIData): ui data for processing
         Returns:
             ui_data.ui_vh_json (dict): VH in a tidy json format
             ui_data.elements; ui_data.elements_leaves (list of dicts)
+            ui_data.element_tree (dict): Simplified element tree
         """
         print('* Pre-process XML VH to clean-up as JSON and extract UI elements *')
         self.__ui_preprocessor.ui_vh_xml_cvt_to_json(ui_data=ui_data)
         self.__ui_preprocessor.ui_info_extraction(ui_data=ui_data)
+        self.__ui_analyser.ui_build_element_tree(ui_data)
         return ui_data
 
     def analyze_ui(self, ui_data, ocr=True, cls=False):

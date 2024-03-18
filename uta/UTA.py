@@ -1,3 +1,4 @@
+import time
 from os.path import join as pjoin
 import traceback
 
@@ -130,6 +131,41 @@ class UTA:
     *** Task Automation ***
     ***********************
     '''
+    def auto_task(self, task_desc, task_id, device,
+                  max_try=10, show_ui=False, printlog=False, wait_time=3):
+        # 0. retrieve task info
+        task = Task(task_id=task_id, user_id='test', task_description=task_desc)
+        task.selected_task = task_desc
+        task.keyboard_active = device.check_keyboard_active()
+        output_dir = pjoin(self.system_connector.user_data_root, 'test', task_id)
+
+        for i in range(max_try):
+            print('\n*** UI ', i, '***')
+            # 1. process ui
+            ui_img_file, ui_xml_file = device.cap_and_save_ui_screenshot_and_xml(ui_id=len(task.relations), output_dir=output_dir)
+            ui = self.process_ui_data(ui_img_file, ui_xml_file, device.get_device_resolution(), show=show_ui)
+            self.system_connector.save_ui_data(ui, output_dir=output_dir)
+
+            # 2. check action
+            task.conversation_automation = []  # clear up the conversation of previous ui
+            # check action on the UI by checking the relation and target elements
+            action = self.task_action_checker.action_on_ui_vision(ui, task, printlog)
+            self.set_action(action)
+            self.system_connector.save_task(task)
+            print(action)
+
+            # 3. perform action
+            if action['Action'] == 'Complete':
+                if action.get('ElementBounds'):
+                    bounds = action['ElementBounds']
+                    device.mark_circle_on_element_centroid(((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2), ui.ui_screenshot.copy())
+                print('*** Task Complete ***')
+                break
+            else:
+                device.take_action(action=action, ui_data=ui, show=True)
+            print('* Waiting for loading page *')
+            time.sleep(wait_time)
+
     def automate_task_vision(self, user_id, task_id, ui_img_file, ui_xml_file, keyboard_active=False, printlog=False):
         """
         Identify the action on the current ui to automate the task based on GPT-4V
@@ -138,6 +174,7 @@ class UTA:
             task_id (str): task id
             ui_img_file (path): screenshot image path
             ui_xml_file (path): VH xml file path
+            keyboard_active (bool): True to indicate the keyboard is active
             printlog (bool): If True, enables logging of outputs.
         Returns:
             Action (dict): {"Action": }
@@ -149,9 +186,7 @@ class UTA:
 
             # 1. process ui
             ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-            output_dir = pjoin(self.system_connector.user_data_root, user_id, task_id)
-            self.system_connector.save_ui_data(ui, output_dir=output_dir)
-            ui.annotated_elements_screenshot_path = pjoin(output_dir, ui.ui_id + '_annotated_elements.png')
+            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
 
             # 2. act step
             task.conversation_automation = []  # clear up the conversation of previous ui
@@ -192,8 +227,7 @@ class UTA:
 
             # 1. process ui
             ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
-            output_dir = pjoin(self.system_connector.user_data_root, user_id, task_id)
-            self.system_connector.save_ui_data(ui, output_dir=output_dir)
+            self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
 
             # 2. act step
             task.conversation_automation = []  # clear up the conversation of previous ui
