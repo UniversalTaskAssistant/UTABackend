@@ -47,45 +47,39 @@ class _TaskUIChecker:
                                  '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n' \
                                  '6. If you decide to input text, the Action should be Input.'
 
-        self.__relation_prompt_gpt4v = 'What is the relation between this UI and the task "{task}" and why?\n' \
-                                     '!!!Relation Options:\n'\
-                                     '1. Almost Complete: The UI is at the final stage, with only one action left to complete the task. This status applies if the next action directly concludes the task (e.g., finalizing a setting adjustment).\n' \
-                                     '2. Directly related: The UI contains elements (clickable, scrollable, swipeable) that are essential for advancing the task, but it isn\'t the task\'s final step.\n' \
-                                     '3. Indirectly related: Although the UI doesn\'t have direct elements for the task, it includes elements that lead to the relevant UI or task (e.g., a settings button, search bar).\n' \
-                                     '4. Unrelated: The UI is irrelevant to the task or any sub-tasks.\n' \
-                                     '!!!Notes:\n' \
-                                     '- For Almost Complete, include the Element Id shown in the UI for the final action and a brief reason.\n' \
-                                     '- For Directly or Indirectly Related, check if the UI contains:\n' \
-                                     '-- UI Modal: Overlay windows (e.g., alerts, confirmations).\n' \
-                                     '-- User Permission: Permissions request dialogs.\n' \
-                                     '-- Login Page: Login requirements.\n' \
-                                     '-- Form: Personal data input forms.\n' \
-                                     '-- If present, describe the component, provide a reason, and specify the user\'s required action.\n' \
-                                     '- For Unrelated scenarios, try to find which element (by element Id shown in the UI) in the current UI can be clicked to navigate back or close the current unrelated UI to proceed the task, suggest "Back" as the action.\n\n' \
-                                     'Response Format:\n' \
-                                     '1. If Almost Complete, use:\n' \
-                                     '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>"}}\n' \
-                                     '2. If Directly or Indirectly Related and components are present, use:\n' \
-                                     '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>", "Component": "<component>", "Explanation": "<explanation>", "Required action": "<action>"}}\n' \
-                                     '3. If Directly or Indirectly Related without specific components, specify the action to proceed (Click, Input, Scroll, Swipe) and, if applicable, the input text:\n' \
-                                     '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>", "Action": "<type>", "Input Text": "<text>"}}\n' \
-                                     '4. If Unrelated, use:\n' \
-                                     '{{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<reason>", "Action": "Back"}}\n\n' \
-                                     'Examples:\n' \
-                                     '- Indirectly Related with User Permission Component:\n' \
-                                     '{{"Relation": "Indirectly related", "Element Id": "2", "Reason": "The UI has a search bar to find \'Turn on voice\'", "Component": "User Permission", "Explanation": "Asks for photo access permission", "Required action": "Allow or deny"}}\n' \
-                                     '- Directly Related with Action:\n' \
-                                     '{{"Relation": "Directly related", "Element Id": "3", "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click"}}\n' \
-                                     '- Unrelated with Back Action:\n' \
-                                     '{{"Relation": "Unrelated", "Element Id": "3", "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n\n' \
-                                     '!!!Additional Notes:\n' \
-                                     '1. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
-                                     '2. Try to use the most convenient way to finish the task, please make use of the search bar with flexibility.\n' \
-                                     '3. If the relation is related/almost complete, you MUST give the Element Id (int, shown in the UI) of the related element\n' \
-                                     '4. If Relation is almost complete, you MUST provide the Element Id (int, shown in the UI) required for the final step and describe its operation in the Reason.\n' \
-                                     '5. Before the Input action, you need to select Click action to active the keyboard first.\n' \
-                                     '6. After keyboard is activated, if you want to input text, the action should be input.\n' \
-                                     '7. You MUST give Element Id in your result.'
+        self.__relation_prompt_gpt4v = 'What is the relation between this UI and the task "{task}" and the actions to proceed the task?\n' \
+                                       '!!!General Notes:\n' \
+                                       '1.	The elements are annotated with bounding boxes and element ids on the UI image, use them as the "Element Id" (int type).\n' \
+                                       '2.	ONLY respond in JSON that can be parsed by python json.loads directly with the given attributes.\n' \
+                                       '3.	Output one-sentence description for the current UI in the "UI Desc”.\n' \
+                                       '4.	Output one-sentence reason for your answer in the "Reason".\n' \
+                                       '5.	Must output all the non-optional attributes in the JSON in your response.\n' \
+                                       '!!!Relations and Actions:\n' \
+                                       '1.	Complete\n' \
+                                       'a.	Definition: The UI is at the final page to complete the task.\n' \
+                                       'b.	Output: {{"Relation": "Complete", "Reason": <reason>, "UI Desc": <UI Description>}}.\n' \
+                                       '2.	Related\n' \
+                                       'a.	Definition: The UI contains elements (clickable, scrollable, swipeable) that are essential for proceeding the task, but it isn\'t the task\'s final step.\n' \
+                                       'b.	Output: {{"Relation": "Related", "Element Id": <ID>, "Reason": <reason>, "Action": <type>, "UI Desc": <UI Description>, "Input Text"(Optional): <text>}}\n' \
+                                       'c.	Note:\n' \
+                                       '-	Action type: Click, Input, Scroll, Swipe.\n' \
+                                       '-	Before Input action, make sure the keyboard is active, otherwise, click on the input field to activate the keyboard first.\n' \
+                                       '-	If the action type is Input, output "Input Text" with the text content to input.\n' \
+                                       '-	This UI may not contain the directly related elements for the task, but it may include elements that lead to the relevant UI (e.g., menu button, tabs, search bar, setting buttons)\n' \
+                                       '3.	Unrelated\n' \
+                                       'a.	Definition: The UI is irrelevant to the task at all (even no indirectly related elements leading to related UIs either).\n' \
+                                       'b.	Output: {{"Relation": "Unrelated", "Reason": <reason>, "UI Desc": <UI Description>, "Action": "Back", "Element Id"(Optional): <ID>}}\n' \
+                                       'c.	Note:\n' \
+                                       '-   Check if there are any elements that can be clicked to navigate back or close the current unrelated UI to a related UI to proceed the task. If so, suggest the Element Id of the back element. Otherwise, just set Action as "Back" \n' \
+                                       '4.	User Action\n' \
+                                       'a.	Definition: This UI demands the user to manually action before proceeding (e.g., login page, password input, pop-up modal)\n' \
+                                       'b.	Output: {{"Relation": "User Action", "User Action": <Required Action>, "Reason": <reason>, "UI Desc": <UI Description>}}\n' \
+                                       'c.	Note:\n' \
+                                       '-   Type of User Action: UI Modal (e.g., alerts, confirmations); Login; Signup; Password; User Permission; Form.\n' \
+                                       '-   Specify the required user action in the "User Action" in the output.\n' \
+                                       '!!!Example Output:\n' \
+                                       '1. {{"Relation": "User Action", "User Action": "User Permission", "Reason": "There is a pop-up window asking for user permission", "UI Desc": "A UI of the home page of Youtube, being overlaid with a pop-up window to ask for user permission."}}'
+
     '''
     **************
     *** Basics ***
@@ -104,7 +98,7 @@ class _TaskUIChecker:
         prompt += 'Keyboard active: ' + str(task.keyboard_active) + '.\n'
         # if task.step_hint is not None:
         #     prompt += "(Additional step hints to proceed the task:" + str(task.step_hint) + ')\n'
-            # if len(task.user_clarify) > 0:
+        # if len(task.user_clarify) > 0:
         #     prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + ')\n'
         # if len(task.subtasks) > 0:
         #     prompt += '(Potential subtasks and steps to complete the task: ' + str(task.subtasks) + '.)\n'
@@ -137,7 +131,7 @@ class _TaskUIChecker:
         try:
             return json.loads(resp['content'])
         except Exception as e:
-            regex = r'"([A-Za-z ]+?)":\s*(".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\':\s*(\'.*?[^\\]\'|".*?[^\\]")'
+            regex = r'"([A-Za-z ]+?)":\s*(\d+|".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\':\s*(\d+|\'.*?[^\\]\'|".*?[^\\]")'
             attributes = re.findall(regex, resp['content'])
             resp_dict = {}
             for match in attributes:
@@ -225,17 +219,15 @@ class _TaskUIChecker:
         Returns:
             FM response (dict): {"Relation":, "Reason":}
         """
-        try:
-            print('* Check UI and Task Relation *')
-            # Format base prompt
-            prompt = self.wrap_task_context(task)
-            prompt += self.wrap_task_history(task)
-            prompt += self.__relation_prompt_gpt4v.format(task=task.selected_task, keyboard_active=task.keyboard_active)
-            # Ask FM
-            resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-            task.res_relation_check = self.transfer_to_dict(resp)
-            # print(task.res_relation_check)
-            return task.res_relation_check
-        except Exception as e:
-            print(resp)
-            raise e
+        print('* Check UI and Task Relation *')
+        # Format base prompt
+        prompt = self.wrap_task_context(task)
+        prompt += self.wrap_task_history(task)
+        prompt += self.__relation_prompt_gpt4v.format(task=task.selected_task, keyboard_active=task.keyboard_active)
+        # Ask FM
+        resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+        print('resp:\n', resp)
+        task.res_relation_check = self.transfer_to_dict(resp)
+        print('transferred:\n', task.res_relation_check)
+        # print(task.res_relation_check)
+        return task.res_relation_check
