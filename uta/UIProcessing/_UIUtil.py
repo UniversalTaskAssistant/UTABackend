@@ -82,7 +82,7 @@ class _UIUtil:
             for ele in elements:
                 left, top, right, bottom = ele['bounds']
                 cv2.rectangle(board, (left, top), (right, bottom), (0, 250, 0), 2)
-                # board = draw_transparent_border_rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3, 0.7)
+                board = draw_transparent_border_rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3, 0.7)
         # annotate elements
         for i, ele in enumerate(elements):
             left, top, right, bottom = ele['bounds']

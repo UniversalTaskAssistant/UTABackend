@@ -225,7 +225,7 @@ class UTA:
                 action.get('Relation') is None and 'complete' in str(action).lower():
             action["Action"] = "Complete"
 
-    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False, annotate_bound=False):
+    def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False, annotate_bound=True):
         """
         Process ui dato
         Args:

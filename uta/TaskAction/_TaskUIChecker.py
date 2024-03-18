@@ -54,7 +54,7 @@ class _TaskUIChecker:
                                      '3. Indirectly related: Although the UI doesn\'t have direct elements for the task, it includes elements that lead to the relevant UI or task (e.g., a settings button, search bar).\n' \
                                      '4. Unrelated: The UI is irrelevant to the task or any sub-tasks.\n' \
                                      '!!!Notes:\n' \
-                                     '- For Almost Complete, include the element Id shown in the UI for the final action and a brief reason.\n' \
+                                     '- For Almost Complete, include the Element Id shown in the UI for the final action and a brief reason.\n' \
                                      '- For Directly or Indirectly Related, check if the UI contains:\n' \
                                      '-- UI Modal: Overlay windows (e.g., alerts, confirmations).\n' \
                                      '-- User Permission: Permissions request dialogs.\n' \
@@ -81,10 +81,11 @@ class _TaskUIChecker:
                                      '!!!Additional Notes:\n' \
                                      '1. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
                                      '2. Try to use the most convenient way to finish the task, please make use of the search bar with flexibility.\n' \
-                                     '3. If the relation is related/almost complete, give the Element Id (int, shown in the UI) of the related element\n' \
-                                     '4. If Relation is almost complete, you must provide the Element Id (int, shown in the UI) required for the final step and describe its operation in the Reason.\n' \
-                                     '5. If you decide to input text, the Action should be Input.\n' \
-                                     '6. Before the Input action, you need to select Click action to active the keyboard first.'
+                                     '3. If the relation is related/almost complete, you MUST give the Element Id (int, shown in the UI) of the related element\n' \
+                                     '4. If Relation is almost complete, you MUST provide the Element Id (int, shown in the UI) required for the final step and describe its operation in the Reason.\n' \
+                                     '5. Before the Input action, you need to select Click action to active the keyboard first.\n' \
+                                     '6. After keyboard is activated, if you want to input text, the action should be input.\n' \
+                                     '7. You MUST give Element Id in your result.'
     '''
     **************
     *** Basics ***
@@ -101,8 +102,8 @@ class _TaskUIChecker:
         """
         prompt = '!!!Context:\n'
         prompt += 'Keyboard active: ' + str(task.keyboard_active) + '.\n'
-        if task.step_hint is not None:
-            prompt += "(Additional step hints to proceed the task:" + str(task.step_hint) + ')\n'
+        # if task.step_hint is not None:
+        #     prompt += "(Additional step hints to proceed the task:" + str(task.step_hint) + ')\n'
             # if len(task.user_clarify) > 0:
         #     prompt += '(Additional information and commands for the task:' + str(task.user_clarify) + ')\n'
         # if len(task.subtasks) > 0:

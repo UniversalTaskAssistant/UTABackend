@@ -122,7 +122,8 @@ class _OpenAI:
             ],
             "max_tokens": 300,
             "temperature": 0.0,
-            "seed": 42
+            "seed": 42,
+            "n": 1
         }
         start = time.time()
         response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload).json()
