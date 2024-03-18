@@ -156,13 +156,13 @@ class UTA:
 
             # 3. perform action
             if action['Action'] == 'Complete':
-                if action.get('ElementBounds'):
+                if show_ui and action.get('ElementBounds'):
                     bounds = action['ElementBounds']
                     device.mark_circle_on_element_centroid(((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2), ui.ui_screenshot.copy())
                 print('*** Task Complete ***')
                 break
             else:
-                device.take_action(action=action, ui_data=ui, show=True)
+                device.take_action(action=action, ui_data=ui, show=show_ui)
             print('* Waiting for loading page *')
             time.sleep(wait_time)
 

@@ -16,42 +16,4 @@ model = ModelManager()
 task_list_class = TaskList(model)
 task_list2 = task_list_class.available_task_list
 task_info_list2 = task_list_class.task_info_list
-
-gpt4v_prompt = 'What is the relation between this UI and the task "{task}" and why?\n' \
-             '!!!Relation Options:\n'\
-             '1. Almost Complete: The UI is at the final stage, with only one action left to complete the task. This status applies if the next action directly concludes the task (e.g., finalizing a setting adjustment).\n' \
-             '2. Directly related: The UI contains elements (clickable, scrollable, swipeable) that are essential for advancing the task, but it isn\'t the task\'s final step.\n' \
-             '3. Indirectly related: Although the UI doesn\'t have direct elements for the task, it includes elements that lead to the relevant UI or task (e.g., a settings button, search bar).\n' \
-             '4. Unrelated: The UI is irrelevant to the task or any sub-tasks.\n' \
-             '!!!Notes:\n' \
-             '- For Almost Complete, include the element ID for the final action and a brief reason.\n' \
-             '- For Directly or Indirectly Related, check if the UI contains:\n' \
-             '-- UI Modal: Overlay windows (e.g., alerts, confirmations).\n' \
-             '-- User Permission: Permissions request dialogs.\n' \
-             '-- Login Page: Login requirements.\n' \
-             '-- Form: Personal data input forms.\n' \
-             '-- If present, describe the component, provide a reason, and specify the user\'s required action.\n' \
-             '- For Unrelated scenarios, try to find which element in the current UI can be clicked to navigate back or close the current unrelated UI to proceed the task, suggest "Back" as the action.\n\n' \
-             'Response Format:\n' \
-             '1. If Almost Complete, use:\n' \
-             '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>"}}\n' \
-             '2. If Directly or Indirectly Related and components are present, use:\n' \
-             '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>", "Component": "<component>", "Explanation": "<explanation>", "Required action": "<action>"}}\n' \
-             '3. If Directly or Indirectly Related without specific components, specify the action to proceed (Click, Input, Scroll, Swipe) and, if applicable, the input text:\n' \
-             '{{"Relation": "<relation>", "Element Id": "<ID>", "Reason": "<reason>", "Action": "<type>", "Input Text": "<text>"}}\n' \
-             '4. If Unrelated, use:\n' \
-             '{{"Relation": "<relation>", "Element Id": "<ID or None>", "Reason": "<reason>", "Action": "Back"}}\n\n' \
-             'Examples:\n' \
-             '- Indirectly Related with User Permission Component:\n' \
-             '{{"Relation": "Indirectly related", "Element Id": "2", "Reason": "The UI has a search bar to find \'Turn on voice\'", "Component": "User Permission", "Explanation": "Asks for photo access permission", "Required action": "Allow or deny"}}\n' \
-             '- Directly Related with Action:\n' \
-             '{{"Relation": "Directly related", "Element Id": "3", "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click"}}\n' \
-             '- Unrelated with Back Action:\n' \
-             '{{"Relation": "Unrelated", "Element Id": "3", "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n\n' \
-             '!!!Additional Notes:\n' \
-             '1. If the UI indicates the task has nearly reached completion (requiring just one final user action), select "Almost Complete".\n' \
-             '2. Delete all the words in searching bar before start a new search trying.\n' \
-             '3. Do NOT try to repeat previous actions as they have been tried.\n' \
-             '4. If the relation is related/almost complete, give the Element Id (int) of the related element\n' \
-             '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n' \
-             '6. If you decide to input text, the Action should be Input.'
+app_list2 = ["com.android.settings"] * 6 + ['com.whatsapp'] * 6 + ['us.zoom.videomeetings'] * 6 + ['com.google.android.youtube'] * 6 + ['com.einnovation.temu'] * 6
