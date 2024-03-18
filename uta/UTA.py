@@ -244,10 +244,6 @@ class UTA:
 
     @staticmethod
     def set_action(action):
-        # if not complete, check if the UI is user decision page
-        if action.get('Component'):
-            action = {"Action": "User Decision", **action}
-
         # if go back and element id, click element
         if action.get('Action') and action['Action'] == 'Back':
             if action.get('Element Id') and 'none' not in action['Element Id'].lower() or \

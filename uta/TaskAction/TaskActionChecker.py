@@ -65,8 +65,7 @@ class TaskActionChecker:
         """
         Wrap up action with more attributes retrieved from ui_data
         """
-        if task.res_relation_check.get('Relation') and 'unrelated' not in task.res_relation_check['Relation'].lower() or \
-                task.res_relation_check.get('Relation') is None and 'unrelated' not in str(task.res_relation_check).lower():
+        if task.res_relation_check.get('Element Id') and 'none' not in task.res_relation_check['Element Id'].lower():
             try:
                 bounds = ui_data.elements[int(action['Element Id'])]['bounds']
                 centroid = ((bounds[2] + bounds[0]) // 2, (bounds[3] + bounds[1]) // 2)
