@@ -244,9 +244,14 @@ class UTA:
 
     @staticmethod
     def set_action(action):
+        # if not complete, check if the UI is user decision page
+        if action.get('Relation') and 'user action' in action['Relation'].lower() or \
+                action.get('Relation') is None and 'user action' in str(action).lower():
+            action = {"Action": "User Decision", **action}
+
         # if go back and element id, click element
         if action.get('Action') and action['Action'] == 'Back':
-            if action.get('Element Id') and 'none' not in action['Element Id'].lower() or \
+            if action.get('Element Id') and action['Element Id'] != 'None' or \
                     action.get('Element Id') is None and 'none' not in str(action).lower():
                 action["Action"] = "Click"
 

@@ -115,6 +115,7 @@ class _OpenAI:
         payload = {
             "model": "gpt-4-vision-preview",
             "messages": [
+                {'role': 'system', 'content': SYSTEM_PROMPT},
                 {
                     "role": "user",
                     "content": content
