@@ -15,6 +15,10 @@ class _OpenAI:
         openai.api_key = self.api_key
         self._model = model
 
+        self.system_prompt = 'You are a mobile virtual assistant that automatically completes a given task on any apps.' \
+                             'You understand UIs, analyse the relations between UIs and the given task, and identify the most appropriate elements to proceed or complete the task.' \
+                             'You always find the most convenient way to finish the task (e.g., making use of the search bar with flexibility).'
+
     @staticmethod
     def count_token_size(string, model="gpt-3.5-turbo"):
         """
@@ -115,7 +119,7 @@ class _OpenAI:
         payload = {
             "model": "gpt-4-vision-preview",
             "messages": [
-                {'role': 'system', 'content': SYSTEM_PROMPT},
+                {'role': 'system', 'content': self.system_prompt},
                 {
                     "role": "user",
                     "content": content

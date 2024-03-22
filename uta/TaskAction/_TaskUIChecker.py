@@ -47,38 +47,42 @@ class _TaskUIChecker:
                                  '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n' \
                                  '6. If you decide to input text, the Action should be Input.'
 
-        self.__relation_prompt_gpt4v = 'What is the relation between this UI and the task "{task}" and the actions to proceed the task?\n' \
-                                       '!!!General Notes:\n' \
-                                       '1.	The elements are annotated with bounding boxes and element ids on the UI image, use them as the "Element Id" (int type).\n' \
-                                       '2.	ONLY respond in JSON that can be parsed by python json.loads directly with the given attributes.\n' \
+        self.__relation_prompt_gpt4v = 'Analyze the relationship between the provided UI and the specified task "{task}" and determine the actions to proceed with the task.\n' \
+                                       '!!!General Instructions:\n' \
+                                       '1.	Refer to elements by their bounding box annotations and IDs (int) in the UI image.\n' \
+                                       '2.	ONLY respond in JSON format compatible with python json.loads, including all required attributes.\n' \
                                        '3.	Output one-sentence description for the current UI in the "UI Desc”.\n' \
                                        '4.	Output one-sentence reason for your answer in the "Reason".\n' \
-                                       '5.	Must output all the non-optional attributes in the JSON in your response.\n' \
+                                       '5.	Ensure all required attributes are included in your JSON response.\n' \
                                        '!!!Relations and Actions:\n' \
                                        '1.	Complete\n' \
-                                       'a.	Definition: The UI is at the final page to complete the task.\n' \
+                                       'a.	Definition: The UI is on the final page needed to complete the task.\n' \
                                        'b.	Output: {{"Relation": "Complete", "Reason": <reason>, "UI Desc": <UI Description>}}.\n' \
                                        '2.	Related\n' \
-                                       'a.	Definition: The UI contains elements (clickable, scrollable, swipeable) that are essential for proceeding the task, but it isn\'t the task\'s final step.\n' \
-                                       'b.	Output: {{"Relation": "Related", "Element Id": <ID>, "Reason": <reason>, "Action": <type>, "UI Desc": <UI Description>, "Input Text"(Optional): <text>}}\n' \
+                                       'a.	Definition: The UI contains elements (clickable, scrollable, swipeable) that are essential for moving the task forward but isn\'t at the final step.\n' \
+                                       'b.	Output: {{"Relation": "Related", "Element Id": <ID>, "Reason": <reason>, "Action": <type>, "UI Desc": <UI Description>, "Input Text": <text>}}\n' \
                                        'c.	Note:\n' \
-                                       '-	Action type: Click, Input, Scroll, Swipe.\n' \
+                                       '-	Action types: Click, Input, Scroll, Swipe.\n' \
                                        '-	Before Input action, make sure the keyboard is active, otherwise, click on the input field to activate the keyboard first.\n' \
-                                       '-	If the action type is Input, output "Input Text" with the text content to input.\n' \
+                                       '-	If the action type is Input, output text content to "Input Text", otherwise output "None" to "Input Text".\n' \
                                        '-	This UI may not contain the directly related elements for the task, but it may include elements that lead to the relevant UI (e.g., menu button, tabs, search bar, setting buttons)\n' \
                                        '3.	Unrelated\n' \
-                                       'a.	Definition: The UI is irrelevant to the task at all (even no indirectly related elements leading to related UIs either).\n' \
-                                       'b.	Output: {{"Relation": "Unrelated", "Reason": <reason>, "UI Desc": <UI Description>, "Action": "Back", "Element Id"(Optional): <ID>}}\n' \
+                                       'a.	Definition: The UI is completely irrelevant to the task, without even indirectly related elements.\n' \
+                                       'b.	Output: {{"Relation": "Unrelated", "Reason": <reason>, "UI Desc": <UI Description>, "Action": "Back", "Element Id": <ID>}}\n' \
                                        'c.	Note:\n' \
-                                       '-   Check if there are any elements that can be clicked to navigate back or close the current unrelated UI to a related UI to proceed the task. If so, suggest the Element Id of the back element. Otherwise, just set Action as "Back" \n' \
-                                       '4.	User Action\n' \
+                                       '-   Identify elements for navigating back or closing the UI to proceed to a related UI, if non-applicable, give "None" as Element Id.\n' \
+                                       '4.	User Action Required\n' \
                                        'a.	Definition: This UI demands the user to manually action before proceeding (e.g., login page, password input, pop-up modal)\n' \
-                                       'b.	Output: {{"Relation": "User Action", "User Action": <Required Action>, "Reason": <reason>, "UI Desc": <UI Description>}}\n' \
+                                       'b.	Output: {{"Relation": "User Action Required", "User Action": <Required Action>, "Reason": <reason>, "UI Desc": <UI Description>}}\n' \
                                        'c.	Note:\n' \
                                        '-   Type of User Action: UI Modal (e.g., alerts, confirmations); Login; Signup; Password; User Permission; Form.\n' \
                                        '-   Specify the required user action in the "User Action" in the output.\n' \
                                        '!!!Example Output:\n' \
-                                       '1. {{"Relation": "User Action", "User Action": "User Permission", "Reason": "There is a pop-up window asking for user permission", "UI Desc": "A UI of the home page of Youtube, being overlaid with a pop-up window to ask for user permission."}}'
+                                       '{{"Relation": "Complete", "Reason": "The UI is on the \'New contact\' screen which is the final step to add a new contact in WhatsApp.", "UI Desc": "A UI of the WhatsApp contact list with an option to add a new contact."}}\n' \
+                                       '{{"Relation": "Directly related", "Element Id": 3, "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click"}}\n' \
+                                       '{{"Relation": "Unrelated", "Element Id": 3, "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n' \
+                                       '{{"Relation": "User Action Required", "User Action": "User Permission", "Reason": "There is a pop-up window asking for user permission", "UI Desc": "A UI of the home page of Youtube, being overlaid with a pop-up window to ask for user permission."}}\n'
+
 
     '''
     **************

@@ -19,11 +19,11 @@ class TaskList:
                                ('Communications', 'Feasible'), ('Communications', 'Feasible'), ('Communications', 'Feasible'),
                                ('Communications', 'Feasible'), ('Communications', 'Feasible'), ('Communications', 'Feasible'),
                                ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'),
-                               ('Business', 'Feasible'), ('Business', 'Infeasible'), ('Business', 'Infeasible'),
+                               ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'),
                                ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'),
                                ('Media & Video', 'Infeasible'), ('Media & Video', 'Infeasible'), ('Media & Video', 'Infeasible'),
-                               ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible'),
-                               ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible')]
+                               ('Shopping', 'Feasible'), ('Shopping', 'Feasible'), ('Shopping', 'Feasible'),
+                               ('Shopping', 'Feasible'), ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible')]
 
 
         self.app_list = ['Android Settings'] * 6 + ['Whatsapp'] * 6 + ['Zoom'] * 6 + ['Youtube'] * 6 + ['Temu'] * 6

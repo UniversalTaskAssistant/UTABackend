@@ -150,7 +150,7 @@ class UTA:
             task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui_vision(ui, task, printlog)
-            self.set_action(action)
+            action = self.set_action(action)
             self.system_connector.save_task(task)
             print(action)
 
@@ -192,7 +192,7 @@ class UTA:
             task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui_vision(ui, task, printlog)
-            self.set_action(action)
+            action = self.set_action(action)
             self.system_connector.save_task(task)
             return ui, action
 
@@ -233,7 +233,7 @@ class UTA:
             task.conversation_automation = []  # clear up the conversation of previous ui
             # check action on the UI by checking the relation and target elements
             action = self.task_action_checker.action_on_ui(ui, task, printlog)
-            self.set_action(action)
+            action = self.set_action(action)
             self.system_connector.save_task(task)
             return ui, action
         except Exception as e:
@@ -248,17 +248,21 @@ class UTA:
         if action.get('Relation') and 'user action' in action['Relation'].lower() or \
                 action.get('Relation') is None and 'user action' in str(action).lower():
             action = {"Action": "User Decision", **action}
+            return action
 
         # if go back and element id, click element
         if action.get('Action') and action['Action'] == 'Back':
             if action.get('Element Id') and action['Element Id'] != 'None' or \
                     action.get('Element Id') is None and 'none' not in str(action).lower():
                 action["Action"] = "Click"
+                return action
 
         # if complete
         if action.get('Relation') and 'complete' in action['Relation'].lower() or \
                 action.get('Relation') is None and 'complete' in str(action).lower():
             action["Action"] = "Complete"
+            return action
+        return action
 
     def process_ui_data(self, ui_img_file, ui_xml_file, device_resolution, show=False, annotate_bound=True):
         """

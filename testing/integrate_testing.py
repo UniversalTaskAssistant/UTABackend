@@ -134,7 +134,7 @@ def task_automation_vision(max_try=20):
 
             if 'complete' in action['Action'].lower():
                 break
-            elif "user decision" in action['Action'].lower():
+            elif "user action required" in action['Relation'].lower():
                 input("Do the necessary operation and press Enter to continue...")
                 continue
 
@@ -205,7 +205,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user54'
+user_id = 'user56'
 # init device
 device = Device()
 device.connect()
@@ -216,7 +216,7 @@ uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
 for task_idx, task in enumerate(task_list2):
-    if task_idx not in [6]:
+    if task_idx not in [25, 26, 27]:
         continue
     # if task_idx < 3:
     #     continue
