@@ -75,8 +75,12 @@ class _TaskUIChecker:
                                        'a.	Definition: This UI demands the user to manually action before proceeding (e.g., login page, password input, pop-up modal)\n' \
                                        'b.	Output: {{"Relation": "User Action Required", "User Action": <Required Action>, "Reason": <reason>, "UI Desc": <UI Description>}}\n' \
                                        'c.	Note:\n' \
+                                       '-   If this page is User Action but also is the complete page of the task, the relation should be turned to "Complete" with the output and notes of "Complete".\n' \
                                        '-   Type of User Action: UI Modal (e.g., alerts, confirmations); Login; Signup; Password; User Permission; Form.\n' \
                                        '-   Specify the required user action in the "User Action" in the output.\n' \
+                                       '5.  Unsure\n' \
+                                       'a.  Definition: You are unsure of the relation and action between the UI and the task because of lack of more information. You have to ask questions to get more information.\n' \
+                                       'b.  Output: {{"Relation": "Unsure", "Reason": <reason>, "UI Desc": <UI Description>, "Question": <question to get more info>}}\n' \
                                        '!!!Example Output:\n' \
                                        '{{"Relation": "Complete", "Reason": "The UI is on the \'New contact\' screen which is the final step to add a new contact in WhatsApp.", "UI Desc": "A UI of the WhatsApp contact list with an option to add a new contact."}}\n' \
                                        '{{"Relation": "Directly related", "Element Id": 3, "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click"}}\n' \
