@@ -216,7 +216,7 @@ uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
 for task_idx, task in enumerate(task_list2):
-    if task_idx not in [25, 26, 27]:
+    if task_idx not in [28, 29]:
         continue
     # if task_idx < 3:
     #     continue

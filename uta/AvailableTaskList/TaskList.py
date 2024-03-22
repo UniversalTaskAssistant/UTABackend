@@ -13,7 +13,7 @@ class TaskList:
                                     'Watch news with YouTube', 'Subscribe to Telstra channel in Youtube', 'Like/dislike video in YouTube',
                                     'Comment on videos in YouTube', 'Adjust video quality in YouTube', 'Add video to watch later in YouTube',
                                     'Find products with Temu', 'Check product’s customer reviews with Temu', 'Check carts in Temu',
-                                    'Save favourite items for future view in Temu', 'Check out in Temu', 'Contact customer service in Temu']
+                                    'Save favourite items for future view in Temu', 'Enter the check out page in Temu', 'help me to look for contact ways of customer service']
         self.task_info_list = [('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
                                ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
                                ('Communications', 'Feasible'), ('Communications', 'Feasible'), ('Communications', 'Feasible'),
@@ -21,9 +21,9 @@ class TaskList:
                                ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'),
                                ('Business', 'Feasible'), ('Business', 'Feasible'), ('Business', 'Feasible'),
                                ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'),
-                               ('Media & Video', 'Infeasible'), ('Media & Video', 'Infeasible'), ('Media & Video', 'Infeasible'),
+                               ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'),
                                ('Shopping', 'Feasible'), ('Shopping', 'Feasible'), ('Shopping', 'Feasible'),
-                               ('Shopping', 'Feasible'), ('Shopping', 'Infeasible'), ('Shopping', 'Infeasible')]
+                               ('Shopping', 'Feasible'), ('Shopping', 'Feasible'), ('Shopping', 'Feasible')]
 
 
         self.app_list = ['Android Settings'] * 6 + ['Whatsapp'] * 6 + ['Zoom'] * 6 + ['Youtube'] * 6 + ['Temu'] * 6
