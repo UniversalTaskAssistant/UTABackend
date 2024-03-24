@@ -69,7 +69,7 @@ class _OpenAI:
             start = time.time()
             if printlog:
                 print('*** Asking ***\n', conversation)
-            resp = openai.chat.completions.create(model=self._model, messages=conversation, temperature=0.0, seed=42)
+            resp = openai.chat.completions.create(model=self._model, messages=conversation, temperature=0.0, seed=42, response_format={"type": "json_object"})
             if runtime:
                 usage = resp.usage
                 prompt_tokens = usage.prompt_tokens
@@ -108,7 +108,8 @@ class _OpenAI:
             content.append({
                 "type": "image_url",
                 "image_url": {
-                    "url": f"data:image/jpeg;base64,{base64_img}"
+                    "url": f"data:image/jpeg;base64,{base64_img}",
+                    "detail": "high"
                 }
             })
 

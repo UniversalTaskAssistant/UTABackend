@@ -135,7 +135,7 @@ class _TaskUIChecker:
         try:
             return json.loads(resp['content'])
         except Exception as e:
-            regex = r'"([A-Za-z ]+?)":\s*(\d+|".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\':\s*(\d+|\'.*?[^\\]\'|".*?[^\\]")'
+            regex = r'"([A-Za-z ]+?)"\s*:\s*(\[[^\]]*\]|\d+|".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\'\s*:\s*(\[[^\]]*\]|\d+|\'.*?[^\\]\'|".*?[^\\]")'
             attributes = re.findall(regex, resp['content'])
             resp_dict = {}
             for match in attributes:

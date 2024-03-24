@@ -11,7 +11,7 @@ from uta.config import *
 from uta.SystemConnection import SystemConnector
 
 
-def annotate_ui_operation(ui, recommended_action):
+def annotate_ui_operation(ui, recommended_action, show=False):
     """
     Create annotated UI for debugging
     """
@@ -74,6 +74,10 @@ def annotate_ui_operation(ui, recommended_action):
     except Exception as e:
         print(e)
         annotated_screenshot = ui.ui_screenshot.copy()
+    if show:
+        cv2.imshow('a', cv2.resize(annotated_screenshot, (500, 1000)))
+        cv2.waitKey()
+        cv2.destroyAllWindows()
     _, encoded_image = cv2.imencode('.png', annotated_screenshot)
     return encoded_image.tobytes()
 
@@ -126,7 +130,7 @@ def task_automation_vision(max_try=20):
                 save_error(action["Exception"], action["Traceback"], "automation_error")
                 break
 
-            annotate_screenshot = annotate_ui_operation(ui_data, action)
+            annotate_screenshot = annotate_ui_operation(ui_data, action, show=True)
             screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
             SystemConnector().save_img(annotate_screenshot, screen_path)
             # with open(screen_path, 'wb') as fp:
@@ -205,7 +209,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user56'
+user_id = 'user58'
 # init device
 device = Device()
 device.connect()
@@ -216,12 +220,14 @@ uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
 for task_idx, task in enumerate(task_list2):
-    if task_idx not in [28, 29]:
+    # if task_idx not in [28, 29]:
+    #     continue
+    # if task_idx < 30:
+    #     continue
+    if not 46 <= task_idx < 54:
         continue
-    # if task_idx < 3:
-    #     continue
-    # if not 20 <= task_idx < 40:
-    #     continue
+    if 'uber' in task.lower() or 'temu' in task.lower():
+        continue
     if task_info_list2[task_idx][1] != 'Feasible':
         continue
     task_id = f"task{task_idx + 1}"

@@ -7,7 +7,7 @@ import tqdm
 from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
 from uta.ModelManagement.OpenAI import _OpenAI
-from uta.ModelManagement.GoogleOCR import _GoogleOCR, _IconClassifier
+from uta.ModelManagement.GoogleOCR import _GoogleOCR
 
 from uta.SystemConnection import _Local, SystemConnector
 from uta.UIProcessing import UIProcessor, _UIChecker
@@ -499,7 +499,7 @@ if __name__ == '__main__':
     # test_appmanager()
 
     # test_device()
-    # get_package()
+    get_package()
     # test_taskuichecker()
     # test_actionchecker()
     # test_uta()
@@ -508,4 +508,4 @@ if __name__ == '__main__':
     # test_tasklist()
     # test_uichecker()
 
-    test_gpt4v()
+    # test_gpt4v()

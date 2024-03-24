@@ -13,7 +13,19 @@ class TaskList:
                                     'Watch news with YouTube', 'Subscribe to Telstra channel in Youtube', 'Like/dislike video in YouTube',
                                     'Comment on videos in YouTube', 'Adjust video quality in YouTube', 'Add video to watch later in YouTube',
                                     'Find products with Temu', 'Check product’s customer reviews with Temu', 'Check carts in Temu',
-                                    'Save favourite items for future view in Temu', 'Enter the check out page in Temu', 'help me to look for contact ways of customer service']
+                                    'Save favourite items for future view in Temu', 'Enter the check out page in Temu', 'help me to look for contact ways of customer service',
+
+                                    'Ask Chatgpt to translate "How are you" into French', 'Explore GPTs and ask Planty GPTs in Chatgpt about "How to take care citrus"', "View my account information in Chatgpt",
+                                    'Change main language of Chatgpt', 'Archive current dialogs in Chatgpt', 'Find archived dialogs in Chatgpt',
+                                    'Open pdf file in PDF Reader', 'Sort pdf files by size in PDF Reader', 'Open word file in PDF Reader',
+                                    'Mark pdf file favourite in PDF Reader', 'Convert word into pdf in PDF Reader', 'Change language to English in PDF Reader',
+                                    'Search hotel in Melbourne in Booking.com', 'Search One-way flight to Melbourne in Booking.com', 'Search car rental pick up in Melbourne CBD with driver\'s age around 65 in Booking.com',
+                                    'Search hotel in Melbourne and sorted by price in Booking.com', 'Search hotel in Melbourne with free parking features in Booking.com', 'Search hotel in Melbourne and view the comments in Booking.com',
+                                    'View the available car types to airport in Uber', 'View the possible fast food that can be delivered in Uber', 'View my account info in Uber',
+                                    'View the possible fast food that can be delivered under $1 delivery fee in Uber', 'Find Guzman y Gomez in food deliver in Uber', 'Look at details of battered Fish in Guzman y Gomez in food deliver in Uber',
+                                    'Find nearby restaurant by Google map', 'Find nearby restaurant by Google map and sorted by price', 'Find nearby Asian restaurant by Google map and sorted by price',
+                                    'Find nearby restaurant by Google map and show the directions by bus', 'Find nearby restaurant by Google map and show the directions by walk and start guiding', 'Set home address in Google map']
+
         self.task_info_list = [('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
                                ('Settings', 'Feasible'), ('Settings', 'Feasible'), ('Settings', 'Feasible'),
                                ('Communications', 'Feasible'), ('Communications', 'Feasible'), ('Communications', 'Feasible'),
@@ -23,10 +35,22 @@ class TaskList:
                                ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'),
                                ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'), ('Media & Video', 'Feasible'),
                                ('Shopping', 'Feasible'), ('Shopping', 'Feasible'), ('Shopping', 'Feasible'),
-                               ('Shopping', 'Feasible'), ('Shopping', 'Feasible'), ('Shopping', 'Feasible')]
+                               ('Shopping', 'Feasible'), ('Shopping', 'Feasible'), ('Shopping', 'Feasible'),
+                               ('Productivity', 'Feasible'), ('Productivity', 'Feasible'), ('Productivity', 'Feasible'),
+                               ('Productivity', 'Feasible'), ('Productivity', 'Feasible'), ('Productivity', 'Feasible'),
+                               ('Productivity', 'Feasible'), ('Productivity', 'Feasible'), ('Productivity', 'Feasible'),
+                               ('Productivity', 'Feasible'), ('Productivity', 'Feasible'), ('Productivity', 'Feasible'),
+                               ('Travel & Local', 'Infeasible'), ('Travel & Local', 'Infeasible'), ('Travel & Local', 'Infeasible'),
+                               ('Travel & Local', 'Infeasible'), ('Travel & Local', 'Infeasible'), ('Travel & Local', 'Infeasible'),
+                               ('Maps & Navigation', 'Infeasible'), ('Maps & Navigation', 'Infeasible'), ('Maps & Navigation', 'Infeasible'),
+                               ('Maps & Navigation', 'Infeasible'), ('Maps & Navigation', 'Infeasible'), ('Maps & Navigation', 'Infeasible'),
+                               ('Maps & Navigation', 'Feasible'), ('Maps & Navigation', 'Feasible'), ('Maps & Navigation', 'Feasible'),
+                               ('Maps & Navigation', 'Feasible'), ('Maps & Navigation', 'Feasible'), ('Maps & Navigation', 'Feasible'),
+                               ]
 
+        self.app_list = ['Android Settings'] * 6 + ['Whatsapp'] * 6 + ['Zoom'] * 6 + ['Youtube'] * 6 + ['Temu'] * 6 + \
+                        ['Chatgpt'] * 6 + ['PDF Reader'] * 6 + ['Booking.com'] * 6 + ['Uber'] * 6 + ['Google Map'] * 6
 
-        self.app_list = ['Android Settings'] * 6 + ['Whatsapp'] * 6 + ['Zoom'] * 6 + ['Youtube'] * 6 + ['Temu'] * 6
         self.step_list = ["Tap search bar TextView > search Lock > Tap Lock screen password Textview with \"Password & security\" > Tap Lock screen password Textview > when you see Numeric TextView, the task is Almost Completed and STOP THE TASK.",
                           "Tap Wi-Fi TextView > when you see Wi-Fi Switch, the task is Almost Completed and STOP THE TASK, and you should mention user to open the Wi-Fi switch to enable and select Wi-Fi user wants.",
                           "Tap Bluetooth TextView > when you see Bluetooth Switch, the task is Almost Completed and STOP THE TASK, and you should mention user to open the Bluetooth switch to enable Bluetooth.",
@@ -64,11 +88,11 @@ class TaskList:
 
 
         self.__system_prompt_task_match = 'You are an Android mobile assistant, you can only perform the following list of tasks:\n' + str(self.available_task_list) + '\n'\
-                                          'Given a user intention, try to select 3 most related tasks that match the user intention.\n' \
-                                          '!!!Cases:' \
-                                          '1. If successfully match related tasks, respond in the JSON format:{{"State": "Match", "RelatedTasks": ["<task from the list>"], "Reason": "<one-sentence reason>"}}\n' \
-                                          '2. If the task is related to the tasks in the list but you need more details to make selection, respond in the JSON format:{{"State": "Related", "Question":"<Question>", "Options":["<sample answers>"]}}\n' \
-                                          '3. If the task is totally unrelated to any of the tasks in the list, respond in the JSON format:{{"State": "Unrelated"}}'
+                                          'Given a user intention, your task is to analyze a user\'s request and match it with up to 3 tasks from the list that most closely align with the user\'s intent.\n' \
+                                          '!!!Please respond according to these scenarios:' \
+                                          '1. If you find a match, format your response as JSON: {"State": "Match", "RelatedTasks": ["<task from list>"], "Reason": "Provide a concise reason for your choices."}\n' \
+                                          '2. If the request is somewhat related but you require further details to refine your match, format your response as JSON: {"State": "Related", "Question": "Pose a clarifying question here.", "Options": ["Option1", "Option2", "..."]}. Ensure the options are directly relevant to the clarifying question, not tasks from the list.\n' \
+                                          '3.  If the user\'s request doesn\'t relate to any task on your list, respond with: {"State": "Unrelated"}.\n'
 
         self.__model_manager = model_manager
         self.__base_prompt_task_match = 'User intention: {task}.'
@@ -96,7 +120,7 @@ class TaskList:
         try:
             return json.loads(resp['content'])
         except Exception as e:
-            regex = r'"([A-Za-z ]+?)":\s*(".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\':\s*(\'.*?[^\\]\'|".*?[^\\]")'
+            regex = r'"([A-Za-z ]+?)"\s*:\s*(\[[^\]]*\]|\d+|".*?[^\\]"|\'.*?[^\\]\')|\'([A-Za-z ]+?)\'\s*:\s*(\[[^\]]*\]|\d+|\'.*?[^\\]\'|".*?[^\\]")'
             attributes = re.findall(regex, resp['content'])
             resp_dict = {}
             for match in attributes:

@@ -1,6 +1,7 @@
 import time
 from os.path import join as pjoin
 import traceback
+import cv2
 
 from uta.DataStructures import *
 from uta.ModelManagement import ModelManager
@@ -72,7 +73,7 @@ class UTA:
                 else:
                     task.selected_task = user_msg
                     task.involved_app = self.task_list.app_list[self.task_list.available_task_list.index(user_msg)]
-                    task.step_hint = self.task_list.step_list[self.task_list.available_task_list.index(user_msg)]
+                    # task.step_hint = self.task_list.step_list[self.task_list.available_task_list.index(user_msg)]
         self.cur_user = user
         self.cur_task = task
         return user, task
@@ -185,7 +186,7 @@ class UTA:
             task.keyboard_active = keyboard_active
 
             # 1. process ui
-            ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution)
+            ui = self.process_ui_data(ui_img_file, ui_xml_file, user.device_resolution, show=printlog)
             self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, user_id, task_id))
 
             # 2. act step
@@ -278,7 +279,10 @@ class UTA:
         """
         ui = self.system_connector.load_ui_data(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
         self.ui_processor.preprocess_ui(ui)
-        ui.annotated_elements_screenshot = self.ui_processor.annotate_elements_with_id(ui, show=show, draw_bound=annotate_bound)
+        annotated_elements_screenshot = self.ui_processor.annotate_elements_with_id(ui, show=show, draw_bound=annotate_bound)
+        # resize image
+        # annotated_elements_screenshot = cv2.resize(annotated_elements_screenshot, (device_resolution[0]//4, device_resolution[1]//4))
+        ui.annotated_elements_screenshot = annotated_elements_screenshot
         return ui
 
 
