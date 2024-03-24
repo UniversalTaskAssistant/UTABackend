@@ -77,7 +77,7 @@ class _TaskUIChecker:
                                        'c.	Note:\n' \
                                        '-   Type of User Action: UI Modal (e.g., alerts, confirmations); Login; Signup; Password; User Permission; Form.\n' \
                                        '-   Specify the required user action in the "User Action" in the output.\n' \
-                                      '!!!Example Output:\n' \
+                                       '!!!Example Output:\n' \
                                        '{{"Relation": "Complete", "Reason": "The UI is on the \'New contact\' screen which is the final step to add a new contact in WhatsApp.", "UI Desc": "A UI of the WhatsApp contact list with an option to add a new contact."}}\n' \
                                        '{{"Relation": "Directly related", "Element Id": 3, "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click"}}\n' \
                                        '{{"Relation": "Unrelated", "Element Id": 3, "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n' \
@@ -230,8 +230,8 @@ class _TaskUIChecker:
         prompt += self.__relation_prompt_gpt4v.format(task=task.selected_task, keyboard_active=task.keyboard_active)
         # Ask FM
         resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-        print('resp:\n', resp)
+        # print('resp:\n', resp)
         task.res_relation_check = self.transfer_to_dict(resp)
-        print('transferred:\n', task.res_relation_check)
+        # print('transferred:\n', task.res_relation_check)
         # print(task.res_relation_check)
         return task.res_relation_check
