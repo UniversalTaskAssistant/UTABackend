@@ -62,12 +62,13 @@ class _TaskUIChecker:
                                        '-   Also check previous action history to determine if the task is complete.' \
                                        '2.	Related\n' \
                                        'a.	Definition: The UI contains elements (clickable, scrollable, swipeable) that are essential for moving the task forward but isn\'t at the final step.\n' \
-                                       'b.	Output: {{"Relation": "Related", "Element Id": <ID>, "Reason": <reason>, "Action": <type>, "UI Desc": <UI Description>, "Input Text": <text>}}\n' \
+                                       'b.	Output: {{"Relation": "Related", "Element Id": <ID>, "Reason": <reason>, "Action": <type>, "Action Desc": <Action Description>, "UI Desc": <UI Description>, "Input Text": <text>}}\n' \
                                        'c.	Note:\n' \
                                        '-	Action types: Click, Input, Scroll, Swipe.\n' \
                                        '-	Before Input action, make sure the keyboard is active, otherwise, click on the input field to activate the keyboard first.\n' \
                                        '-	If the action type is Input, output text content to "Input Text", otherwise output "None" to "Input Text".\n' \
                                        '-	This UI may not contain the directly related elements for the task, but it may include elements that lead to the relevant UI (e.g., menu button, tabs, search bar, setting buttons)\n' \
+                                       '-   Describe your action in one sentence in "Action Desc".\n' \
                                        '3.	Unrelated\n' \
                                        'a.	Definition: The UI is completely irrelevant to the task, without even indirectly related elements.\n' \
                                        'b.	Output: {{"Relation": "Unrelated", "Reason": <reason>, "UI Desc": <UI Description>, "Action": "Back", "Element Id": <ID>}}\n' \
@@ -85,7 +86,7 @@ class _TaskUIChecker:
                                        'b.  Output: {{"Relation": "Unsure", "Reason": <reason>, "UI Desc": <UI Description>, "Question": <question to get more info>}}\n' \
                                        '!!!Example Output:\n' \
                                        '{{"Relation": "Complete", "Reason": "The UI is on the \'New contact\' screen which is the final step to add a new contact in WhatsApp.", "UI Desc": "A UI of the WhatsApp contact list with an option to add a new contact."}}\n' \
-                                       '{{"Relation": "Related", "Element Id": 3, "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click"}}\n' \
+                                       '{{"Relation": "Related", "Element Id": 3, "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click", "Action Desc": "Click on the Setting button to open setting."}}\n' \
                                        '{{"Relation": "Unrelated", "Element Id": 3, "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n' \
                                        '{{"Relation": "User Action Required", "User Action": "User Permission", "Reason": "There is a pop-up window asking for user permission", "UI Desc": "A UI of the home page of Youtube, being overlaid with a pop-up window to ask for user permission."}}\n'
 
