@@ -136,7 +136,7 @@ class UTA:
                   max_try=10, show_ui=False, printlog=False, wait_time=3):
         # 0. retrieve task info
         task = Task(task_id=task_id, user_id='test', task_description=task_desc)
-        uta.cur_task = task
+        self.cur_task = task
         task.selected_task = task_desc
         task.keyboard_active = device.check_keyboard_active()
         output_dir = pjoin(self.system_connector.user_data_root, 'test', task_id)
