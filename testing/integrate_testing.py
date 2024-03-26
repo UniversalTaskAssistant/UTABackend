@@ -123,14 +123,14 @@ def task_automation_vision(max_try=20):
             ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id,
                                                                        output_dir=pjoin(DATA_PATH, user_id, task_id))
             ui_data, action = uta.automate_task_vision(user_id=user_id, task_id=task_id, ui_img_file=ui_img,
-                                                ui_xml_file=ui_xml, printlog=True)
+                                                ui_xml_file=ui_xml, printlog=False)
 
 
             if action.get("Action") is not None and "error" in action["Action"].lower():
                 save_error(action["Exception"], action["Traceback"], "automation_error")
                 break
 
-            annotate_screenshot = annotate_ui_operation(ui_data, action, show=True)
+            annotate_screenshot = annotate_ui_operation(ui_data, action, show=False)
             screen_path = pjoin(DATA_PATH, user_id, task_id, f"{ui_id}_annotated.png")
             SystemConnector().save_img(annotate_screenshot, screen_path)
             # with open(screen_path, 'wb') as fp:
@@ -186,7 +186,7 @@ def task_automation(max_try=20):
                 input("Do the necessary operation and press Enter to continue...")
                 continue
 
-            device.take_action(action=action, ui_data=ui_data, show=False)
+            device.take_action(action=action, ui_data=ui_data, show=True)
             time.sleep(2)  # wait the action to be done
             ui_id += 1
         except Exception as e:
@@ -220,14 +220,16 @@ uta = UTA()
 uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 
 for task_idx, task in enumerate(task_list2):
-    # if task_idx not in [28, 29]:
+    # if task_idx + 1 not in [11, 19, 2, 21, 25, 43, 44, 45, 46, 14, 16, 55, 56, 57]:
     #     continue
-    if task_idx < 30:
+    if task_idx + 1 not in [11, 43, 44, 45, 46]:
         continue
+    # if task_idx < 21:
+    #     continue
     # if not 46 <= task_idx < 54:
     #     continue
-    if 'uber' in task.lower() or 'temu' in task.lower():
-        continue
+    # if 'uber' in task.lower() or 'book' in task.lower() or 'whatsapp' in task.lower():
+    #     continue
     if task_info_list2[task_idx][1] != 'Feasible':
         continue
     task_id = f"task{task_idx + 1}"

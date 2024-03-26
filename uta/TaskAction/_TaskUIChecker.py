@@ -47,44 +47,39 @@ class _TaskUIChecker:
                                  '5. If Relation is almost complete, you must provide the Element Id (int) required for the final step and describe its operation in the Reason.\n' \
                                  '6. If you decide to input text, the Action should be Input.'
 
-        self.__relation_prompt_gpt4v = 'Analyze the relationship between the provided UI and the specified task "{task}" and determine the actions to proceed with the task.\n' \
+        self.__relation_prompt_gpt4v = 'Analyze the relationship between the provided UI and the specified task "{task}" to determine the relations and actions for proceeding with the task.\n' \
                                        '!!!General Instructions:\n' \
-                                       '1.	Refer to elements by their bounding box annotations and IDs (int) in the UI image.\n' \
-                                       '2.	ONLY respond in JSON format compatible with python json.loads, including all required attributes.\n' \
-                                       '3.	Output one-sentence description for the current UI in the "UI Desc”.\n' \
-                                       '4.	Output one-sentence reason for your answer in the "Reason".\n' \
+                                       '1.	Refer to UI elements by their bounding box annotations and IDs (int) in the UI image.\n' \
+                                       '2.	Respond ONLY in JSON format compatible with python json.loads, including all required attributes.\n' \
+                                       '3.	Provide a one-sentence description for the current UI in the "UI Desc”.\n' \
+                                       '4.	Provide a one-sentence reason for your answer in the "Reason".\n' \
                                        '5.	Ensure all required attributes are included in your JSON response.\n' \
-                                       '!!!Relations and Actions:\n' \
-                                       '1.	Complete\n' \
-                                       'a.	Definition: The UI is on the final page needed to complete the task.\n' \
-                                       'b.	Output: {{"Relation": "Complete", "Reason": <reason>, "UI Desc": <UI Description>}}.\n' \
-                                       'c.  Note:' \
-                                       '-   Also check previous action history to determine if the task is complete.' \
-                                       '2.	Related\n' \
-                                       'a.	Definition: The UI contains elements (clickable, scrollable, swipeable) that are essential for moving the task forward but isn\'t at the final step.\n' \
-                                       'b.	Output: {{"Relation": "Related", "Element Id": <ID>, "Reason": <reason>, "Action": <type>, "Action Desc": <Action Description>, "UI Desc": <UI Description>, "Input Text": <text>}}\n' \
-                                       'c.	Note:\n' \
+                                       '!!!Relations Options:\n' \
+                                       '1.	Complete: The UI is on the final page needed to complete the task.\n' \
+                                       'a.	Output Format: {{"Relation": "Complete", "Reason": <reason>, "UI Desc": <UI Description>}}.\n' \
+                                       'b.  Note:' \
+                                       '-   Check previous action history to determine if the task is complete.\n' \
+                                       '2.	Related: The UI contains elements (clickable, scrollable, swipeable) that are essential for moving the task forward but isn\'t at the final step.\n' \
+                                       'a.	Output Format: {{"Relation": "Related", "Element Id": <ID>, "Reason": <reason>, "Action": <type>, "Action Desc": <Action Description>, "UI Desc": <UI Description>, "Input Text": <text>}}\n' \
+                                       'b.	Note:\n' \
                                        '-	Action types: Click, Input, Scroll, Swipe.\n' \
                                        '-	Before Input action, make sure the keyboard is active, otherwise, click on the input field to activate the keyboard first.\n' \
                                        '-	If the action type is Input, output text content to "Input Text", otherwise output "None" to "Input Text".\n' \
                                        '-	This UI may not contain the directly related elements for the task, but it may include elements that lead to the relevant UI (e.g., menu button, tabs, search bar, setting buttons)\n' \
                                        '-   Describe your action in one sentence in "Action Desc".\n' \
-                                       '3.	Unrelated\n' \
-                                       'a.	Definition: The UI is completely irrelevant to the task, without even indirectly related elements.\n' \
-                                       'b.	Output: {{"Relation": "Unrelated", "Reason": <reason>, "UI Desc": <UI Description>, "Action": "Back", "Element Id": <ID>}}\n' \
-                                       'c.	Note:\n' \
+                                       '3.	Unrelated: The UI is completely irrelevant to the task, without even indirectly related elements.\n' \
+                                       'a.	Output Format: {{"Relation": "Unrelated", "Reason": <reason>, "UI Desc": <UI Description>, "Action": "Back", "Element Id": <ID>}}\n' \
+                                       'b.	Note:\n' \
                                        '-   Identify elements for navigating back or closing the UI to proceed to a related UI, if non-applicable, give "None" as Element Id.\n' \
-                                       '4.	User Action Required\n' \
-                                       'a.	Definition: This UI demands the user to manually action before proceeding (e.g., login page, password input, pop-up modal)\n' \
-                                       'b.	Output: {{"Relation": "User Action Required", "User Action": <Required Action>, "Reason": <reason>, "UI Desc": <UI Description>}}\n' \
-                                       'c.	Note:\n' \
+                                       '4.	User Action Required: This UI demands the user to manually action before proceeding (e.g., login page, password input, pop-up modal)\n' \
+                                       'a.	Output Format: {{"Relation": "User Action Required", "User Action": <Required Action>, "Reason": <reason>, "UI Desc": <UI Description>}}\n' \
+                                       'b.	Note:\n' \
                                        '-   Type of User Action: UI Modal (e.g., alerts, confirmations); Login; Signup; Password; User Permission; Form.\n' \
                                        '-   Specify the required user action in the "User Action" in the output.\n' \
                                        '-   If this page is User Action but also is the complete page of the task, the relation should be turned to "Complete" with the output and notes of "Complete".\n' \
-                                       '5.  Unsure:\n' \
-                                       'a.  Definition: You are unsure of the relation and action between the UI and the task because of lack of more information. You have to ask questions to get more information.\n' \
-                                       'b.  Output: {{"Relation": "Unsure", "Reason": <reason>, "UI Desc": <UI Description>, "Question": <question to get more info>}}\n' \
-                                       '!!!Example Output:\n' \
+                                       '5.  Unsure: You are unsure of the relation and action between the UI and the task because of lack of more information. You have to ask questions to get more information.\n' \
+                                       'a.  Output Format: {{"Relation": "Unsure", "Reason": <reason>, "UI Desc": <UI Description>, "Question": <question to get more info>}}\n' \
+                                       '!!!Examples:\n' \
                                        '{{"Relation": "Complete", "Reason": "The UI is on the \'New contact\' screen which is the final step to add a new contact in WhatsApp.", "UI Desc": "A UI of the WhatsApp contact list with an option to add a new contact."}}\n' \
                                        '{{"Relation": "Related", "Element Id": 3, "Reason": "UI has \'Open Settings\' for task settings access", "Action": "Click", "Action Desc": "Click on the Setting button to open setting."}}\n' \
                                        '{{"Relation": "Unrelated", "Element Id": 3, "Reason": "This element enables returning to the last page.", "Action": "Back"}}\n' \
@@ -229,15 +224,19 @@ class _TaskUIChecker:
         Returns:
             FM response (dict): {"Relation":, "Reason":}
         """
-        print('* Check UI and Task Relation *')
-        # Format base prompt
-        prompt = self.wrap_task_context(task)
-        prompt += self.wrap_task_history(task)
-        prompt += self.__relation_prompt_gpt4v.format(task=task.selected_task, keyboard_active=task.keyboard_active)
-        # Ask FM
-        resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-        # print('resp:\n', resp)
-        task.res_relation_check = self.transfer_to_dict(resp)
-        # print('transferred:\n', task.res_relation_check)
-        # print(task.res_relation_check)
-        return task.res_relation_check
+        try:
+            print('* Check UI and Task Relation *')
+            # Format base prompt
+            prompt = self.wrap_task_context(task)
+            prompt += self.wrap_task_history(task)
+            prompt += self.__relation_prompt_gpt4v.format(task=task.selected_task, keyboard_active=task.keyboard_active)
+            # Ask FM
+            resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
+            print('resp:\n', resp)
+            task.res_relation_check = self.transfer_to_dict(resp)
+            # print('transferred:\n', task.res_relation_check)
+            # print(task.res_relation_check)
+            return task.res_relation_check
+        except Exception as e:
+            print(resp)
+            raise e

@@ -253,8 +253,8 @@ class UTA:
             return action
 
         # if go back and element id, click element
-        if action.get('Action') and action['Action'] == 'Back':
-            if action.get('Element Id') and action['Element Id'] != 'None' or \
+        if action.get('Action') and 'back' in action['Action'].lower():
+            if action.get('Element Id') and 'none' not in action['Element Id'].lower() or \
                     action.get('Element Id') is None and 'none' not in str(action).lower():
                 action["Action"] = "Click"
                 return action
