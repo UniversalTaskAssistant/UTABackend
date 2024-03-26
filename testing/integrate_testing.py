@@ -123,7 +123,7 @@ def task_automation_vision(max_try=20):
             ui_img, ui_xml = device.cap_and_save_ui_screenshot_and_xml(ui_id=ui_id,
                                                                        output_dir=pjoin(DATA_PATH, user_id, task_id))
             ui_data, action = uta.automate_task_vision(user_id=user_id, task_id=task_id, ui_img_file=ui_img,
-                                                ui_xml_file=ui_xml, printlog=False)
+                                                ui_xml_file=ui_xml, printlog=True)
 
 
             if action.get("Action") is not None and "error" in action["Action"].lower():
@@ -209,7 +209,7 @@ def save_error(e, error_trace, save_name):
 
 
 # set up user task
-user_id = 'user58'
+user_id = 'user59'
 # init device
 device = Device()
 device.connect()
@@ -222,10 +222,10 @@ uta.setup_user(user_id=user_id, device_resolution=resolution, app_list=app_list)
 for task_idx, task in enumerate(task_list2):
     # if task_idx not in [28, 29]:
     #     continue
-    # if task_idx < 30:
-    #     continue
-    if not 46 <= task_idx < 54:
+    if task_idx < 30:
         continue
+    # if not 46 <= task_idx < 54:
+    #     continue
     if 'uber' in task.lower() or 'temu' in task.lower():
         continue
     if task_info_list2[task_idx][1] != 'Feasible':
