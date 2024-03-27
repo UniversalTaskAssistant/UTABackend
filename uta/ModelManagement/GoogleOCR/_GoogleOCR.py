@@ -12,7 +12,7 @@ from uta.config import *
 class _GoogleOCR:
     def __init__(self):
         self.__url = 'https://vision.googleapis.com/v1/images:annotate'
-        self.__api_key = open(WORK_PATH + 'uta/ModelManagement/VisionModel/googleapikey.txt', 'r').readline()
+        self.__api_key = open(WORK_PATH + 'uta/ModelManagement/GoogleOCR/googleapikey.txt', 'r').readline()
 
     @staticmethod
     def __make_image_data(img_path):
