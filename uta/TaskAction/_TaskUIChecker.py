@@ -232,7 +232,7 @@ class _TaskUIChecker:
             prompt += self.__relation_prompt_gpt4v.format(task=task.selected_task, keyboard_active=task.keyboard_active)
             # Ask FM
             resp = self.check_ui_task_gpt4v(ui_data=ui_data, task=task, prompt=prompt, printlog=printlog)
-            print('resp:\n', resp)
+            # print('resp:\n', resp)
             task.res_relation_check = self.transfer_to_dict(resp)
             # print('transferred:\n', task.res_relation_check)
             # print(task.res_relation_check)

@@ -134,6 +134,19 @@ class UTA:
     '''
     def auto_task(self, task_desc, task_id, device,
                   max_try=10, show_ui=False, printlog=False, wait_time=3):
+        """
+        Automate the task on the device directly
+        Args:
+            task_desc (str): The description of the task
+            task_id (str): Used to store the processing results under the folder "data/test/task_id"
+            device (Device): Device to operate
+            max_try (int): The maximum number of attempts
+            show_ui (bool): True to show the annotated UI and the actions to be performed
+            printlog (bool): True to print the log of large model
+            wait_time (int): Seconds to wait for the loading of new page before
+        Returns:
+            Output and perform the action on the device
+        """
         # 0. retrieve task info
         task = Task(task_id=task_id, user_id='test', task_description=task_desc)
         self.cur_task = task
@@ -167,6 +180,29 @@ class UTA:
                 device.take_action(action=action, ui_data=ui, show=show_ui)
             print('* Waiting for loading page *')
             time.sleep(wait_time)
+
+    def check_action_on_ui(self, ui_img_file, ui_xml_file, task_desc, resolution, keyboard_active):
+        """
+        Process UI (Annotate the UI element IDs) and check the relation and action on this UI for the task
+        Args:
+            ui_img_file (path): The path of the UI screenshot image
+            ui_xml_file (path): The path of the UI XML file
+            task_desc (str): The description of the task
+            resolution (tuple): Resolution of the screen
+            keyboard_active (bool): True to indicate the keyboard is active in this UI
+        """
+        # 0. initial task
+        task = Task(task_id='100', user_id='test', task_description=task_desc)
+        task.selected_task = task_desc
+        task.keyboard_active = keyboard_active
+        # 1. process ui
+        ui = self.process_ui_data(ui_img_file, ui_xml_file, resolution, show=True)
+        self.system_connector.save_ui_data(ui, output_dir=pjoin(self.system_connector.user_data_root, 'test/100'))
+        # 2. check action
+        action = self.task_action_checker.action_on_ui_vision(ui, task, printlog=True)
+        action = self.set_action(action)
+        print(action)
+        return ui, action
 
     def automate_task_vision(self, user_id, task_id, ui_img_file, ui_xml_file, keyboard_active=False, printlog=False):
         """
@@ -280,10 +316,9 @@ class UTA:
         """
         ui = self.system_connector.load_ui_data(screenshot_file=ui_img_file, xml_file=ui_xml_file, ui_resize=device_resolution)
         self.ui_processor.preprocess_ui(ui)
-        annotated_elements_screenshot = self.ui_processor.annotate_elements_with_id(ui, show=show, draw_bound=annotate_bound)
+        ui.annotated_elements_screenshot = self.ui_processor.annotate_elements_with_id(ui, show=show, draw_bound=annotate_bound)
         # resize image
         # annotated_elements_screenshot = cv2.resize(annotated_elements_screenshot, (device_resolution[0]//4, device_resolution[1]//4))
-        ui.annotated_elements_screenshot = annotated_elements_screenshot
         return ui
 
 
