@@ -1,5 +1,4 @@
 from difflib import SequenceMatcher
-import pyshine as ps
 import cv2
 import numpy as np
 
@@ -54,8 +53,7 @@ class _UIUtil:
         """
         return SequenceMatcher(None, str(ui_data1.element_tree), str(ui_data2.element_tree)).ratio()
 
-    @staticmethod
-    def annotate_elements_with_id(ui_data, only_leaves=True, show=True, draw_bound=False):
+    def annotate_elements_with_id(self, ui_data, only_leaves=True, show=True, draw_bound=False):
         """
         Annotate elements on the ui screenshot using IDs
         Args:
@@ -66,12 +64,6 @@ class _UIUtil:
         Returns:
             annotated_img (cv2 image): Annotated UI screenshot
         """
-
-        def draw_transparent_border_rectangle(img, left_top, right_bottom, color, thickness, alpha):
-            overlay = np.zeros_like(img, dtype=np.uint8)
-            cv2.rectangle(overlay, left_top, right_bottom, color, thickness)
-            return cv2.addWeighted(overlay, alpha, img, 1, 0)
-
         board = ui_data.ui_screenshot.copy()
         if only_leaves:
             elements = ui_data.elements_leaves
@@ -82,22 +74,67 @@ class _UIUtil:
             for ele in elements:
                 left, top, right, bottom = ele['bounds']
                 cv2.rectangle(board, (left, top), (right, bottom), (0, 250, 0), 2)
-                board = draw_transparent_border_rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3, 0.7)
+                board = self.draw_transparent_border_rectangle(board, (left, top), (right, bottom), (0, 250, 0), 3, 0.7)
         # annotate elements
         for i, ele in enumerate(elements):
             left, top, right, bottom = ele['bounds']
             try:
                 # mark on the top if possible
-                board = ps.putBText(board, str(ele['id']), text_offset_x=(left + right) // 2, text_offset_y=top - 5,
-                                    vspace=10, hspace=10, font_scale=1, thickness=2, background_RGB=(10,10,10),
-                                    text_RGB=(200,200,200), alpha=0.55)
+                board = self.putBText(board, str(ele['id']), text_offset_x=(left + right) // 2, text_offset_y=top - 5,
+                                      vspace=10, hspace=10, font_scale=1, thickness=2, background_RGB=(10,10,10),
+                                      text_RGB=(200,200,200), alpha=0.55)
             except ValueError as e:
                 # else mark on the bottom
-                board = ps.putBText(board, str(ele['id']), text_offset_x=(left + right) // 2, text_offset_y=bottom,
-                                    vspace=10, hspace=10, font_scale=1, thickness=2, background_RGB=(10,10,10),
-                                    text_RGB=(200,200,200), alpha=0.55)
+                board = self.putBText(board, str(ele['id']), text_offset_x=(left + right) // 2, text_offset_y=bottom,
+                                      vspace=10, hspace=10, font_scale=1, thickness=2, background_RGB=(10,10,10),
+                                      text_RGB=(200,200,200), alpha=0.55)
         if show:
             cv2.imshow('a', cv2.resize(board, (500, 1000)))
             cv2.waitKey()
             cv2.destroyAllWindows()
         return board
+
+    '''
+    ***************
+    *** Drawing ***
+    ***************
+    '''
+    @staticmethod
+    def putBText(img, text, text_offset_x=20, text_offset_y=20, vspace=10, hspace=10, font_scale=1.0, background_RGB=(228, 225, 222), text_RGB=(1, 1, 1), font=cv2.FONT_HERSHEY_DUPLEX, thickness=2, alpha=0.6, gamma=0):
+        """
+        Inputs:
+            img: cv2 image img
+            text_offset_x, text_offset_x: X,Y location of text start
+            vspace, hspace: Vertical and Horizontal space between text and box boundries
+            font_scale: Font size
+            background_RGB: Background R,G,B color
+            text_RGB: Text R,G,B color
+            font: Font Style e.g. cv2.FONT_HERSHEY_DUPLEX,cv2.FONT_HERSHEY_SIMPLEX,cv2.FONT_HERSHEY_PLAIN,cv2.FONT_HERSHEY_COMPLEX
+                  cv2.FONT_HERSHEY_TRIPLEX, etc
+            thickness: Thickness of the text font
+            alpha: Opacity 0~1 of the box around text
+            gamma: 0 by default
+        Output:
+            img: CV2 image with text and background
+        """
+        R, G, B = background_RGB[0], background_RGB[1], background_RGB[2]
+        text_R, text_G, text_B = text_RGB[0], text_RGB[1], text_RGB[2]
+        (text_width, text_height) = cv2.getTextSize(text, font, fontScale=font_scale, thickness=thickness)[0]
+        x, y, w, h = text_offset_x, text_offset_y, text_width, text_height
+        crop = img[y - vspace:y + h + vspace, x - hspace:x + w + hspace]
+        white_rect = np.ones(crop.shape, dtype=np.uint8)
+        b, g, r = cv2.split(white_rect)
+        rect_changed = cv2.merge((B * b, G * g, R * r))
+
+        res = cv2.addWeighted(crop, alpha, rect_changed, 1 - alpha, gamma)
+        img[y - vspace:y + vspace + h, x - hspace:x + w + hspace] = res
+
+        cv2.putText(img, text, (x, (y + h)), font, fontScale=font_scale, color=(text_B, text_G, text_R), thickness=thickness)
+        return img
+
+    @staticmethod
+    def draw_transparent_border_rectangle(img, left_top, right_bottom, color, thickness, alpha):
+        overlay = np.zeros_like(img, dtype=np.uint8)
+        cv2.rectangle(overlay, left_top, right_bottom, color, thickness)
+        return cv2.addWeighted(overlay, alpha, img, 1, 0)
+
